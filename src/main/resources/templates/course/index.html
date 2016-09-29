@@ -4,7 +4,7 @@
       layout:decorator="layout">
 
 <head>
-    <title>用户</title>
+    <title>课程</title>
 </head>
 
 <body>
@@ -19,13 +19,13 @@
 </ul>
 
 <h1 layout:fragment="page-header">
-    用户
+    课程
     <small>
         <i class="ace-icon fa fa-angle-double-right"></i>
         列表
     </small>
     <span class="pull-right inline">
-        <a data-backdrop="static" data-toggle="modal" class="btn btn-xs btn-primary" th:href="@{/account/create}" data-target="#myModal">添加</a>
+        <a data-backdrop="static" data-toggle="modal" class="btn btn-xs btn-primary" th:href="@{/course/create}" data-target="#myModal">添加</a>
     </span>
 </h1>
 
@@ -94,7 +94,7 @@
         <b class="arrow"></b>
 
         <ul class="submenu">
-            <li class="active">
+            <li class="">
                 <a th:href="@{/account}" class="active">
                     <i class="menu-icon fa fa-caret-right"></i>
                     用户
@@ -112,7 +112,7 @@
                 <b class="arrow"></b>
             </li>
 
-            <li class="">
+            <li class="active">
                 <a th:href="@{/course}">
                     <i class="menu-icon fa fa-caret-right"></i>
                     课程
@@ -125,64 +125,59 @@
 </ul>
 
 <div layout:fragment="content">
-    <form id="search-form" class="form-inline" method="get">
-        <div class="col-md-12">
-            <div>
-                <select class="form-control" name="roleId">
-                    <option value="">--所有角色--</option>
-
-                </select>
-                <input type="hidden" name="searchState" id="searchState" value="0"/>
-                <input type="hidden" name="serviceType" id="serviceType" value="0"/>
-                <input type="hidden" name="keywordType" value="title"/>
-                <input type="text" class="form-control" name="keywords" placeholder="姓名" value=""/>
-                <button class="btn btn-purple btn-sm">
-                    搜索
-                    <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
-                </button>
-            </div>
-
-        </div>
-    </form>
-    <div class="space-24"></div>
-
     <div class="col-xs-12">
-        <table id="user-table" class="table table-striped table-bordered table-hover">
+        <table id="role-table" class="table table-striped table-bordered table-hover">
             <thead>
             <tr>
-                <th>用户名</th>
-                <th width="10%">姓名</th>
-                <th width="15%">邮箱</th>
-                <th width="20%">注册时间</th>
-                <th width="25%">角色</th>
+                <th width="15%">课程</th>
+                <th>描述</th>
                 <th width="10%">操作</th>
             </tr>
             </thead>
 
             <tbody>
-            <tr th:each="account : ${accounts}">
+            <tr>
                 <td>
-                    <a th:href="${'/account/' + account.id}" th:text="${account.username}"></a>
+                    <a href="#">计算机应用基础</a>
                 </td>
-                <td th:text="${account.name}"></td>
-                <td th:text="${account.email}"></td>
-                <td th:text="${account.time}"></td>
-                <td>
-                    <span class="label label-sm label-success" th:text="${account.roles}"></span>
-                </td>
+                <td>一门计算机入门课程，属于公共基础课，是为非计算机专业
+                    类学生提供计算机一般应用所必需的基础知识、能力和素质的课程。</td>
                 <td>
                     <div class="btn-group">
-                        <a class="btn btn-xs btn-inverse" th:href="${'/account/' + account.id}">查看</a>
-
-                        <button data-toggle="dropdown" class="btn btn-xs btn-inverse dropdown-toggle">
-                            <span class="ace-icon fa fa-caret-down icon-only"></span>
-                        </button>
-
-                        <ul class="dropdown-menu dropdown-menu-right dropdown-inverse">
-                            <li>
-                                <a href="${ctx}/dashboard/user/${user.id}/edit">编辑</a>
-                            </li>
-                        </ul>
+                        <a class="btn btn-xs btn-inverse" th:href="@{/course/1/edit}">编辑</a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="#">微机接口及应用</a>
+                </td>
+                <td>主要包括现代微机系统的组成和发展以及新技术介绍</td>
+                <td>
+                    <div class="btn-group">
+                        <a class="btn btn-xs btn-inverse" th:href="@{/course/2/edit}">编辑</a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="#">数据结构</a>
+                </td>
+                <td>数据结构是计算机存储、组织数据的方式。</td>
+                <td>
+                    <div class="btn-group">
+                        <a class="btn btn-xs btn-inverse" th:href="@{/course/3/edit}">编辑</a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="#">互联网及其应用</a>
+                </td>
+                <td>《互联网及其应用》是吉林大学出版社2004年06月出版的图书。</td>
+                <td>
+                    <div class="btn-group">
+                        <a class="btn btn-xs btn-inverse" th:href="@{/course/3/edit}">编辑</a>
                     </div>
                 </td>
             </tr>

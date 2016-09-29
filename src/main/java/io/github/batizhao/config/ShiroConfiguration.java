@@ -35,6 +35,7 @@ public class ShiroConfiguration {
         Map<String, String> filterChainDefinitionManager = new LinkedHashMap<String, String>();
         filterChainDefinitionManager.put("/dashboard/**", "authc");
         filterChainDefinitionManager.put("/account/**", "authc");
+        filterChainDefinitionManager.put("/role/**", "authc");
         factoryBean.setFilterChainDefinitionMap(filterChainDefinitionManager);
         return factoryBean;
     }

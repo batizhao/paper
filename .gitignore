@@ -28,5 +28,3 @@ hs_err_pid*
 .gradle/
 build/
 target/
-
-.idea/misc.xml
