@@ -1,7 +1,9 @@
 package io.github.batizhao.config;
 
+import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import io.github.batizhao.shiro.ShiroDbRealm;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.authc.credential.PasswordMatcher;
 import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
 import org.apache.shiro.session.mgt.eis.SessionDAO;
@@ -13,17 +15,27 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * @author batizhao
  * @since 2016/9/28
  */
-//@Configuration
+@Configuration
 public class ShiroConfiguration {
 
     @Bean
     public ShiroFilterFactoryBean shiroFilter() {
         ShiroFilterFactoryBean factoryBean = new ShiroFilterFactoryBean();
         factoryBean.setSecurityManager(securityManager());
+        factoryBean.setSuccessUrl("/dashboard");
+        factoryBean.setLoginUrl("/login");
+
+        Map<String, String> filterChainDefinitionManager = new LinkedHashMap<String, String>();
+        filterChainDefinitionManager.put("/dashboard/**", "authc");
+        filterChainDefinitionManager.put("/account/**", "authc");
+        factoryBean.setFilterChainDefinitionMap(filterChainDefinitionManager);
         return factoryBean;
     }
 
@@ -57,19 +69,20 @@ public class ShiroConfiguration {
     }
 
     @Bean(name = "credentialsMatcher")
-    public PasswordMatcher credentialsMatcher() {
-        final PasswordMatcher credentialsMatcher = new PasswordMatcher();
-        credentialsMatcher.setPasswordService(passwordService());
-        return credentialsMatcher;
-    }
-
-    @Bean(name = "passwordService")
-    public DefaultPasswordService passwordService() {
-        return new DefaultPasswordService();
+    public HashedCredentialsMatcher credentialsMatcher() {
+        HashedCredentialsMatcher matcher = new HashedCredentialsMatcher("MD5");
+        matcher.setHashIterations(1);
+        return matcher;
     }
 
     @Bean
     public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
         return new LifecycleBeanPostProcessor();
+    }
+
+    //use shiro tag for thymeleaf
+    @Bean(name = "shiroDialect")
+    public ShiroDialect shiroDialect(){
+        return new ShiroDialect();
     }
 }

@@ -21,4 +21,8 @@ public class AccountServiceIml implements AccountService {
         return accountRepository.findByUsername(username);
     }
 
+    @Override
+    public Iterable<Account> findAll() {
+        return accountRepository.findAll();
+    }
 }

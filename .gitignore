@@ -30,5 +30,6 @@ build/
 target/
 
 .idea/misc.xml
+paper.iml
 
 paper.iml

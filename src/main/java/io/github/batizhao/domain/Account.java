@@ -3,6 +3,7 @@ package io.github.batizhao.domain;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * @author batizhao
@@ -21,6 +22,7 @@ public class Account {
     private String name;
     private String password;
     private String roles;
+    private Date time;
 
     public Account() {
 
@@ -84,6 +86,14 @@ public class Account {
 
     public void setRoles(String roles) {
         this.roles = roles;
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
     }
 
     @Override

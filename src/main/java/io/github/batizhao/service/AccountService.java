@@ -10,4 +10,6 @@ public interface AccountService {
 
 	Account findByUsername(String username);
 
+	Iterable<Account> findAll();
+
 }

@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author batizhao
@@ -18,10 +17,10 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-    @RequestMapping("/account")
+    @RequestMapping("account")
     public String index(Model model){
-        Account account = accountService.findByUsername("admin");
-        model.addAttribute("account", account);
-        return "index";
+        Iterable<Account> accounts = accountService.findAll();
+        model.addAttribute("accounts", accounts);
+        return "account/index";
     }
 }

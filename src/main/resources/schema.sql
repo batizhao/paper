@@ -7,6 +7,7 @@ CREATE TABLE `account` (
   `username` varchar(64) NOT NULL COMMENT '用户名',
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '用户姓名',
   `roles` varchar(255) NOT NULL COMMENT '用户角色',
+  `time` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `username` (`username`)

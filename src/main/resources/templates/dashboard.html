@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="layout">
+
+<head>
+    <title>工作台</title>
+</head>
+
+<body>
+
+<ul layout:fragment="breadcrumbs">
+    <li>
+        <i class="ace-icon fa fa-home home-icon"></i>
+        <a th:href="@{/dashboard}">工作台</a>
+    </li>
+
+    <li class="active">首页</li>
+</ul>
+
+<h1 layout:fragment="page-header">
+    工作台
+</h1>
+
+<ul layout:fragment="nav">
+    <li class="active">
+        <a th:href="@{/dashboard}">
+            <i class="menu-icon fa fa-tachometer"></i>
+            <span class="menu-text"> 工作台 </span>
+        </a>
+
+        <b class="arrow"></b>
+    </li>
+
+    <li class="">
+        <a href="#" class="dropdown-toggle">
+            <i class="menu-icon fa fa-desktop"></i>
+                <span class="menu-text">
+                    成绩管理
+                </span>
+
+            <b class="arrow fa fa-angle-down"></b>
+        </a>
+
+        <b class="arrow"></b>
+
+        <ul class="submenu">
+            <li class="">
+                <a th:href="@{/account}">
+                    <i class="menu-icon fa fa-caret-right"></i>
+                    个人
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+
+            <li class="">
+                <a th:href="@{/role}">
+                    <i class="menu-icon fa fa-caret-right"></i>
+                    排名
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+
+            <li class="">
+                <a th:href="@{/role}">
+                    <i class="menu-icon fa fa-caret-right"></i>
+                    录入
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+        </ul>
+    </li>
+
+    <li class="">
+        <a href="#" class="dropdown-toggle">
+            <i class="menu-icon fa fa-file-o"></i>
+                <span class="menu-text">
+                    系统管理
+                </span>
+
+            <b class="arrow fa fa-angle-down"></b>
+        </a>
+
+        <b class="arrow"></b>
+
+        <ul class="submenu">
+            <li class="">
+                <a th:href="@{/account}">
+                    <i class="menu-icon fa fa-caret-right"></i>
+                    用户
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+
+            <li class="">
+                <a th:href="@{/role}">
+                    <i class="menu-icon fa fa-caret-right"></i>
+                    角色
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+
+            <li class="">
+                <a th:href="@{/course}">
+                    <i class="menu-icon fa fa-caret-right"></i>
+                    课程
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+        </ul>
+    </li>
+</ul>
+
+<div layout:fragment="content" class="alert alert-block alert-success">
+    <button type="button" class="close" data-dismiss="alert">
+        <i class="ace-icon fa fa-times"></i>
+    </button>
+
+    <i class="ace-icon fa fa-check green"></i>
+
+    欢迎登录
+    <strong class="green">
+        学生成绩管理系统
+        <small>(v1.0)</small>。
+    </strong>
+</div>
+</body>
+</html>
