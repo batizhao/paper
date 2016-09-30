@@ -31,11 +31,14 @@ public class ShiroConfiguration {
         factoryBean.setSecurityManager(securityManager());
         factoryBean.setSuccessUrl("/dashboard");
         factoryBean.setLoginUrl("/login");
+        factoryBean.setUnauthorizedUrl("/403");
 
         Map<String, String> filterChainDefinitionManager = new LinkedHashMap<String, String>();
         filterChainDefinitionManager.put("/dashboard/**", "authc");
-        filterChainDefinitionManager.put("/account/**", "authc");
-        filterChainDefinitionManager.put("/role/**", "authc");
+        filterChainDefinitionManager.put("/account/**", "authc,roles[administrator]");
+        filterChainDefinitionManager.put("/role/**", "authc,roles[administrator]");
+        filterChainDefinitionManager.put("/course/**", "authc,roles[administrator]");
+        filterChainDefinitionManager.put("/score/**", "authc");
         factoryBean.setFilterChainDefinitionMap(filterChainDefinitionManager);
         return factoryBean;
     }

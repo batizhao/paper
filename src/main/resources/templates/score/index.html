@@ -5,7 +5,7 @@
       layout:decorator="layout">
 
 <head>
-    <title>工作台</title>
+    <title>个人</title>
 </head>
 
 <body>
@@ -16,15 +16,19 @@
         <a th:href="@{/dashboard}">工作台</a>
     </li>
 
-    <li class="active">首页</li>
+    <li class="active">成绩管理</li>
 </ul>
 
 <h1 layout:fragment="page-header">
-    工作台
+    个人
+    <small>
+        <i class="ace-icon fa fa-angle-double-right"></i>
+        列表
+    </small>
 </h1>
 
 <ul layout:fragment="nav">
-    <li class="active">
+    <li class="">
         <a th:href="@{/dashboard}">
             <i class="menu-icon fa fa-tachometer"></i>
             <span class="menu-text"> 工作台 </span>
@@ -33,7 +37,7 @@
         <b class="arrow"></b>
     </li>
 
-    <li shiro:lacksRole="administrator" class="">
+    <li class="active open">
         <a href="#" class="dropdown-toggle">
             <i class="menu-icon fa fa-desktop"></i>
                 <span class="menu-text">
@@ -46,7 +50,7 @@
         <b class="arrow"></b>
 
         <ul class="submenu">
-            <li shiro:hasRole="student" class="">
+            <li shiro:hasRole="student" class="active">
                 <a th:href="@{/score}">
                     <i class="menu-icon fa fa-caret-right"></i>
                     个人
@@ -74,62 +78,29 @@
             </li>
         </ul>
     </li>
-
-    <li shiro:hasRole="administrator" class="">
-        <a href="#" class="dropdown-toggle">
-            <i class="menu-icon fa fa-file-o"></i>
-                <span class="menu-text">
-                    系统管理
-                </span>
-
-            <b class="arrow fa fa-angle-down"></b>
-        </a>
-
-        <b class="arrow"></b>
-
-        <ul class="submenu">
-            <li class="">
-                <a th:href="@{/account}">
-                    <i class="menu-icon fa fa-caret-right"></i>
-                    用户
-                </a>
-
-                <b class="arrow"></b>
-            </li>
-
-            <li class="">
-                <a th:href="@{/role}">
-                    <i class="menu-icon fa fa-caret-right"></i>
-                    角色
-                </a>
-
-                <b class="arrow"></b>
-            </li>
-
-            <li class="">
-                <a th:href="@{/course}">
-                    <i class="menu-icon fa fa-caret-right"></i>
-                    课程
-                </a>
-
-                <b class="arrow"></b>
-            </li>
-        </ul>
-    </li>
 </ul>
 
-<div layout:fragment="content" class="alert alert-block alert-success">
-    <button type="button" class="close" data-dismiss="alert">
-        <i class="ace-icon fa fa-times"></i>
-    </button>
-
-    <i class="ace-icon fa fa-check green"></i>
-
-    欢迎登录
-    <strong class="green">
-        学生成绩管理系统
-        <small>(v1.0)</small>。
-    </strong>
+<div layout:fragment="content">
+    <div class="col-xs-12">
+        <table id="role-table" class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>课程</th>
+                <th width="20%">得分</th>
+                <th width="20%">录入时间</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr th:each="score : ${scores}">
+                    <td>
+                        <a th:text="${score.course}"></a>
+                    </td>
+                    <td th:text="${score.score}"></td>
+                    <td th:text="${score.time}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 </body>
 </html>

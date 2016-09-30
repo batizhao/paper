@@ -10,7 +10,6 @@ import java.util.Date;
  * @since 2016/9/28
  */
 @Entity
-//@Table(name = "account")
 public class Account {
 
     @Id

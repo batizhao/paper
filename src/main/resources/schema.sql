@@ -1,4 +1,5 @@
 DROP TABLE if EXISTS account;
+DROP TABLE if EXISTS score;
 
 CREATE TABLE `account` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户ID',
@@ -11,4 +12,13 @@ CREATE TABLE `account` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `username` (`username`)
-)
+);
+
+CREATE TABLE `score` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '分数ID',
+  `account_id` int(11) NOT NULL COMMENT '用户ID',
+  `course` varchar(255) NOT NULL COMMENT '课程名称',
+  `score` int(11) NOT NULL COMMENT '分数',
+  `time` datetime NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+);
