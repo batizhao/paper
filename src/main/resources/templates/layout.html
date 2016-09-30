@@ -13,21 +13,24 @@
     <!-- bootstrap & fontawesome -->
     <link rel="stylesheet" th:href="@{ace/assets/css/bootstrap.css}"/>
     <link rel="stylesheet" th:href="@{ace/assets/css/font-awesome.css}"/>
+    <link rel="stylesheet" th:href="@{ace/assets/css/jquery.gritter.css}" />
 
     <!-- text fonts -->
     <link rel="stylesheet" th:href="@{ace/assets/css/ace-fonts.css}"/>
 
     <!-- ace styles -->
-    <link rel="stylesheet" th:href="@{ace/assets/css/ace.css}"/>
+    <link rel="stylesheet" th:href="@{ace/assets/css/ace.css}" class="ace-main-stylesheet" id="main-ace-style"/>
 
     <!--[if lte IE 9]>
-    <link rel="stylesheet" th:href="@{ace/assets/css/ace-part2.css}"/>
+    <link rel="stylesheet" th:href="@{ace/assets/css/ace-part2.css}" class="ace-main-stylesheet"/>
     <![endif]-->
     <link rel="stylesheet" th:href="@{ace/assets/css/ace-rtl.css}"/>
 
     <!--[if lte IE 9]>
     <link rel="stylesheet" th:href="@{ace/assets/css/ace-ie.css}"/>
     <![endif]-->
+
+    <link rel="stylesheet" th:href="@{app/app.css}"/>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 
@@ -144,5 +147,7 @@
 <script th:src="@{ace/assets/js/ace-extra.min.js}"></script>
 <script th:src="@{ace/assets/js/ace-elements.min.js}"></script>
 <script th:src="@{ace/assets/js/ace.min.js}"></script>
+<script th:src="@{app/app.js}"></script>
+<script layout:fragment="script"></script>
 </body>
 </html>

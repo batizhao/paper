@@ -12,4 +12,11 @@ public interface AccountService {
 
 	Iterable<Account> findAll();
 
+	Account save(Account account);
+
+	Account findOne(Long id);
+
+	Account update(Account account);
+
+	void delete(Long id);
 }

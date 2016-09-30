@@ -71,7 +71,7 @@ public class ShiroConfiguration {
 
     @Bean(name = "credentialsMatcher")
     public HashedCredentialsMatcher credentialsMatcher() {
-        HashedCredentialsMatcher matcher = new HashedCredentialsMatcher("MD5");
+        HashedCredentialsMatcher matcher = new HashedCredentialsMatcher("SHA-1");
         matcher.setHashIterations(1);
         return matcher;
     }
