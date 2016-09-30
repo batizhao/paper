@@ -1,6 +1,9 @@
 package io.github.batizhao.service;
 
 import io.github.batizhao.domain.Score;
+import io.github.batizhao.dto.ScoreDto;
+
+import java.util.List;
 
 /**
  * @author batizhao
@@ -10,7 +13,7 @@ public interface ScoreService {
 
 	Iterable<Score> findByAccountId();
 
-	Iterable<Score> findAll();
+	List<ScoreDto> sumRanking();
 
 	Score save(Score Score);
 

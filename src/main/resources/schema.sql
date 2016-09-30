@@ -17,6 +17,7 @@ CREATE TABLE `account` (
 CREATE TABLE `score` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '分数ID',
   `account_id` int(11) NOT NULL COMMENT '用户ID',
+  `account_name` varchar(255) NOT NULL COMMENT '用户姓名',
   `course` varchar(255) NOT NULL COMMENT '课程名称',
   `score` int(11) NOT NULL COMMENT '分数',
   `time` datetime NOT NULL COMMENT '创建时间',

@@ -1,12 +1,15 @@
 package io.github.batizhao.web;
 
 import io.github.batizhao.domain.Score;
+import io.github.batizhao.dto.ScoreDto;
 import io.github.batizhao.service.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
 
 /**
  * @author batizhao
@@ -24,5 +27,12 @@ public class ScoreController {
         Iterable<Score> scores = scoreService.findByAccountId();
         model.addAttribute("scores", scores);
         return "score/index";
+    }
+
+    @RequestMapping(value = "sort", method = RequestMethod.GET)
+    public String sort(Model model){
+        List<ScoreDto> scores = scoreService.sumRanking();
+        model.addAttribute("scores", scores);
+        return "score/sort";
     }
 }

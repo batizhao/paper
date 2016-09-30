@@ -18,6 +18,8 @@ public class Score {
 
     @Column(name = "account_id")
     private Long accountId;
+    @Column(name = "account_name")
+    private String accountName;
     private String course;
     private Long score;
     private Date time;
@@ -44,6 +46,14 @@ public class Score {
 
     public void setAccountId(Long accountId) {
         this.accountId = accountId;
+    }
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
     }
 
     public String getCourse() {

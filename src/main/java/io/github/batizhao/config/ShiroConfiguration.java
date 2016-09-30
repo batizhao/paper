@@ -38,7 +38,7 @@ public class ShiroConfiguration {
         filterChainDefinitionManager.put("/account/**", "authc,roles[administrator]");
         filterChainDefinitionManager.put("/role/**", "authc,roles[administrator]");
         filterChainDefinitionManager.put("/course/**", "authc,roles[administrator]");
-        filterChainDefinitionManager.put("/score/**", "authc");
+        filterChainDefinitionManager.put("/total/**", "authc");
         factoryBean.setFilterChainDefinitionMap(filterChainDefinitionManager);
         return factoryBean;
     }

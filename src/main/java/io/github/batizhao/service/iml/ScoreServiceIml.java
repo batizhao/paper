@@ -2,6 +2,7 @@ package io.github.batizhao.service.iml;
 
 import io.github.batizhao.domain.Account;
 import io.github.batizhao.domain.Score;
+import io.github.batizhao.dto.ScoreDto;
 import io.github.batizhao.repository.ScoreRepository;
 import io.github.batizhao.service.ScoreService;
 import org.apache.shiro.SecurityUtils;
@@ -27,8 +28,8 @@ public class ScoreServiceIml implements ScoreService {
     }
 
     @Override
-    public Iterable<Score> findAll() {
-        return scoreRepository.findAll();
+    public List<ScoreDto> sumRanking() {
+        return scoreRepository.sumRanking();
     }
 
     @Override
