@@ -15,11 +15,13 @@ public interface ScoreService {
 
 	List<ScoreDto> sumRanking();
 
-	Score save(Score Score);
+	Score save(Score score);
 
 	Score findOne(Long id);
 
-	Score update(Score Score);
+	Score update(Score score);
 
 	void delete(Long id);
+
+	Iterable<Score> finAll();
 }

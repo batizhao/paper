@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author batizhao
@@ -57,5 +58,10 @@ public class AccountServiceIml implements AccountService {
     @Override
     public void delete(Long id) {
         accountRepository.delete(id);
+    }
+
+    @Override
+    public Iterable<Account> findByRoles(String role) {
+        return accountRepository.findByRoles(role);
     }
 }

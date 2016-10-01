@@ -20,7 +20,10 @@ public class Score {
     private Long accountId;
     @Column(name = "account_name")
     private String accountName;
-    private String course;
+    @Column(name = "course_id")
+    private Long courseId;
+    @Column(name = "course_name")
+    private String courseName;
     private Long score;
     private Date time;
 
@@ -56,12 +59,20 @@ public class Score {
         this.accountName = accountName;
     }
 
-    public String getCourse() {
-        return course;
+    public Long getCourseId() {
+        return courseId;
     }
 
-    public void setCourse(String course) {
-        this.course = course;
+    public void setCourseId(Long courseId) {
+        this.courseId = courseId;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
     }
 
     public Long getScore() {
@@ -84,4 +95,6 @@ public class Score {
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
+
+
 }

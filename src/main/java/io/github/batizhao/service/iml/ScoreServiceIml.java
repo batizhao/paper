@@ -1,9 +1,12 @@
 package io.github.batizhao.service.iml;
 
 import io.github.batizhao.domain.Account;
+import io.github.batizhao.domain.Course;
 import io.github.batizhao.domain.Score;
 import io.github.batizhao.dto.ScoreDto;
 import io.github.batizhao.repository.ScoreRepository;
+import io.github.batizhao.service.AccountService;
+import io.github.batizhao.service.CourseService;
 import io.github.batizhao.service.ScoreService;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,12 @@ public class ScoreServiceIml implements ScoreService {
     @Autowired
     ScoreRepository scoreRepository;
 
+    @Autowired
+    AccountService accountService;
+
+    @Autowired
+    CourseService courseService;
+
     @Override
     public Iterable<Score> findByAccountId() {
         Account account = (Account) SecurityUtils.getSubject().getPrincipal();
@@ -33,22 +42,31 @@ public class ScoreServiceIml implements ScoreService {
     }
 
     @Override
-    public Score save(Score Score) {
-        return null;
+    public Score save(Score score) {
+        Account account = accountService.findOne(score.getAccountId());
+        score.setAccountName(account.getName());
+        Course course = courseService.findOne(score.getCourseId());
+        score.setCourseName(course.getName());
+        return scoreRepository.save(score);
     }
 
     @Override
     public Score findOne(Long id) {
-        return null;
+        return scoreRepository.findOne(id);
     }
 
     @Override
-    public Score update(Score Score) {
-        return null;
+    public Score update(Score score) {
+        return scoreRepository.save(score);
     }
 
     @Override
     public void delete(Long id) {
+        scoreRepository.delete(id);
+    }
 
+    @Override
+    public Iterable<Score> finAll() {
+        return scoreRepository.findAll();
     }
 }
