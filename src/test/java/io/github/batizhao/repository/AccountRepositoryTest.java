@@ -1,6 +1,5 @@
 package io.github.batizhao.repository;
 
-import com.sun.istack.NotNull;
 import io.github.batizhao.domain.Account;
 import org.hamcrest.collection.IsIterableWithSize;
 import org.junit.Test;
