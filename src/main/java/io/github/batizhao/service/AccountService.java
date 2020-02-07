@@ -2,7 +2,7 @@ package io.github.batizhao.service;
 
 import io.github.batizhao.domain.Account;
 
-import java.util.List;
+import java.util.Optional;
 
 /**
  * @author batizhao
@@ -16,11 +16,12 @@ public interface AccountService {
 
 	Account save(Account account);
 
-	Account findOne(Long id);
+	Optional<Account> findOne(Long id);
 
 	Account update(Account account);
 
-	void delete(Long id);
+//	void delete(Long id);
 
 	Iterable<Account> findByRoles(String role);
+
 }
