@@ -20,7 +20,7 @@ public interface AccountService {
 
 	Account update(Account account);
 
-//	void delete(Long id);
+	void delete(Long id);
 
 	Iterable<Account> findByRoles(String role);
 

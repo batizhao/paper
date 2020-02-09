@@ -28,7 +28,7 @@ public class AccountRepositoryTest extends BaseRepositoryTest {
 
         assertThat(account.getEmail(), equalTo("batizhao@qq.com"));
         assertThat(account, hasProperty("password", equalTo("7c4a8d09ca3762af61e59520943dc26494f8941b")));
-        assertThat(account.getName(), containsString("管理员"));
+        assertThat(account.getName(), containsString("管理"));
     }
 
     @Test

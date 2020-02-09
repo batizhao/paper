@@ -46,10 +46,10 @@ public class AccountServiceIml implements AccountService {
         return accountRepository.save(account);
     }
 
-//    @Override
-//    public void delete(Long id) {
-//        accountRepository.deleteById(id);
-//    }
+    @Override
+    public void delete(Long id) {
+        accountRepository.deleteById(id);
+    }
 
     @Override
     public Iterable<Account> findByRoles(String role) {

@@ -2,12 +2,15 @@
 
 这是一个 Spring Boot 下的单元测试演示项目。
 
-测试框架使用 JUnit4 和 Hamcrest2。
+测试框架使用 JUnit4、Mockito 和 Hamcrest2。
 
 ## 环境
 
 * MySQL8
 * JDK8
+* JUnit4
+* Hamcrest2
+* Mockito
 
 ## 注意事项
 * 在启动之前，需要创建 paper 数据库（root/password）。
@@ -18,5 +21,5 @@
 
 ## 目标
 
-* 增加 service、controller 的单元测试
+* 增加 controller 的单元测试
 * 增加 liquibase 接管数据库管理
