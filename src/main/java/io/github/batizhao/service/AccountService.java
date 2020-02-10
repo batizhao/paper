@@ -14,9 +14,9 @@ public interface AccountService {
 
 	Iterable<Account> findAll();
 
-	Account save(Account account);
-
 	Optional<Account> findOne(Long id);
+
+	Account save(Account account);
 
 	Account update(Account account);
 

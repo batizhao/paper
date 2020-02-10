@@ -18,11 +18,27 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
+    @GetMapping("/{username}")
+    public Account findByUsername(@PathVariable String username) {
+        Account account = accountService.findByUsername(username);
+        return account;
+    }
+
     @GetMapping
-    public Iterable<Account> index(){
+    public Iterable<Account> findAll() {
         Iterable<Account> accounts = accountService.findAll();
-        System.out.println(accounts.toString());
         return accounts;
+    }
+
+    @PostMapping
+    public Account doSaveOrUpdate(@RequestBody Account request_account) {
+        Account account;
+        if (request_account.getId() != null) {
+            account = accountService.update(request_account);
+        } else {
+            account = accountService.save(request_account);
+        }
+        return account;
     }
 
 }

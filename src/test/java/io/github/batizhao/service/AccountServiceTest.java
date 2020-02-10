@@ -68,10 +68,11 @@ public class AccountServiceTest {
 
     @Test
     public void whenUserName_thenAccountShouldBeFound() {
-        Mockito.when(accountRepository.findByUsername("zhangsan"))
+        String username = "zhangsan";
+
+        Mockito.when(accountRepository.findByUsername(username))
                 .thenReturn(accountData.iterator().next());
 
-        String username = "zhangsan";
         Account account = accountService.findByUsername(username);
 
         assertThat(account.getUsername(), equalTo(username));
@@ -100,6 +101,17 @@ public class AccountServiceTest {
     }
 
     @Test
+    public void testFindOne() {
+        Mockito.when(accountRepository.findById(1L))
+                .thenReturn(Optional.ofNullable(accountData.iterator().next()));
+
+        Optional<Account> account = accountService.findOne(1L);
+
+        assertThat(account.get().getUsername(), equalTo("zhangsan"));
+        assertThat(account.get().getEmail(), equalTo("zhangsan@gmail.com"));
+    }
+
+    @Test
     public void testSave() {
         Account account_test_data = Account.builder().email("zhaoliu@gmail.com").username("zhaoliu").build();
 
@@ -113,17 +125,6 @@ public class AccountServiceTest {
 
         assertThat(account_return_data, notNullValue());
         assertThat(account_return_data.getEmail(), equalTo("zhaoliu@gmail.com"));
-    }
-
-    @Test
-    public void testFindOne() {
-        Mockito.when(accountRepository.findById(1L))
-                .thenReturn(Optional.ofNullable(accountData.iterator().next()));
-
-        Optional<Account> account = accountService.findOne(1L);
-
-        assertThat(account.get().getUsername(), equalTo("zhangsan"));
-        assertThat(account.get().getEmail(), equalTo("zhangsan@gmail.com"));
     }
 
     @Test

@@ -30,14 +30,14 @@ public class AccountServiceIml implements AccountService {
     }
 
     @Override
-    public Account save(Account account) {
-        account.setTime(new Date());
-        return accountRepository.save(account);
+    public Optional<Account> findOne(Long id) {
+        return accountRepository.findById(id);
     }
 
     @Override
-    public Optional<Account> findOne(Long id) {
-        return accountRepository.findById(id);
+    public Account save(Account account) {
+        account.setTime(new Date());
+        return accountRepository.save(account);
     }
 
     @Override
