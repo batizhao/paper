@@ -21,5 +21,5 @@
 
 ## 目标
 
-* 增加 controller 的单元测试
+* 集成测试
 * 增加 liquibase 接管数据库管理

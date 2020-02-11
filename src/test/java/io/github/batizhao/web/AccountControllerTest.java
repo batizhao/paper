@@ -17,11 +17,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.text.StringContainsInOrder.stringContainsInOrder;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -71,19 +74,21 @@ public class AccountControllerTest {
                 .andExpect(content().string(containsString(username)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("zhangsan@gmail.com"));
 
+        Mockito.verify(accountService).findByUsername(Mockito.any());
     }
 
     @Test
     public void whenGetAccounts_thenReturnJsonArray() throws Exception {
-
         Mockito.when(accountService.findAll()).thenReturn(accountData);
 
-        mvc.perform(get("/account"))
+        mvc.perform(get("/account/index"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(stringContainsInOrder("zhangsan", "lisi", "wangwu")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(3)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].username", equalTo("zhangsan")));
+
+        Mockito.verify(accountService).findAll();
     }
 
     @Test
@@ -103,6 +108,8 @@ public class AccountControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(username)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(email));
+
+        Mockito.verify(accountService).save(Mockito.any());
     }
 
     @Test
@@ -121,6 +128,65 @@ public class AccountControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(username)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(email));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(username));
+
+        Mockito.verify(accountService).update(Mockito.any());
+    }
+
+
+    /**
+     * 删除成功的情况
+     * @throws Exception
+     */
+    @Test
+    public void whenDeleteAccount_thenReturnTrue() throws Exception {
+        doNothing().when(accountService).delete(Mockito.anyLong());
+
+        mvc.perform(delete("/account/{id}", 1L))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"));
+
+        Mockito.verify(accountService).delete(1L);
+    }
+
+    /**
+     * 删除失败的情况
+     * @throws Exception
+     */
+    @Test
+    public void whenDeleteAccount_thenReturnFalse() throws Exception {
+        doThrow(new RuntimeException("This is not expected to be invoked"))
+                .when(accountService).delete(Mockito.anyLong());
+
+        mvc.perform(delete("/account/{id}", 1L))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string("false"));
+
+        Mockito.verify(accountService).delete(1L);
+    }
+
+    @Test
+    public void whenGetAccountsByRoles_thenReturnJsonArray() throws Exception {
+        String role = "admin";
+
+        //对数据集进行条件过滤
+        doAnswer(invocation -> {
+            Object arg0 = invocation.getArgument(0);
+
+            accountList = accountList.stream()
+                    .filter(p -> p.getRoles().equals(arg0)).collect(Collectors.toList());
+
+            return accountList;
+        }).when(accountService).findByRoles(role);
+
+        mvc.perform(get("/account/role").param("role", role))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].username", equalTo("zhangsan")));
+
+        Mockito.verify(accountService).findByRoles(role);
     }
 }
