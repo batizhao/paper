@@ -12,19 +12,20 @@
 * Hamcrest2
 * Mockito
 * JaCoCo
+* Liquibase
 
 ## 注意事项
 * 在启动之前，需要创建 paper 数据库（root/password）。
-* 这里没有使用单独的数据库做单元测试，直接调用开发、测试库，所以如果是重要数据，要注意测试脏数据的回滚（在测试用例中使用 @Transactional），或者自己恢复。
+* 没有使用单独的数据库做单元测试，直接调用开发、测试库，所以如果是重要数据，要注意测试脏数据的回滚（在测试用例中使用 @Transactional），或者自己恢复。
 * 也可以使用单独的内存数据库做单元测试。
 * 数据在每次启动时会自动清除再初始化（spring.datasource.initialization-mode=always）。
-* 为了省事，这里使用的 JPA，测试方法和 MyBatis 没什么区别。
+* 为了省事，使用的 JPA，测试方法和 MyBatis 没什么区别。
 * 在 DAO、Service、Controller 层都实现了单元测试，类名以 UnitTest 结尾。每层会 Mock 所有依赖。
 * 在 Controller 层实现了集成测试，类名以 IntegrationTest 结尾。在启动测试时，会实例化所有上下文。
 
 ## 测试报告
 
-这里使用 JaCoCo 生成测试报告，实际使用中，可以集成到 Sonar 质量检查中。
+使用 JaCoCo 生成测试报告，实际使用中，可以集成到 Sonar 质量检查中。
 
 ### 本地查看
 
@@ -41,7 +42,3 @@
 Rule violated for package ***: lines covered ratio is 0.8, but expected minimum is 0.9
 ```
 如果小于 minimum 预设值（这里是 90%），会显示上边的错误，构建失败。
-
-## 目标
-
-* 增加 liquibase 接管数据库管理
