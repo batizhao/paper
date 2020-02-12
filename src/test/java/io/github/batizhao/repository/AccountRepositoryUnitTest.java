@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.*;
  * @author batizhao
  * @since 2020-02-07
  */
-public class AccountRepositoryTest extends BaseRepositoryTest {
+public class AccountRepositoryUnitTest extends BaseRepositoryUnitTest {
 
     @Autowired
     private AccountRepository accountRepository;

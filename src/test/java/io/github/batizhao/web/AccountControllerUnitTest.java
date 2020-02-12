@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(AccountController.class)
-public class AccountControllerTest {
+public class AccountControllerUnitTest {
 
     @Autowired
     private MockMvc mvc;

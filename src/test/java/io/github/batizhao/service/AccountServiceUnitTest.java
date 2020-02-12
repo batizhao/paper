@@ -28,7 +28,7 @@ import static org.mockito.Mockito.doAnswer;
  * @since 2020-02-08
  */
 @RunWith(SpringRunner.class)
-public class AccountServiceTest {
+public class AccountServiceUnitTest {
 
     /**
      * Spring Boot provides @TestConfiguration annotation that can be used on classes in src/test/java
