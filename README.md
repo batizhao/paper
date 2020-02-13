@@ -8,8 +8,13 @@
 
 JaCoCo 不支持接口，所以 JPA DAO 没有被统计进去。
 
+> 在 ut 分支使用了 h2 内存数据库，可以最快捷的体验完整测试用例。
+>
+> 在 master 上使用了 MySQL8，方便演示 Liquibase，但是需要先创建 paper 数据库。
+
 ## 环境
 
+* MySQL8
 * JDK8
 * JUnit4
 * Hamcrest2
