@@ -13,7 +13,6 @@
 ## 环境
 
 * MySQL8
-* MySQL8
 * JDK8
 * JUnit4
 * Hamcrest2
@@ -22,6 +21,8 @@
 
 * 在 DAO、Service、Controller 层都实现了单元测试，类名以 UnitTest 结尾。
 * 在每层都会使用 Mockito 隔所有依赖。
+* 在 ut 分支使用了 h2 内存数据库，直接运行 *mvn test* 即可，可以最快捷的体验完整测试用例。
+* 在 master 上使用了 MySQL8，方便演示 Liquibase，但是需要先创建 paper 数据库。
 
 ## 集成测试
 
@@ -32,9 +33,7 @@
 
 使用 JaCoCo 生成测试报告，实际使用中，可以集成到 Sonar 质量检查中。
 
-* JaCoCo 不支持接口，所以 JPA DAO 没有被统计进去。
-* 在 ut 分支使用了 h2 内存数据库，直接运行以下命令即可，可以最快捷的体验完整测试用例。
-* 在 master 上使用了 MySQL8，方便演示 Liquibase，但是需要先创建 paper 数据库。
+> JaCoCo 不支持接口，所以 JPA DAO 没有被统计进去。
 
 ### 本地查看
 
@@ -58,17 +57,17 @@ Rule violated for package ***: lines covered ratio is 0.8, but expected minimum 
 
 ToDoList：规范
 
-##打包标记
+## 打包标记
 
 使用 git-commit-id-plugin 插件，在打包时和项目启动后都可以核对打包时间戳和 git_commit_id。
 
 具体内容可以看这个提交 [4bc02d5](https://github.com/batizhao/paper/commit/4bc02d56f08484bf1ab564797b347dd0b4862da6) 。
 
-包名示例：paper-1.0-4bc02d5-20200214T100207Z.jar
+包名示例：paper-1.0-4bc02d5-20200214T100709Z.jar
 
 > 项目名称-版本号-git_commit_id-打包的时间戳，通过 pom.finalName 定制。
 
-项目启动后，可以使用 curl http://localhost:8080/actuator/info 核对打包时间戳和 Git 相关的信息。
+项目启动后，可以核对打包时间戳和 Git 相关的信息。
 
 ```shell
 # curl http://localhost:8080/actuator/info                                                          
@@ -76,12 +75,12 @@ ToDoList：规范
   "app" : {
     "name" : "paper",
     "version" : "1.0",
-    "build_time" : "20200214T094752Z"
+    "build_time" : "20200214T101154Z"
   },
   "git" : {
     "commit" : {
-      "time" : "20200213T155239Z",
-      "id" : "2d21333"
+      "time" : "20200214T101043Z",
+      "id" : "f406348"
     },
     "branch" : "master"
   }
