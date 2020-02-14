@@ -1,30 +1,40 @@
 # Paper  ![](https://img.shields.io/badge/build-passing-brightgreen) ![](https://img.shields.io/badge/coverage-100%25-green)
 
-这是一个 Spring Boot 下的单元测试演示项目。
+这是一个 Spring Boot 演示项目。主要目标：
 
-在 DAO、Service、Controller 层都实现了单元测试，类名以 UnitTest 结尾。每层会 Mock 所有依赖。
+* 单元测试
+* 集成测试
+* 测试报告
 
-在 Controller 层实现了集成测试，类名以 IntegrationTest 结尾。在启动测试时，会实例化所有上下文。
+* 数据库版本管理
+* 打包标记
 
-JaCoCo 不支持接口，所以 JPA DAO 没有被统计进去。
-
-> 在 ut 分支使用了 h2 内存数据库，可以最快捷的体验完整测试用例。
->
-> 在 master 上使用了 MySQL8，方便演示 Liquibase，但是需要先创建 paper 数据库。
 
 ## 环境
 
 * MySQL8
+* MySQL8
 * JDK8
 * JUnit4
 * Hamcrest2
-* Mockito
-* JaCoCo
-* Liquibase
+
+## 单元测试
+
+* 在 DAO、Service、Controller 层都实现了单元测试，类名以 UnitTest 结尾。
+* 在每层都会使用 Mockito 隔所有依赖。
+
+## 集成测试
+
+* 在 Controller 层实现了集成测试，类名以 IntegrationTest 结尾。
+* 在启动测试时，会实例化所有上下文。
 
 ## 测试报告
 
 使用 JaCoCo 生成测试报告，实际使用中，可以集成到 Sonar 质量检查中。
+
+* JaCoCo 不支持接口，所以 JPA DAO 没有被统计进去。
+* 在 ut 分支使用了 h2 内存数据库，直接运行以下命令即可，可以最快捷的体验完整测试用例。
+* 在 master 上使用了 MySQL8，方便演示 Liquibase，但是需要先创建 paper 数据库。
 
 ### 本地查看
 
@@ -41,3 +51,42 @@ JaCoCo 不支持接口，所以 JPA DAO 没有被统计进去。
 Rule violated for package ***: lines covered ratio is 0.8, but expected minimum is 0.9
 ```
 如果小于 minimum 预设值（这里是 90%），会显示上边的错误，构建失败。
+
+## 数据库版本管理
+
+使用 Liquibase 对数据库版本进行管理。
+
+ToDoList：规范
+
+##打包标记
+
+使用 git-commit-id-plugin 插件，在打包时和项目启动后都可以核对打包时间戳和 git_commit_id。
+
+具体内容可以看这个提交 [4bc02d5](https://github.com/batizhao/paper/commit/4bc02d56f08484bf1ab564797b347dd0b4862da6) 。
+
+包名示例：paper-1.0-4bc02d5-20200214T100207Z.jar
+
+> 项目名称-版本号-git_commit_id-打包的时间戳，通过 pom.finalName 定制。
+
+项目启动后，可以使用 curl http://localhost:8080/actuator/info 核对打包时间戳和 Git 相关的信息。
+
+```shell
+# curl http://localhost:8080/actuator/info                                                          
+{
+  "app" : {
+    "name" : "paper",
+    "version" : "1.0",
+    "build_time" : "20200214T094752Z"
+  },
+  "git" : {
+    "commit" : {
+      "time" : "20200213T155239Z",
+      "id" : "2d21333"
+    },
+    "branch" : "master"
+  }
+}
+```
+
+
+
