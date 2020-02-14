@@ -29,6 +29,10 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
@@ -56,6 +60,8 @@
 	</dependencies>
 
 	<build>
+		<finalName>${project.artifactId}-${project.version}-${git.commit.id.abbrev}-${git.build.time}</finalName>
+
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -68,6 +74,13 @@
 				<configuration>
 					<changeLogFile>src/main/resources/db/changelog-master.xml</changeLogFile>
 					<propertyFile>src/main/resources/db/liquibase.properties</propertyFile>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<configuration>
+					<dateFormat>yyyyMMdd'T'HHmmss'Z'</dateFormat>
 				</configuration>
 			</plugin>
 			<plugin>
