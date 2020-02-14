@@ -18,7 +18,7 @@
 ## 单元测试
 
 * 在 DAO、Service、Controller 层都实现了单元测试，类名以 UnitTest 结尾。
-* 在每层都会使用 Mockito 隔所有依赖。
+* 在每层都会使用 Mockito 隔离所有依赖。
 * 在 ut 分支使用了 h2 内存数据库，直接运行 *mvn test* 即可，可以最快捷的体验完整测试用例。
 * 在 master 上使用了 MySQL8，方便演示 Liquibase，但是需要先创建 paper 数据库。
 
