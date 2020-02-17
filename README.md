@@ -53,7 +53,69 @@ Rule violated for package ***: lines covered ratio is 0.8, but expected minimum 
 
 使用 Liquibase 对数据库版本进行管理。
 
-ToDoList：规范
+### Maven 插件常用命令
+
+生成 changelog（需要指定 outputChangeLogFile 属性），默认不包括 data（通过 diffTypes 控制）
+
+```shell
+# mvn liquibase:generateChangeLog
+```
+
+执行 ChangeSet 升级数据库
+
+```shell
+# mvn liquibase:update
+```
+
+在当前版本打一个 Tag
+
+```shell
+# mvn liquibase:tag -Dliquibase.tag=v1.0
+```
+
+回滚到这个 Tag 
+
+```shell
+# mvn liquibase:rollback -Dliquibase.rollbackTag=v1.0
+```
+
+生成 *v1.0* 以后的 Rollback SQL
+
+```shell
+# mvn liquibase:rollbackSQL -Dliquibase.rollbackTag=v1.0
+```
+
+回滚 *2020-02-17* 的数据库操作
+
+```shell
+# mvn liquibase:rollback -Dliquibase.rollbackDate=2020-02-17
+```
+
+### 基本规范
+
+* 每个模块使用自己的 Liquibase 管理（考虑 DATABASECHANGELOG 是否要独立）
+* Liquibase change log 主文件目录 *src/main/resources/db/changelog-master.xml*
+* 在 db 下建立子目录 changelogs，每个版本建立一个 *changelog-版本号.xml*，如 changelog-1.0.xml
+
+```
+.
+├── src/main/resources/db
+│   ├── changelogs                                            
+│   │   ├── changelog-1.0.xml                                  
+│   │   ├── changelog-1.1.xml
+│   │   ├── changelog-1.2.xml
+│   ├── changelog-master.xml
+│   ├── liquibase.properties
+```
+
+* 在 *changelog-master.xml* 中引入目录 *includeAll path="db/changelogs/"* 或者单个文件。
+* 避免对每个 ChangeSet 做多件事情，以避免失败的自动提交语句使数据库处于意外状态。
+* ChangeSet id 使用 *事务描述-年月日-序号*，如 *CreateTableUser-20200214-001, InsertUser-20200214-002*
+* ChangeSet 必须填写 *author*
+* 所有表，列要加 *remarks* 进行注释
+* 严禁修改已经执行过的 ChangeSet 
+* 建议为每个 ChangeSet 编写 Rollback，虽然有些 Rollback 会自动生成，但最好自己控制其行为
+* 每个版本结束打一个 Tag
 
 ## 打包标记
 

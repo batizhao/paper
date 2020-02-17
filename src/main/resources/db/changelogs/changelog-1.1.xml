@@ -1,0 +1,85 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="InsertTableAccount-20200213-001" author="batizhao">
+        <insert tableName="account">
+            <column name="id" valueNumeric="1"/>
+            <column name="email" value="batizhao@qq.com"/>
+            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
+            <column name="username" value="admin"/>
+            <column name="name" value="系统管理员"/>
+            <column name="roles" value="administrator"/>
+            <column name="time" value="2016-09-29 10:00:00"/>
+        </insert>
+        <insert tableName="account">
+            <column name="id" valueNumeric="2"/>
+            <column name="email" value="zhangsan@qq.com"/>
+            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
+            <column name="username" value="zhangsan"/>
+            <column name="name" value="张老师"/>
+            <column name="roles" value="teacher"/>
+            <column name="time" value="2016-09-29 10:00:00"/>
+        </insert>
+        <insert tableName="account">
+            <column name="id" valueNumeric="3"/>
+            <column name="email" value="lisi@qq.com"/>
+            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
+            <column name="username" value="lisi"/>
+            <column name="name" value="李老师"/>
+            <column name="roles" value="teacher"/>
+            <column name="time" value="2016-09-29 10:00:00"/>
+        </insert>
+        <insert tableName="account">
+            <column name="id" valueNumeric="4"/>
+            <column name="email" value="wangwu@qq.com"/>
+            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
+            <column name="username" value="wangwu"/>
+            <column name="name" value="王五"/>
+            <column name="roles" value="student"/>
+            <column name="time" value="2016-09-29 10:00:00"/>
+        </insert>
+        <insert tableName="account">
+            <column name="id" valueNumeric="5"/>
+            <column name="email" value="zhaoliu@qq.com"/>
+            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
+            <column name="username" value="zhaoliu"/>
+            <column name="name" value="赵六"/>
+            <column name="roles" value="student"/>
+            <column name="time" value="2016-09-29 10:00:00"/>
+        </insert>
+        <insert tableName="account">
+            <column name="id" valueNumeric="6"/>
+            <column name="email" value="sunxingzhe@qq.com"/>
+            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
+            <column name="username" value="sunxingzhe"/>
+            <column name="name" value="孙行者"/>
+            <column name="roles" value="student"/>
+            <column name="time" value="2016-09-29 10:00:00"/>
+        </insert>
+        <insert tableName="account">
+            <column name="id" valueNumeric="7"/>
+            <column name="email" value="zhexingsun@qq.com"/>
+            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
+            <column name="username" value="zhexingsun"/>
+            <column name="name" value="者行孙"/>
+            <column name="roles" value="student"/>
+            <column name="time" value="2016-09-29 10:00:00"/>
+        </insert>
+        <insert tableName="account">
+            <column name="id" valueNumeric="8"/>
+            <column name="email" value="xingzhesun@qq.com"/>
+            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
+            <column name="username" value="xingzhesun"/>
+            <column name="name" value="行者孙"/>
+            <column name="roles" value="student"/>
+            <column name="time" value="2016-09-29 10:00:00"/>
+        </insert>
+        <rollback>
+            delete from account;
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

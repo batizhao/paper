@@ -4,103 +4,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="T100-20200212-001" author="batizhao">
-        <createTable tableName="account" remarks="用户表">
-            <column name="id" type="bigint" remarks="用户ID,主键" autoIncrement="true">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_account_id" />
-            </column>
-            <column name="email" type="varchar(100)" remarks="用户邮箱">
-                <constraints nullable="false" unique="true" uniqueConstraintName="uc_account_email"/>
-            </column>
-            <column name="password" type="varchar(100)" remarks="用户密码">
-                <constraints nullable="false"/>
-            </column>
-            <column name="username" type="varchar(100)" remarks="用户名">
-                <constraints nullable="false" unique="true" uniqueConstraintName="uc_account_username"/>
-            </column>
-            <column name="name" type="varchar(100)" remarks="用户姓名">
-                <constraints nullable="false"/>
-            </column>
-            <column name="roles" type="varchar(100)" remarks="用户角色">
-                <constraints nullable="false"/>
-            </column>
-            <column name="time" type="datetime" remarks="创建时间">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
+<!--    <includeAll path="db/changelogs/" relativeToChangelogFile="false"/>-->
 
-        <insert tableName="account">
-            <column name="id" valueNumeric="1"/>
-            <column name="email" value="batizhao@qq.com"/>
-            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
-            <column name="username" value="admin"/>
-            <column name="name" value="系统管理员"/>
-            <column name="roles" value="administrator"/>
-            <column name="time" value="2016-09-29 10:00:00"/>
-        </insert>
-        <insert tableName="account">
-            <column name="id" valueNumeric="2"/>
-            <column name="email" value="zhangsan@qq.com"/>
-            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
-            <column name="username" value="zhangsan"/>
-            <column name="name" value="张老师"/>
-            <column name="roles" value="teacher"/>
-            <column name="time" value="2016-09-29 10:00:00"/>
-        </insert>
-        <insert tableName="account">
-            <column name="id" valueNumeric="3"/>
-            <column name="email" value="lisi@qq.com"/>
-            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
-            <column name="username" value="lisi"/>
-            <column name="name" value="李老师"/>
-            <column name="roles" value="teacher"/>
-            <column name="time" value="2016-09-29 10:00:00"/>
-        </insert>
-        <insert tableName="account">
-            <column name="id" valueNumeric="4"/>
-            <column name="email" value="wangwu@qq.com"/>
-            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
-            <column name="username" value="wangwu"/>
-            <column name="name" value="王五"/>
-            <column name="roles" value="student"/>
-            <column name="time" value="2016-09-29 10:00:00"/>
-        </insert>
-        <insert tableName="account">
-            <column name="id" valueNumeric="5"/>
-            <column name="email" value="zhaoliu@qq.com"/>
-            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
-            <column name="username" value="zhaoliu"/>
-            <column name="name" value="赵六"/>
-            <column name="roles" value="student"/>
-            <column name="time" value="2016-09-29 10:00:00"/>
-        </insert>
-        <insert tableName="account">
-            <column name="id" valueNumeric="6"/>
-            <column name="email" value="sunxingzhe@qq.com"/>
-            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
-            <column name="username" value="sunxingzhe"/>
-            <column name="name" value="孙行者"/>
-            <column name="roles" value="student"/>
-            <column name="time" value="2016-09-29 10:00:00"/>
-        </insert>
-        <insert tableName="account">
-            <column name="id" valueNumeric="7"/>
-            <column name="email" value="zhexingsun@qq.com"/>
-            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
-            <column name="username" value="zhexingsun"/>
-            <column name="name" value="者行孙"/>
-            <column name="roles" value="student"/>
-            <column name="time" value="2016-09-29 10:00:00"/>
-        </insert>
-        <insert tableName="account">
-            <column name="id" valueNumeric="8"/>
-            <column name="email" value="xingzhesun@qq.com"/>
-            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
-            <column name="username" value="xingzhesun"/>
-            <column name="name" value="行者孙"/>
-            <column name="roles" value="student"/>
-            <column name="time" value="2016-09-29 10:00:00"/>
-        </insert>
-    </changeSet>
+    <include file="db/changelogs/changelog-1.0.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelogs/changelog-1.1.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelogs/changelog-1.2.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>

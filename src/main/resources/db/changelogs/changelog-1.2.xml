@@ -1,0 +1,21 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="CreateTableCategory-20200214-001" author="batizhao">
+        <createTable tableName="category" remarks="项目类型表">
+            <column name="id" type="varchar(64)" remarks="项目类型id">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)" remarks="类目类型名称"/>
+            <column name="status" type="int(11)" remarks="状态。1正常，2删除"/>
+            <column name="remark" type="varchar(255)" remarks="备注"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="category"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
