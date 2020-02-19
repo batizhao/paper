@@ -1,0 +1,33 @@
+info:
+  app:
+    build_time: '@git.build.time@'
+    name: '@project.artifactId@'
+    version: '@project.version@'
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: password
+    url: jdbc:mysql://localhost:3306/paper?useUnicode=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+    username: root
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  jackson:
+    time-zone: Asia/Shanghai
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+      indent_output: true
+  jpa:
+    open-in-view: false
+    show-sql: true
+  liquibase:
+    change-log: classpath:db/changelog-master.xml
+
+management:
+  endpoint:
+    info:
+      enabled: true
+
