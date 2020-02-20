@@ -71,15 +71,15 @@ public class AccountRepositoryUnitTest extends BaseRepositoryUnitTest {
     @Test
     @Transactional
     public void testUpdateUserById() {
-        String username = "xingzhesun";
+        String username = "wangwu";
 
         //先确定记录存在
         Account account = accountRepository.findByUsername(username);
         assertThat(account, notNullValue());
-        assertThat(account.getEmail(), equalTo("xingzhesun@qq.com"));
+        assertThat(account.getEmail(), equalTo("wangwu@qq.com"));
 
         //修改
-        int result = accountRepository.updateUserById(8L, "行者孙222");
+        int result = accountRepository.updateUserById(4L, "王五");
 
         //确认修改成功
         assertThat(result, is(1));

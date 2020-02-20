@@ -3,6 +3,7 @@ package io.github.batizhao.web;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.batizhao.PaperApplication;
 import io.github.batizhao.domain.Account;
+import io.github.batizhao.exception.ResultEnum;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,8 @@ public class AccountControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("zhangsan@qq.com"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.email").value("zhangsan@qq.com"));
     }
 
     @Test
@@ -56,8 +58,9 @@ public class AccountControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(8)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].username", equalTo("admin")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data", hasSize(8)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].username", equalTo("admin")));
     }
 
     /**
@@ -77,8 +80,9 @@ public class AccountControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("daxia"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("daxia@gmail.com"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.username").value("daxia"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.email").value("daxia@gmail.com"));
     }
 
     @Test
@@ -93,17 +97,29 @@ public class AccountControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("daxia"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("daxia@gmail.com"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.username").value("daxia"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.email").value("daxia@gmail.com"));
     }
 
     @Test
     @Transactional
-    public void whenDeleteAccount_thenReturnTrue() throws Exception {
+    public void whenDeleteAccount_thenSuccess() throws Exception {
         mvc.perform(delete("/account/{id}", 1L))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("true"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()));
+    }
+
+    @Test
+    public void whenDeleteAccount_thenReturnFail() throws Exception {
+        mvc.perform(delete("/account/{id}", -1000L))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.NOT_FOUNT_RESOURCE.getCode()));
     }
 
     @Test
@@ -111,8 +127,10 @@ public class AccountControllerIntegrationTest {
         mvc.perform(get("/account/role").param("role", "teacher"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(2)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].username", equalTo("zhangsan")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].email", equalTo("lisi@qq.com")));;
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data", hasSize(2)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].username", equalTo("zhangsan")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[1].email", equalTo("lisi@qq.com")));
     }
 }

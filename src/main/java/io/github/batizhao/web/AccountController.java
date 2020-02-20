@@ -1,6 +1,8 @@
 package io.github.batizhao.web;
 
 import io.github.batizhao.domain.Account;
+import io.github.batizhao.exception.ResponseInfo;
+import io.github.batizhao.exception.ResultEnum;
 import io.github.batizhao.service.AccountService;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -25,47 +27,51 @@ public class AccountController {
             @ApiImplicitParam(name = "username", value = "用户名", required = true, paramType = "path", dataType = "String")
     })
     @GetMapping("{username}")
-    public Account findByUsername(@PathVariable String username) {
+    public ResponseInfo findByUsername(@PathVariable String username) {
         Account account = accountService.findByUsername(username);
-        return account;
+        return new ResponseInfo().setCode(ResultEnum.SUCCESS.getCode())
+                .setMessage(ResultEnum.SUCCESS.getMessage())
+                .setData(account);
     }
 
     @ApiOperation(value = "列表查询", notes = "返回所有的用户")
     @GetMapping("index")
-    public Iterable<Account> findAll() {
+    public ResponseInfo findAll() {
         Iterable<Account> accounts = accountService.findAll();
-        return accounts;
+        return new ResponseInfo().setCode(ResultEnum.SUCCESS.getCode())
+                .setMessage(ResultEnum.SUCCESS.getMessage())
+                .setData(accounts);
     }
 
     @ApiOperation(value = "添加或修改用户", notes = "根据是否有ID判断是添加还是修改")
     @PostMapping
-    public Account doSaveOrUpdate(@ApiParam(value = "用户", required = true) @RequestBody Account request_account) {
+    public ResponseInfo doSaveOrUpdate(@ApiParam(value = "用户", required = true) @RequestBody Account request_account) {
         Account account;
         if (request_account.getId() != null) {
             account = accountService.update(request_account);
         } else {
             account = accountService.save(request_account);
         }
-        return account;
+        return new ResponseInfo().setCode(ResultEnum.SUCCESS.getCode())
+                .setMessage(ResultEnum.SUCCESS.getMessage())
+                .setData(account);
     }
 
     @ApiOperation(value = "删除用户", notes = "根据用户ID删除用户")
     @DeleteMapping("{id:\\d+}")
-    public boolean doDelete(@ApiParam(value = "用户ID", required = true) @PathVariable Long id) {
-        try {
-            accountService.delete(id);
-            return true;
-        } catch (Exception e) {
-            log.error("Delete Account.id = {} failed.", id, e);
-            return false;
-        }
+    public ResponseInfo doDelete(@ApiParam(value = "用户ID", required = true) @PathVariable Long id) {
+        accountService.delete(id);
+        return new ResponseInfo().setCode(ResultEnum.SUCCESS.getCode())
+                .setMessage(ResultEnum.SUCCESS.getMessage());
     }
 
     @ApiOperation(value = "根据角色查询用户", notes = "返回用户列表")
     @GetMapping("role")
-    public Iterable<Account> doFindByRoles(@ApiParam(value = "用户角色", required = true) @RequestParam("role") String role) {
+    public ResponseInfo doFindByRoles(@ApiParam(value = "用户角色", required = true) @RequestParam("role") String role) {
         Iterable<Account> accounts = accountService.findByRoles(role);
-        return accounts;
+        return new ResponseInfo().setCode(ResultEnum.SUCCESS.getCode())
+                .setMessage(ResultEnum.SUCCESS.getMessage())
+                .setData(accounts);
     }
 
 }

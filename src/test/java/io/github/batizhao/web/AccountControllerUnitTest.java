@@ -2,6 +2,7 @@ package io.github.batizhao.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.batizhao.domain.Account;
+import io.github.batizhao.exception.ResultEnum;
 import io.github.batizhao.service.AccountService;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,8 +72,9 @@ public class AccountControllerUnitTest {
         mvc.perform(get("/account/{username}", username))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(username)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("zhangsan@gmail.com"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.email").value("zhangsan@gmail.com"));
 
         Mockito.verify(accountService).findByUsername(Mockito.any());
     }
@@ -84,9 +86,11 @@ public class AccountControllerUnitTest {
         mvc.perform(get("/account/index"))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
                 .andExpect(content().string(stringContainsInOrder("zhangsan", "lisi", "wangwu")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(3)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].username", equalTo("zhangsan")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data", hasSize(3)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].username", equalTo("zhangsan")));
 
         Mockito.verify(accountService).findAll();
     }
@@ -106,8 +110,10 @@ public class AccountControllerUnitTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
                 .andExpect(content().string(containsString(username)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(email));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.email").value(email));
 
         Mockito.verify(accountService).save(Mockito.any());
     }
@@ -127,8 +133,10 @@ public class AccountControllerUnitTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
                 .andExpect(content().string(containsString(username)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(username));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.username").value(username));
 
         Mockito.verify(accountService).update(Mockito.any());
     }
@@ -145,7 +153,8 @@ public class AccountControllerUnitTest {
         mvc.perform(delete("/account/{id}", 1L))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("true"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()));
 
         Mockito.verify(accountService).delete(1L);
     }
@@ -159,12 +168,11 @@ public class AccountControllerUnitTest {
         doThrow(new RuntimeException("This is not expected to be invoked"))
                 .when(accountService).delete(Mockito.anyLong());
 
-        mvc.perform(delete("/account/{id}", 1L))
+        mvc.perform(delete("/account/{id}", -1000L))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("false"));
-
-        Mockito.verify(accountService).delete(1L);
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.NOT_FOUNT_RESOURCE.getCode()));
     }
 
     @Test
@@ -184,8 +192,10 @@ public class AccountControllerUnitTest {
         mvc.perform(get("/account/role").param("role", role))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].username", equalTo("zhangsan")));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data", hasSize(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].username", equalTo("zhangsan")));
 
         Mockito.verify(accountService).findByRoles(role);
     }
