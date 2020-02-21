@@ -7,6 +7,7 @@
 * 测试报告
 * 数据库版本管理
 * 打包标记
+* 统一异常处理
 
 ## 环境
 
@@ -26,6 +27,7 @@
 
 * 在 Controller 层实现了集成测试，类名以 IntegrationTest 结尾。
 * 在启动测试时，会实例化所有上下文。
+* 还可以在 YApi 中跑集成测试（通过 Swagger 同步接口），并且在其中查看测试报告。
 
 ## 测试报告
 
@@ -147,5 +149,16 @@ Rule violated for package ***: lines covered ratio is 0.8, but expected minimum 
 }
 ```
 
+## 统一异常处理
 
+* 不在业务代码中捕获任何异常, 全部交由 *@RestControllerAdvice* 来处理
+* *@RestControllerAdvice* 不会处理 404 异常，所以必须要单独处理，示例 *ErrorHandler*
+* 统一处理返回类型和消息，示例 *ResponseInfo* 和 *ResultEnum*
+* 所有返回 HTTP status code 都是 200，通过 ResponseInfo.code 区分信息类型
+
+参考：
+
+* [Spring-boot 异常处理](https://www.jianshu.com/p/332f42fbabe2)
+* [SpringBoot 全局异常处理详解](http://www.mydlq.club/article/35/)
+* [Spring Boot统一异常处理最佳实践](https://juejin.im/post/5c3ea92a5188251e101598aa)
 

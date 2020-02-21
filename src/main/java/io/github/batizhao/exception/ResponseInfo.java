@@ -11,13 +11,19 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class ResponseInfo {
+public class ResponseInfo<T> {
 
-    /** 错误码 */
+    /**
+     * 错误码
+     */
     private Integer code;
-    /** 错误信息 */
+    /**
+     * 错误信息
+     */
     private String message = "";
-    /** 返回结果 */
-    private Object data = "";
+    /**
+     * 返回结果
+     */
+    private T data;
 
 }

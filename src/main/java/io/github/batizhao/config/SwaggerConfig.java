@@ -24,7 +24,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("io.github.batizhao"))
+                .apis(RequestHandlerSelectors.basePackage("io.github.batizhao.web"))
                 .paths(PathSelectors.any())
                 .build();
     }

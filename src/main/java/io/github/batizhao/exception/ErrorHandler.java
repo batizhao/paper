@@ -10,7 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Handle 400,500 error
+ * Handle 404 error
+ * <p>
+ * 由于在 SpringBoot 中已经对 404 这类错误进行了处理，这里我们想要对这些错误进行自己的处理就必须按下方式来进行改造，
+ * 继承 ErrorController 类，重写其中的 getErrorPath() 方法，指定发送这类错误时跳转的路径。这里对这个路径进行重写，
+ * 然后再写一个 Controller 处理器，返回错误信息。
  *
  * @author batizhao
  * @since 2020-02-20
@@ -25,21 +29,17 @@ public class ErrorHandler implements ErrorController {
     }
 
     @GetMapping("/error")
-    @ResponseStatus(code = HttpStatus.NOT_FOUND)
-    public ResponseInfo handleError(HttpServletRequest request) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseInfo<String> handleError(HttpServletRequest request) {
         Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
-        Exception exception = (Exception) request.getAttribute("javax.servlet.error.exception");
-        log.error("ErrorHandler statusCode: {}, exception: {}", statusCode, exception);
+        String requestUri = (String) request.getAttribute("javax.servlet.error.request_uri");
+        String exception_type = (String) request.getAttribute("javax.servlet.error.exception_type");
 
-        // 如果等于 400 错误，则抛出设定的枚举类中的错误信息
-        if (HttpStatus.NOT_FOUND.value() == statusCode) {
-            return new ResponseInfo().setMessage(ResultEnum.NOT_FOUNT_RESOURCE.getMessage())
-                    .setCode(ResultEnum.NOT_FOUNT_RESOURCE.getCode());
-        }
+        log.error("ErrorHandler statusCode: {}, requestUri: {}, exception_type: {}",
+                statusCode, requestUri, exception_type);
 
-        // 返回默认错误
-        return new ResponseInfo().setMessage(ResultEnum.UNKNOWN_ERROR.getMessage())
-                .setCode(ResultEnum.UNKNOWN_ERROR.getCode());
+        return new ResponseInfo<String>().setMessage(ResultEnum.NOT_FOUNT_RESOURCE.getMessage())
+                .setCode(ResultEnum.NOT_FOUNT_RESOURCE.getCode())
+                .setData(requestUri);
     }
-
 }

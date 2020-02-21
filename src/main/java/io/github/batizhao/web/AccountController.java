@@ -27,32 +27,32 @@ public class AccountController {
             @ApiImplicitParam(name = "username", value = "用户名", required = true, paramType = "path", dataType = "String")
     })
     @GetMapping("{username}")
-    public ResponseInfo findByUsername(@PathVariable String username) {
+    public ResponseInfo<Account> findByUsername(@PathVariable String username) {
         Account account = accountService.findByUsername(username);
-        return new ResponseInfo().setCode(ResultEnum.SUCCESS.getCode())
+        return new ResponseInfo<Account>().setCode(ResultEnum.SUCCESS.getCode())
                 .setMessage(ResultEnum.SUCCESS.getMessage())
                 .setData(account);
     }
 
     @ApiOperation(value = "列表查询", notes = "返回所有的用户")
     @GetMapping("index")
-    public ResponseInfo findAll() {
+    public ResponseInfo<Iterable<Account>> findAll() {
         Iterable<Account> accounts = accountService.findAll();
-        return new ResponseInfo().setCode(ResultEnum.SUCCESS.getCode())
+        return new ResponseInfo<Iterable<Account>>().setCode(ResultEnum.SUCCESS.getCode())
                 .setMessage(ResultEnum.SUCCESS.getMessage())
                 .setData(accounts);
     }
 
     @ApiOperation(value = "添加或修改用户", notes = "根据是否有ID判断是添加还是修改")
     @PostMapping
-    public ResponseInfo doSaveOrUpdate(@ApiParam(value = "用户", required = true) @RequestBody Account request_account) {
+    public ResponseInfo<Account> doSaveOrUpdate(@ApiParam(value = "用户", required = true) @RequestBody Account request_account) {
         Account account;
         if (request_account.getId() != null) {
             account = accountService.update(request_account);
         } else {
             account = accountService.save(request_account);
         }
-        return new ResponseInfo().setCode(ResultEnum.SUCCESS.getCode())
+        return new ResponseInfo<Account>().setCode(ResultEnum.SUCCESS.getCode())
                 .setMessage(ResultEnum.SUCCESS.getMessage())
                 .setData(account);
     }
@@ -67,9 +67,9 @@ public class AccountController {
 
     @ApiOperation(value = "根据角色查询用户", notes = "返回用户列表")
     @GetMapping("role")
-    public ResponseInfo doFindByRoles(@ApiParam(value = "用户角色", required = true) @RequestParam("role") String role) {
+    public ResponseInfo<Iterable<Account>> doFindByRoles(@ApiParam(value = "用户角色", required = true) @RequestParam("role") String role) {
         Iterable<Account> accounts = accountService.findByRoles(role);
-        return new ResponseInfo().setCode(ResultEnum.SUCCESS.getCode())
+        return new ResponseInfo<Iterable<Account>>().setCode(ResultEnum.SUCCESS.getCode())
                 .setMessage(ResultEnum.SUCCESS.getMessage())
                 .setData(accounts);
     }
