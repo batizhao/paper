@@ -38,8 +38,8 @@ public class ErrorHandler implements ErrorController {
         log.error("ErrorHandler statusCode: {}, requestUri: {}, exception_type: {}",
                 statusCode, requestUri, exception_type);
 
-        return new ResponseInfo<String>().setMessage(ResultEnum.NOT_FOUNT_RESOURCE.getMessage())
-                .setCode(ResultEnum.NOT_FOUNT_RESOURCE.getCode())
+        return new ResponseInfo<String>().setMessage(ResultEnum.RESOURCE_NOT_FOUND.getMessage())
+                .setCode(ResultEnum.RESOURCE_NOT_FOUND.getCode())
                 .setData(requestUri);
     }
 }

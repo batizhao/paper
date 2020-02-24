@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 /**
@@ -31,18 +33,24 @@ public class Account {
     public Long id;
 
     @ApiModelProperty(value = "邮箱", example = "zhangsan@qq.com")
+    @NotBlank(message = "email is not blank")
     private String email;
 
     @ApiModelProperty(value = "用户名", example = "zhangsan")
+    @NotBlank(message = "username is not blank")
+    @Size(min = 5)
     private String username;
 
     @ApiModelProperty(value = "姓名", example = "张三")
+    @NotBlank(message = "name is not blank")
     private String name;
 
     @ApiModelProperty(value = "密码")
+    @NotBlank(message = "password is not blank")
     private String password;
 
     @ApiModelProperty(value = "角色", example = "student")
+    @NotBlank(message = "roles is not blank")
     private String roles;
 
     @ApiModelProperty(value = "创建时间", hidden = true)

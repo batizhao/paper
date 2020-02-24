@@ -7,15 +7,16 @@ import io.github.batizhao.service.AccountService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 
+import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,13 +25,13 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.text.StringContainsInOrder.stringContainsInOrder;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willAnswer;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * @author batizhao
@@ -67,32 +68,32 @@ public class AccountControllerUnitTest {
     public void whenGetAccount_thenReturnJson() throws Exception {
         String username = "zhangsan";
 
-        Mockito.when(accountService.findByUsername(username)).thenReturn(accountData.iterator().next());
+        when(accountService.findByUsername(username)).thenReturn(accountData.iterator().next());
 
         mvc.perform(get("/account/{username}", username))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.email").value("zhangsan@gmail.com"));
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data.email").value("zhangsan@gmail.com"));
 
-        Mockito.verify(accountService).findByUsername(Mockito.any());
+        verify(accountService).findByUsername(any());
     }
 
     @Test
     public void whenGetAccounts_thenReturnJsonArray() throws Exception {
-        Mockito.when(accountService.findAll()).thenReturn(accountData);
+        when(accountService.findAll()).thenReturn(accountData);
 
         mvc.perform(get("/account/index"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
                 .andExpect(content().string(stringContainsInOrder("zhangsan", "lisi", "wangwu")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data", hasSize(3)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].username", equalTo("zhangsan")));
+                .andExpect(jsonPath("$.data", hasSize(3)))
+                .andExpect(jsonPath("$.data[0].username", equalTo("zhangsan")));
 
-        Mockito.verify(accountService).findAll();
+        verify(accountService).findAll();
     }
 
     @Test
@@ -101,21 +102,22 @@ public class AccountControllerUnitTest {
         String username = "zhaoliu";
         Account account_test_data = Account.builder().id(1L).email(email).username(username).build();
 
-        Mockito.when(accountService.save(Mockito.any()))
+        when(accountService.save(any()))
                 .thenReturn(account_test_data);
 
-        Account requestBody = Account.builder().email(email).username(username).build();
+        Account requestBody = Account.builder().email(email).username(username)
+                .password("xxx").name("xxx").roles("xxx").build();
         mvc.perform(post("/account")
                 .content(new ObjectMapper().writeValueAsString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
                 .andExpect(content().string(containsString(username)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.email").value(email));
+                .andExpect(jsonPath("$.data.email").value(email));
 
-        Mockito.verify(accountService).save(Mockito.any());
+        verify(accountService).save(any());
     }
 
     @Test
@@ -124,55 +126,68 @@ public class AccountControllerUnitTest {
         String username = "zhaoliu";
         Account account_test_data = Account.builder().id(1L).email(email).username(username).build();
 
-        Mockito.when(accountService.update(Mockito.any()))
+        when(accountService.update(any()))
                 .thenReturn(account_test_data);
 
-        Account requestBody = Account.builder().id(1L).email(email).username(username).build();
+        Account requestBody = Account.builder().id(1L).email(email).username(username)
+                .password("xxx").name("xxx").roles("xxx").build();
         mvc.perform(post("/account")
                 .content(new ObjectMapper().writeValueAsString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
                 .andExpect(content().string(containsString(username)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.username").value(username));
+                .andExpect(jsonPath("$.data.username").value(username));
 
-        Mockito.verify(accountService).update(Mockito.any());
+        verify(accountService).update(any());
     }
 
 
     /**
      * 删除成功的情况
+     *
      * @throws Exception
      */
     @Test
     public void whenDeleteAccount_thenReturnTrue() throws Exception {
-        doNothing().when(accountService).delete(Mockito.anyLong());
+        doNothing().when(accountService).delete(anyLong());
 
         mvc.perform(delete("/account/{id}", 1L))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()));
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()));
 
-        Mockito.verify(accountService).delete(1L);
+        verify(accountService).delete(1L);
     }
 
     /**
-     * 删除失败的情况
+     * Checked exception 要使用 BDDMockito
+     * 这里还有两种情况：
+     *
+     * 1. void 方法只能使用 willAnswer.given 这种形式 stub
+     *     willAnswer(invocation -> {
+     *         throw new HttpMediaTypeNotSupportedException("不支持的类型");
+     *     }).given(xxx).voidmethod();
+     *
+     * 2. 其它情况下，还可以使用
+     *     given(xxx.method()).willAnswer( invocation -> { throw new CheckedException("msg"); });
+     *
      * @throws Exception
      */
     @Test
-    public void whenDeleteAccount_thenReturnFalse() throws Exception {
-        doThrow(new RuntimeException("This is not expected to be invoked"))
-                .when(accountService).delete(Mockito.anyLong());
+    public void whenDeleteAccount_thenReturnFail() throws Exception {
+        willAnswer(invocation -> {
+            throw new HttpMediaTypeNotSupportedException("不支持的类型");
+        }).given(accountService).delete(anyLong());
 
         mvc.perform(delete("/account/{id}", -1000L))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.NOT_FOUNT_RESOURCE.getCode()));
+                .andExpect(jsonPath("$.code").value(ResultEnum.UNKNOWN_ERROR.getCode()));
     }
 
     @Test
@@ -193,10 +208,52 @@ public class AccountControllerUnitTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data", hasSize(1)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].username", equalTo("zhangsan")));
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data", hasSize(1)))
+                .andExpect(jsonPath("$.data[0].username", equalTo("zhangsan")));
 
-        Mockito.verify(accountService).findByRoles(role);
+        verify(accountService).findByRoles(role);
+    }
+
+    /**
+     * Unchecked exception 使用 Mockito 即可
+     * @throws Exception
+     */
+    @Test
+    public void testGetUser_thenReturnNullPointerException() throws Exception {
+        doThrow(NullPointerException.class)
+                .when(accountService)
+                .findAll();
+
+        mvc.perform(get("/account/index"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.UNKNOWN_ERROR.getCode()));
+    }
+
+    @Test
+    public void testGetUser_thenReturnAccessControlException() throws Exception {
+        doThrow(AccessControlException.class)
+                .when(accountService)
+                .findAll();
+
+        mvc.perform(get("/account/index"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.PERMISSION_ERROR.getCode()));
+    }
+
+    @Test
+    public void testGetUser_thenReturnHttpMediaTypeNotAcceptableException() throws Exception {
+        given(accountService.findAll())
+                .willAnswer( invocation -> { throw new HttpMediaTypeNotAcceptableException("不是期望的类型！"); });
+
+        mvc.perform(get("/account/index"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.UNKNOWN_ERROR.getCode()));
     }
 }

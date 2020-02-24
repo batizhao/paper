@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 /**
  * @author batizhao
  * @since 2016/9/28
@@ -45,7 +47,7 @@ public class AccountController {
 
     @ApiOperation(value = "添加或修改用户", notes = "根据是否有ID判断是添加还是修改")
     @PostMapping
-    public ResponseInfo<Account> doSaveOrUpdate(@ApiParam(value = "用户", required = true) @RequestBody Account request_account) {
+    public ResponseInfo<Account> doSaveOrUpdate(@Valid @ApiParam(value = "用户", required = true) @RequestBody Account request_account) {
         Account account;
         if (request_account.getId() != null) {
             account = accountService.update(request_account);

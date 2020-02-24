@@ -3,6 +3,10 @@ package io.github.batizhao.exception;
 /**
  * 定义返回码的枚举类
  *
+ * 返回消息码：两位应用编码（统一编排，通常对应 boot 应用，10-99） + 两位模块编码（00为通用错误） + 两位错误编码（01-99）
+ * 如当前应用编码为10，发生了"缺少请求体"的错误，这是一个通用错误（00），所以是 1000，再加上错误编码（01），最后是 100001
+ * 系统级错误 10
+ *
  * @author batizhao
  * @since 2020-02-20
  */
@@ -11,27 +15,20 @@ public enum ResultEnum {
     /**
      * 成功
      */
-    SUCCESS(1000, "成功"),
+    SUCCESS(0, "ok"),
+
     /**
-     * 未知错误
+     * 系统错误
      */
-    UNKNOWN_ERROR(1001, "未知的错误!"),
+    UNKNOWN_ERROR(100000, "未知的错误！"),
+    PARAMETER_INVALID(100001, "参数不合法！"),
+    PERMISSION_ERROR(100004, "权限不足！"),
+    RESOURCE_NOT_FOUND(100005, "没有找到相关资源！"),
+
     /**
-     * 无法找到资源
+     * 用户模块错误
      */
-    NOT_FOUNT_RESOURCE(1002, "没有找到相关资源!"),
-    /**
-     * 请求参数有误
-     */
-    PARAMETER_ERROR(1003, "请求参数有误!"),
-    /**
-     * 确少必要请求参数异常
-     */
-    PARAMETER_MISSING_ERROR(1004, "确少必要请求参数!"),
-    /**
-     * 确少必要请求参数异常
-     */
-    REQUEST_MISSING_BODY_ERROR(1005, "缺少请求体!");
+    USER_NOT_FOUND(100100, "用户不存在！");
 
     private Integer code;
     private String message;

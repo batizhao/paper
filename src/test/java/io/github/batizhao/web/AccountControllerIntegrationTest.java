@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.transaction.Transactional;
 
@@ -20,8 +19,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * 在集成测试中，不再需要 Mock Bean，对数据进行 Stub，
@@ -48,8 +46,8 @@ public class AccountControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.email").value("zhangsan@qq.com"));
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data.email").value("zhangsan@qq.com"));
     }
 
     @Test
@@ -58,9 +56,9 @@ public class AccountControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data", hasSize(8)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].username", equalTo("admin")));
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data", hasSize(8)))
+                .andExpect(jsonPath("$.data[0].username", equalTo("admin")));
     }
 
     /**
@@ -80,9 +78,27 @@ public class AccountControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.username").value("daxia"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.email").value("daxia@gmail.com"));
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data.username").value("daxia"))
+                .andExpect(jsonPath("$.data.email").value("daxia@gmail.com"));
+    }
+
+    /**
+     * 校验失败的情况
+     * @throws Exception
+     */
+    @Test
+    public void whenSaveAccount_thenValidateFailed() throws Exception {
+        Account requestBody = Account.builder()
+                .name("daxia").email("daxia@gmail.com").build();
+
+        mvc.perform(post("/account")
+                .content(new ObjectMapper().writeValueAsString(requestBody))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.PARAMETER_INVALID.getCode()));
     }
 
     @Test
@@ -98,9 +114,9 @@ public class AccountControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.username").value("daxia"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.email").value("daxia@gmail.com"));
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data.username").value("daxia"))
+                .andExpect(jsonPath("$.data.email").value("daxia@gmail.com"));
     }
 
     @Test
@@ -110,7 +126,7 @@ public class AccountControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()));
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()));
     }
 
     @Test
@@ -119,7 +135,7 @@ public class AccountControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.NOT_FOUNT_RESOURCE.getCode()));
+                .andExpect(jsonPath("$.code").value(ResultEnum.UNKNOWN_ERROR.getCode()));
     }
 
     @Test
@@ -128,9 +144,9 @@ public class AccountControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data", hasSize(2)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].username", equalTo("zhangsan")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data[1].email", equalTo("lisi@qq.com")));
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data", hasSize(2)))
+                .andExpect(jsonPath("$.data[0].username", equalTo("zhangsan")))
+                .andExpect(jsonPath("$.data[1].email", equalTo("lisi@qq.com")));
     }
 }
