@@ -152,13 +152,25 @@ Rule violated for package ***: lines covered ratio is 0.8, but expected minimum 
 ## 统一异常处理
 
 * 不在业务代码中捕获任何异常, 全部交由 *@RestControllerAdvice* 来处理
+
 * *@RestControllerAdvice* 不会处理 404 异常，所以必须要单独处理，示例 *ErrorHandler*
+
 * 统一处理返回类型和消息，示例 *ResponseInfo* 和 *ResultEnum*
+
 * 所有返回 HTTP status code 都是 200，通过 ResponseInfo.code 区分信息类型
 
-参考：
+* Mock checked exception 要使用 BDDMockito，这里还有两种情况：
+  
+  1. void 方法只能使用 willAnswer.given 这种形式 stub
+  ```java
+  willAnswer(invocation -> {
+     throw new HttpMediaTypeNotSupportedException("不支持的类型");
+  }).given(xxx).voidmethod();
+  ```
+  2. 其它情况下，还可以使用
+  ```java
+  given(xxx.method()).willAnswer( invocation -> { throw new CheckedException("msg"); });
+  ```
 
-* [Spring-boot 异常处理](https://www.jianshu.com/p/332f42fbabe2)
-* [SpringBoot 全局异常处理详解](http://www.mydlq.club/article/35/)
-* [Spring Boot统一异常处理最佳实践](https://juejin.im/post/5c3ea92a5188251e101598aa)
+
 

@@ -23,12 +23,14 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class ErrorHandler implements ErrorController {
 
+    private static final String ERROR_PATH = "/error";
+
     @Override
     public String getErrorPath() {
-        return "/error";
+        return ERROR_PATH;
     }
 
-    @GetMapping("/error")
+    @GetMapping(ERROR_PATH)
     @ResponseStatus(HttpStatus.OK)
     public ResponseInfo<String> handleError(HttpServletRequest request) {
         Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");

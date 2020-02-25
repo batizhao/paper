@@ -1,11 +1,14 @@
 package io.github.batizhao.web;
 
+import io.github.batizhao.PaperApplication;
 import io.github.batizhao.exception.ErrorHandler;
 import io.github.batizhao.exception.ResultEnum;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,14 +24,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @since 2020-02-24
  */
 @RunWith(SpringRunner.class)
-@WebMvcTest(ErrorHandler.class)
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.MOCK,
+        classes = PaperApplication.class)
+@AutoConfigureMockMvc
 public class ErrorHandlerIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
 
     @Test
-    public void test404NotFound() throws Exception {
+    public void testErrorPath() throws Exception {
         mvc.perform(get("/error"))
                 .andDo(print())
                 .andExpect(status().isOk())

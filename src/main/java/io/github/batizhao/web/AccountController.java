@@ -7,9 +7,12 @@ import io.github.batizhao.service.AccountService;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 
 /**
  * @author batizhao
@@ -19,6 +22,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("account")
 @Slf4j
+@Validated
 public class AccountController {
 
     @Autowired
@@ -29,7 +33,7 @@ public class AccountController {
             @ApiImplicitParam(name = "username", value = "用户名", required = true, paramType = "path", dataType = "String")
     })
     @GetMapping("{username}")
-    public ResponseInfo<Account> findByUsername(@PathVariable String username) {
+    public ResponseInfo<Account> findByUsername(@PathVariable @Size(min = 4) String username) {
         Account account = accountService.findByUsername(username);
         return new ResponseInfo<Account>().setCode(ResultEnum.SUCCESS.getCode())
                 .setMessage(ResultEnum.SUCCESS.getMessage())
@@ -60,8 +64,8 @@ public class AccountController {
     }
 
     @ApiOperation(value = "删除用户", notes = "根据用户ID删除用户")
-    @DeleteMapping("{id:\\d+}")
-    public ResponseInfo doDelete(@ApiParam(value = "用户ID", required = true) @PathVariable Long id) {
+    @DeleteMapping("{id}")
+    public ResponseInfo doDelete(@ApiParam(value = "用户ID", required = true) @Min(1) @PathVariable Long id) {
         accountService.delete(id);
         return new ResponseInfo().setCode(ResultEnum.SUCCESS.getCode())
                 .setMessage(ResultEnum.SUCCESS.getMessage());
@@ -69,7 +73,8 @@ public class AccountController {
 
     @ApiOperation(value = "根据角色查询用户", notes = "返回用户列表")
     @GetMapping("role")
-    public ResponseInfo<Iterable<Account>> doFindByRoles(@ApiParam(value = "用户角色", required = true) @RequestParam("role") String role) {
+    public ResponseInfo<Iterable<Account>> doFindByRoles(@ApiParam(value = "用户角色", required = true)
+                                                             @RequestParam("role") @Size(min = 4) String role) {
         Iterable<Account> accounts = accountService.findByRoles(role);
         return new ResponseInfo<Iterable<Account>>().setCode(ResultEnum.SUCCESS.getCode())
                 .setMessage(ResultEnum.SUCCESS.getMessage())

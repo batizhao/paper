@@ -22,8 +22,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * 在集成测试中，不再需要 Mock Bean，对数据进行 Stub，
+ * 在集成测试中，不再需要 Mock Bean 和 Stub，
  * 但是需要实例化整个上下文，再对返回数据进行判断
+ * 参数校验相关的测试可以放在集成测试中，因为不需要 Stub Data
  *
  * @author batizhao
  * @since 2020-02-11
@@ -48,6 +49,19 @@ public class AccountControllerIntegrationTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
                 .andExpect(jsonPath("$.data.email").value("zhangsan@qq.com"));
+    }
+
+    /**
+     * Param 或者 PathVariable 校验失败的情况
+     * @throws Exception
+     */
+    @Test
+    public void whenGetAccount_thenValidateFailed() throws Exception {
+        mvc.perform(get("/account/{username}", "xx"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.PARAMETER_INVALID.getCode()));
     }
 
     @Test
@@ -84,7 +98,7 @@ public class AccountControllerIntegrationTest {
     }
 
     /**
-     * 校验失败的情况
+     * RequestBody 校验失败的情况
      * @throws Exception
      */
     @Test
@@ -129,13 +143,17 @@ public class AccountControllerIntegrationTest {
                 .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()));
     }
 
+    /**
+     * 测试参数检验失败的情况
+     * @throws Exception
+     */
     @Test
     public void whenDeleteAccount_thenReturnFail() throws Exception {
         mvc.perform(delete("/account/{id}", -1000L))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(ResultEnum.UNKNOWN_ERROR.getCode()));
+                .andExpect(jsonPath("$.code").value(ResultEnum.PARAMETER_INVALID.getCode()));
     }
 
     @Test

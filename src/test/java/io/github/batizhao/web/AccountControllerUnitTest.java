@@ -13,8 +13,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.HttpMediaTypeNotAcceptableException;
-import org.springframework.web.HttpMediaTypeNotSupportedException;
 
 import java.security.AccessControlException;
 import java.util.ArrayList;
@@ -26,8 +24,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.text.StringContainsInOrder.stringContainsInOrder;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willAnswer;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -94,6 +90,25 @@ public class AccountControllerUnitTest {
                 .andExpect(jsonPath("$.data[0].username", equalTo("zhangsan")));
 
         verify(accountService).findAll();
+    }
+
+    /**
+     * 测试返回 NullPointerException 的情况
+     * 通常情况下不用测试这种类型，这里只是需要模拟 NullPointerException，查看返回数据
+     * Unchecked exception 使用 Mockito 即可
+     * @throws Exception
+     */
+    @Test
+    public void testGetUser_thenReturnNullPointerException() throws Exception {
+        doThrow(NullPointerException.class)
+                .when(accountService)
+                .findAll();
+
+        mvc.perform(get("/account/index"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.UNKNOWN_ERROR.getCode()));
     }
 
     @Test
@@ -163,33 +178,6 @@ public class AccountControllerUnitTest {
         verify(accountService).delete(1L);
     }
 
-    /**
-     * Checked exception 要使用 BDDMockito
-     * 这里还有两种情况：
-     *
-     * 1. void 方法只能使用 willAnswer.given 这种形式 stub
-     *     willAnswer(invocation -> {
-     *         throw new HttpMediaTypeNotSupportedException("不支持的类型");
-     *     }).given(xxx).voidmethod();
-     *
-     * 2. 其它情况下，还可以使用
-     *     given(xxx.method()).willAnswer( invocation -> { throw new CheckedException("msg"); });
-     *
-     * @throws Exception
-     */
-    @Test
-    public void whenDeleteAccount_thenReturnFail() throws Exception {
-        willAnswer(invocation -> {
-            throw new HttpMediaTypeNotSupportedException("不支持的类型");
-        }).given(accountService).delete(anyLong());
-
-        mvc.perform(delete("/account/{id}", -1000L))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(ResultEnum.UNKNOWN_ERROR.getCode()));
-    }
-
     @Test
     public void whenGetAccountsByRoles_thenReturnJsonArray() throws Exception {
         String role = "admin";
@@ -216,22 +204,9 @@ public class AccountControllerUnitTest {
     }
 
     /**
-     * Unchecked exception 使用 Mockito 即可
+     * TODO 增加权限，重新测试这个异常
      * @throws Exception
      */
-    @Test
-    public void testGetUser_thenReturnNullPointerException() throws Exception {
-        doThrow(NullPointerException.class)
-                .when(accountService)
-                .findAll();
-
-        mvc.perform(get("/account/index"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(ResultEnum.UNKNOWN_ERROR.getCode()));
-    }
-
     @Test
     public void testGetUser_thenReturnAccessControlException() throws Exception {
         doThrow(AccessControlException.class)
@@ -243,17 +218,5 @@ public class AccountControllerUnitTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ResultEnum.PERMISSION_ERROR.getCode()));
-    }
-
-    @Test
-    public void testGetUser_thenReturnHttpMediaTypeNotAcceptableException() throws Exception {
-        given(accountService.findAll())
-                .willAnswer( invocation -> { throw new HttpMediaTypeNotAcceptableException("不是期望的类型！"); });
-
-        mvc.perform(get("/account/index"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(ResultEnum.UNKNOWN_ERROR.getCode()));
     }
 }
