@@ -4,24 +4,67 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="CreateTableAccount-20200212-001" author="batizhao">
-        <createTable tableName="account" remarks="用户表">
-            <column name="id" type="bigint" remarks="用户ID,主键" autoIncrement="true">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_account_id" />
+    <changeSet author="batizhao" id="CreateTablePermission-20200225-001">
+        <createTable tableName="permission" remarks="权限表">
+            <column autoIncrement="true" name="id" type="BIGINT" remarks="权限ID,主键">
+                <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="email" type="varchar(100)" remarks="用户邮箱">
-                <constraints nullable="false" unique="true" uniqueConstraintName="uc_account_email"/>
-            </column>
-            <column name="password" type="varchar(100)" remarks="用户密码">
+            <column name="url" type="VARCHAR(255)" remarks="权限URL">
                 <constraints nullable="false"/>
             </column>
-            <column name="username" type="varchar(100)" remarks="用户名">
-                <constraints nullable="false" unique="true" uniqueConstraintName="uc_account_username"/>
+            <column name="name" type="VARCHAR(255)" remarks="权限名">
+                <constraints nullable="false" unique="true"/>
             </column>
-            <column name="name" type="varchar(100)" remarks="用户姓名">
+            <column name="description" type="VARCHAR(255)" remarks="权限描述"/>
+            <column name="pid" type="BIGINT" remarks="权限父ID">
                 <constraints nullable="false"/>
             </column>
-            <column name="roles" type="varchar(100)" remarks="用户角色">
+        </createTable>
+        <rollback>
+            <dropTable tableName="permission"/>
+        </rollback>
+    </changeSet>
+    <changeSet author="batizhao" id="CreateTableRole-20200225-002">
+        <createTable tableName="role" remarks="角色表">
+            <column autoIncrement="true" name="id" type="BIGINT" remarks="角色ID">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)" remarks="角色名称">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="role"/>
+        </rollback>
+    </changeSet>
+    <changeSet author="batizhao" id="CreateTableRolePermission-20200225-003">
+        <createTable tableName="role_permission" remarks="角色权限关联表">
+            <column name="role_id" type="BIGINT" remarks="角色ID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="permission_id" type="BIGINT" remarks="权限ID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="role_permission"/>
+        </rollback>
+    </changeSet>
+    <changeSet author="batizhao" id="CreateTableUser-20200225-004">
+        <createTable tableName="user" remarks="用户表">
+            <column autoIncrement="true" name="id" type="BIGINT" remarks="用户ID">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="username" type="VARCHAR(255)" remarks="用户名">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="VARCHAR(255)" remarks="密码">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(100)" remarks="用户邮箱">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="VARCHAR(100)" remarks="用户姓名">
                 <constraints nullable="false"/>
             </column>
             <column name="time" type="datetime" remarks="创建时间">
@@ -29,8 +72,20 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="account"/>
+            <dropTable tableName="user"/>
         </rollback>
     </changeSet>
-
+    <changeSet author="batizhao" id="CreateTableUserRole-20200225-005">
+        <createTable tableName="user_role" remarks="用户角色关联表">
+            <column name="user_id" type="BIGINT" remarks="用户ID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="BIGINT" remarks="角色ID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="user_role"/>
+        </rollback>
+    </changeSet>
 </databaseChangeLog>
