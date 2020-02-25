@@ -16,7 +16,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     User findByUsername(String username);
 
-    Iterable<User> findByName(String role);
+    Iterable<User> findByName(String name);
 
     /**
      * 这里演示一个事务型的接口

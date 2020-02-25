@@ -66,7 +66,7 @@ public class UserControllerUnitTest {
 
         when(userService.findByUsername(username)).thenReturn(userData.iterator().next());
 
-        mvc.perform(get("/user/{username}", username))
+        mvc.perform(get("/user/username").param("username", username))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -77,10 +77,35 @@ public class UserControllerUnitTest {
     }
 
     @Test
+    public void whenGetUsersByName_thenReturnJsonArray() throws Exception {
+        String name = "张三";
+
+        //对数据集进行条件过滤
+        doAnswer(invocation -> {
+            Object arg0 = invocation.getArgument(0);
+
+            userList = userList.stream()
+                    .filter(p -> p.getName().equals(arg0)).collect(Collectors.toList());
+
+            return userList;
+        }).when(userService).findByName(name);
+
+        mvc.perform(get("/user/name").param("name", name))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data", hasSize(1)))
+                .andExpect(jsonPath("$.data[0].username", equalTo("zhangsan")));
+
+        verify(userService).findByName(name);
+    }
+
+    @Test
     public void whenGetUsers_thenReturnJsonArray() throws Exception {
         when(userService.findAll()).thenReturn(userData);
 
-        mvc.perform(get("/user/index"))
+        mvc.perform(get("/user"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -104,7 +129,7 @@ public class UserControllerUnitTest {
                 .when(userService)
                 .findAll();
 
-        mvc.perform(get("/user/index"))
+        mvc.perform(get("/user"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -178,31 +203,6 @@ public class UserControllerUnitTest {
         verify(userService).delete(1L);
     }
 
-    @Test
-    public void whenGetUsersByName_thenReturnJsonArray() throws Exception {
-        String name = "张三";
-
-        //对数据集进行条件过滤
-        doAnswer(invocation -> {
-            Object arg0 = invocation.getArgument(0);
-
-            userList = userList.stream()
-                    .filter(p -> p.getName().equals(arg0)).collect(Collectors.toList());
-
-            return userList;
-        }).when(userService).findByName(name);
-
-        mvc.perform(get("/user/name").param("name", name))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
-                .andExpect(jsonPath("$.data", hasSize(1)))
-                .andExpect(jsonPath("$.data[0].username", equalTo("zhangsan")));
-
-        verify(userService).findByName(name);
-    }
-
     /**
      * TODO 增加权限，重新测试这个异常
      * @throws Exception
@@ -213,7 +213,7 @@ public class UserControllerUnitTest {
                 .when(userService)
                 .findAll();
 
-        mvc.perform(get("/user/index"))
+        mvc.perform(get("/user"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

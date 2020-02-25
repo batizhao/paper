@@ -28,20 +28,28 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @ApiOperation(value = "获取用户详情", notes = "根据用户名返回用户详情")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "username", value = "用户名", required = true, paramType = "path", dataType = "String")
-    })
-    @GetMapping("{username}")
-    public ResponseInfo<User> findByUsername(@PathVariable @Size(min = 3) String username) {
+    @ApiOperation(value = "根据用户名查询用户", notes = "用户名不重复，返回用户详情")
+    @GetMapping("username")
+    public ResponseInfo<User> findByUsername(@ApiParam(value = "用户名", required = true)
+                                             @RequestParam @Size(min = 3) String username) {
         User user = userService.findByUsername(username);
         return new ResponseInfo<User>().setCode(ResultEnum.SUCCESS.getCode())
                 .setMessage(ResultEnum.SUCCESS.getMessage())
                 .setData(user);
     }
 
+    @ApiOperation(value = "根据姓名查询用户", notes = "有可能重复，所以返回用户列表")
+    @GetMapping("name")
+    public ResponseInfo<Iterable<User>> findByName(@ApiParam(value = "用户姓名", required = true)
+                                                   @RequestParam("name") @Size(min = 2) String name) {
+        Iterable<User> users = userService.findByName(name);
+        return new ResponseInfo<Iterable<User>>().setCode(ResultEnum.SUCCESS.getCode())
+                .setMessage(ResultEnum.SUCCESS.getMessage())
+                .setData(users);
+    }
+
     @ApiOperation(value = "列表查询", notes = "返回所有的用户")
-    @GetMapping("index")
+    @GetMapping
     public ResponseInfo<Iterable<User>> findAll() {
         Iterable<User> users = userService.findAll();
         return new ResponseInfo<Iterable<User>>().setCode(ResultEnum.SUCCESS.getCode())
@@ -70,15 +78,4 @@ public class UserController {
         return new ResponseInfo().setCode(ResultEnum.SUCCESS.getCode())
                 .setMessage(ResultEnum.SUCCESS.getMessage());
     }
-
-    @ApiOperation(value = "根据用户姓名查询用户", notes = "返回用户列表")
-    @GetMapping("name")
-    public ResponseInfo<Iterable<User>> doFindByName(@ApiParam(value = "用户姓名", required = true)
-                                                     @RequestParam("name") @Size(min = 2) String name) {
-        Iterable<User> users = userService.findByName(name);
-        return new ResponseInfo<Iterable<User>>().setCode(ResultEnum.SUCCESS.getCode())
-                .setMessage(ResultEnum.SUCCESS.getMessage())
-                .setData(users);
-    }
-
 }

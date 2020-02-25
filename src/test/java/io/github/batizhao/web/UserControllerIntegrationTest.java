@@ -43,7 +43,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     public void whenGetUser_thenReturnJson() throws Exception {
-        mvc.perform(get("/user/{username}", "bob"))
+        mvc.perform(get("/user/username").param("username", "bob"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -57,7 +57,7 @@ public class UserControllerIntegrationTest {
      */
     @Test
     public void whenGetUser_thenValidateFailed() throws Exception {
-        mvc.perform(get("/user/{username}", "xx"))
+        mvc.perform(get("/user/username").param("username", "xx"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -66,7 +66,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     public void whenGetUsers_thenReturnJsonArray() throws Exception {
-        mvc.perform(get("/user/index"))
+        mvc.perform(get("/user"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
