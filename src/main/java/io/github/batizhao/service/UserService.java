@@ -1,27 +1,20 @@
 package io.github.batizhao.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import io.github.batizhao.domain.User;
 
-import java.util.Optional;
+import java.util.List;
 
 /**
  * @author batizhao
  * @since 2016/9/28
  */
-public interface UserService {
+public interface UserService extends IService<User> {
 
 	User findByUsername(String username);
 
-	Iterable<User> findAll();
+	List<User> findByName(String name);
 
-	Optional<User> findOne(Long id);
-
-	User save(User user);
-
-	User update(User user);
-
-	void delete(Long id);
-
-	Iterable<User> findByName(String name);
+	int deleteByUsername(String username);
 
 }

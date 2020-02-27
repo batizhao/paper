@@ -21,7 +21,7 @@ spring:
     serialization:
       indent_output: true
   jpa:
-    open-in-view: false
+    open-in-view: true
     show-sql: true
   liquibase:
     change-log: classpath:db/changelog-master.xml

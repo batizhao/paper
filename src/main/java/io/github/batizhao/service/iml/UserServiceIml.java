@@ -1,59 +1,59 @@
 package io.github.batizhao.service.iml;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.github.batizhao.domain.Role;
 import io.github.batizhao.domain.User;
-import io.github.batizhao.repository.UserRepository;
+import io.github.batizhao.mapper.RoleMapper;
+import io.github.batizhao.mapper.UserMapper;
 import io.github.batizhao.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.Optional;
+import java.util.List;
 
 /**
  * @author batizhao
  * @since 2016/9/28
  */
 @Service
-public class UserServiceIml implements UserService {
+public class UserServiceIml extends ServiceImpl<UserMapper, User> implements UserService, UserDetailsService {
 
     @Autowired
-    UserRepository userRepository;
+    UserMapper userMapper;
+    @Autowired
+    RoleMapper roleMapper;
 
     @Override
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, username));
     }
 
     @Override
-    public Iterable<User> findAll() {
-        return userRepository.findAll();
+    public List<User> findByName(String name) {
+        return userMapper.selectList(Wrappers.<User>lambdaQuery().eq(User::getName, name));
     }
 
     @Override
-    public Optional<User> findOne(Long id) {
-        return userRepository.findById(id);
+    public int deleteByUsername(String username) {
+        return userMapper.delete(Wrappers.<User>lambdaQuery().eq(User::getUsername, username));
     }
 
     @Override
-    public User save(User user) {
-        user.setTime(new Date());
-        return userRepository.save(user);
-    }
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+        User user = this.findByUsername(userName);
 
-    @Override
-    public User update(User user) {
-        user.setTime(new Date());
-        return userRepository.save(user);
-    }
+        if (user == null) {
+            throw new UsernameNotFoundException(userName);
+        }
 
-    @Override
-    public void delete(Long id) {
-        userRepository.deleteById(id);
-    }
+        List<Role> roles = roleMapper.findRolesByUserId(user.getId());
+        user.setAuthorities(roles);
 
-    @Override
-    public Iterable<User> findByName(String name) {
-        return userRepository.findByName(name);
+        return user;
     }
 
 }

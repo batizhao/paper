@@ -1,12 +1,12 @@
 package io.github.batizhao.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolationException;
-import java.security.AccessControlException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 public class WebExceptionHandler {
 
     @ExceptionHandler
-    public ResponseInfo<String> accessControlExceptionHandler(AccessControlException e) {
-        log.error("AccessControlException", e);
+    public ResponseInfo<String> accessDeniedExceptionHandler(AccessDeniedException e) {
+        log.error("AccessDeniedException", e);
         return new ResponseInfo<String>().setCode(ResultEnum.PERMISSION_ERROR.getCode())
                 .setMessage(ResultEnum.PERMISSION_ERROR.getMessage())
                 .setData(e.getMessage());

@@ -19,21 +19,33 @@
 ## 单元测试
 
 * 在 DAO、Service、Controller 层都实现了单元测试，类名以 UnitTest 结尾。
+
 * 在每层都会使用 Mockito 隔离所有依赖。
+
+* 需要注意的是尽量控制类和配置加载的范围在当前层。在单元测试中不要使用 *@SpringBootTest*，而是分别使用 *@MybatisTest*、*@WebMvcTest*。
+
+  ```
+  在 Spring Security 启用的情况下，如果 Controller 单元测试（使用 @WebMvcTest），隔离 DAO、Service，要注意以下几点：
+  1. post、put、delete 方法要加上 with(csrf())，否则会返回 403
+  2. 单元测试要控制扫描范围，防止 Spring Security Config 自动初始化，尤其是 UserDetailsService 自定义的情况（会加载 Mapper）
+  3. 测试方法要加上 @WithMockUser，否则会返回 401
+  ```
+
 * 在 ut 分支使用了 h2 内存数据库，直接运行 *mvn test* 即可，可以最快捷的体验完整测试用例。
+
 * 在 master 上使用了 MySQL8，方便演示 Liquibase，但是需要先创建 paper 数据库。
 
 ## 集成测试
 
 * 在 Controller 层实现了集成测试，类名以 IntegrationTest 结尾。
-* 在启动测试时，会实例化所有上下文。
+* 在启动测试时，会实例化所有上下文，使用 *@SpringBootTest*。
 * 还可以在 YApi 中跑集成测试（通过 Swagger 同步接口），并且在其中查看测试报告。
 
 ## 测试报告
 
 使用 JaCoCo 生成测试报告，实际使用中，可以集成到 Sonar 质量检查中。
 
-> JaCoCo 不支持接口，所以 JPA DAO 没有被统计进去。
+> JaCoCo 不支持接口，所以 Mapper 接口没有被统计进去。
 
 ### 本地查看
 

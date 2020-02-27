@@ -1,19 +1,14 @@
-package io.github.batizhao.web;
+package io.github.batizhao.web.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.batizhao.PaperApplication;
 import io.github.batizhao.domain.User;
 import io.github.batizhao.exception.ResultEnum;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -22,27 +17,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * 在集成测试中，不再需要 Mock Bean 和 Stub，
- * 但是需要实例化整个上下文，再对返回数据进行判断
- * 参数校验相关的测试可以放在集成测试中，因为不需要 Stub Data
- *
  * @author batizhao
  * @since 2020-02-11
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.MOCK,
-        classes = PaperApplication.class)
-@AutoConfigureMockMvc
-//@TestPropertySource(
-//        locations = "classpath:application-integrationtest.properties")
-public class UserControllerIntegrationTest {
+public class UserControllerIntegrationTest extends BaseControllerIntegrationTest{
 
     @Autowired
     private MockMvc mvc;
 
     @Test
-    public void whenGetUser_thenReturnJson() throws Exception {
+    @WithMockUser(roles={"USER"})
+    public void whenGetUserByUserName_thenReturnJson() throws Exception {
         mvc.perform(get("/user/username").param("username", "bob"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -56,6 +41,7 @@ public class UserControllerIntegrationTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser(roles={"USER"})
     public void whenGetUser_thenValidateFailed() throws Exception {
         mvc.perform(get("/user/username").param("username", "xx"))
                 .andDo(print())
@@ -81,10 +67,11 @@ public class UserControllerIntegrationTest {
      */
     @Test
     @Transactional
+    @WithMockUser(roles={"ADMIN"})
     public void whenSaveUser_thenReturnJson() throws Exception {
-        User requestBody = User.builder()
-                .name("daxia").email("daxia@gmail.com").username("daxia")
-                .password("123456").build();
+        User requestBody = new User()
+                .setName("daxia").setEmail("daxia@gmail.com").setUsername("daxia")
+                .setPassword("123456");
 
         mvc.perform(post("/user")
                 .content(new ObjectMapper().writeValueAsString(requestBody))
@@ -93,8 +80,7 @@ public class UserControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
-                .andExpect(jsonPath("$.data.username").value("daxia"))
-                .andExpect(jsonPath("$.data.email").value("daxia@gmail.com"));
+                .andExpect(jsonPath("$.data").value(true));
     }
 
     /**
@@ -102,9 +88,9 @@ public class UserControllerIntegrationTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser(roles={"ADMIN"})
     public void whenSaveUser_thenValidateFailed() throws Exception {
-        User requestBody = User.builder()
-                .name("daxia").email("daxia@gmail.com").build();
+        User requestBody = new User().setName("daxia").setEmail("daxia@gmail.com");
 
         mvc.perform(post("/user")
                 .content(new ObjectMapper().writeValueAsString(requestBody))
@@ -117,10 +103,11 @@ public class UserControllerIntegrationTest {
 
     @Test
     @Transactional
+    @WithMockUser(roles={"ADMIN"})
     public void whenUpdateUser_thenReturnJson() throws Exception {
-        User requestBody = User.builder()
-                .id(8L).name("daxia").email("daxia@gmail.com").username("daxia")
-                .password("123456").build();
+        User requestBody = new User()
+                .setId(8L).setName("daxia").setEmail("daxia@gmail.com").setUsername("daxia")
+                .setPassword("123456");
 
         mvc.perform(post("/user")
                 .content(new ObjectMapper().writeValueAsString(requestBody))
@@ -129,12 +116,12 @@ public class UserControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
-                .andExpect(jsonPath("$.data.username").value("daxia"))
-                .andExpect(jsonPath("$.data.email").value("daxia@gmail.com"));
+                .andExpect(jsonPath("$.data").value(true));
     }
 
     @Test
     @Transactional
+    @WithMockUser(roles={"ADMIN"})
     public void whenDeleteUser_thenSuccess() throws Exception {
         mvc.perform(delete("/user/{id}", 1L))
                 .andDo(print())
@@ -148,6 +135,7 @@ public class UserControllerIntegrationTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser(roles={"ADMIN"})
     public void whenDeleteUser_thenReturnFail() throws Exception {
         mvc.perform(delete("/user/{id}", -1000L))
                 .andDo(print())

@@ -1,49 +1,60 @@
-package io.github.batizhao.web;
+package io.github.batizhao.web.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.batizhao.domain.User;
 import io.github.batizhao.exception.ResultEnum;
 import io.github.batizhao.service.UserService;
+import io.github.batizhao.web.UserController;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.text.StringContainsInOrder.stringContainsInOrder;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
+ * 注意，在 Spring Security 启用的情况下：
+ * 1. post、put、delete 方法要加上 with(csrf())，否则会返回 403
+ * 2. 单元测试要控制扫描范围，防止 Spring Security Config 自动初始化，尤其是 UserDetailsService 自定义的情况（会加载 Mapper）
+ * 3. 测试方法要加上 @WithMockUser，否则会返回 401
+ *
  * @author batizhao
  * @since 2020-02-10
  */
-@RunWith(SpringRunner.class)
 @WebMvcTest(UserController.class)
-public class UserControllerUnitTest {
+public class UserControllerUnitTest extends BaseControllerUnitTest {
+
+    /**
+     * 控制扫描范围，否则会加载 Security Config，导致 UserDetailsService 实例化
+     */
+    @SpringBootApplication(scanBasePackages = {"io.github.batizhao.web"})
+    static class InnerConfig {}
 
     @Autowired
     private MockMvc mvc;
 
+    /**
+     * 所有实现的接口都要 Mock
+     */
     @MockBean
     private UserService userService;
-
-    private Iterable<User> userData;
 
     private List<User> userList;
 
@@ -53,18 +64,17 @@ public class UserControllerUnitTest {
     @Before
     public void setUp() {
         userList = new ArrayList<>();
-        userList.add(User.builder().id(1L).email("zhangsan@gmail.com").username("zhangsan").name("张三").build());
-        userList.add(User.builder().id(2L).email("lisi@gmail.com").username("lisi").name("李四").build());
-        userList.add(User.builder().id(3L).email("wangwu@gmail.com").username("wangwu").name("王五").build());
-
-        userData = userList;
+        userList.add(new User().setId(1L).setEmail("zhangsan@gmail.com").setUsername("zhangsan").setName("张三"));
+        userList.add(new User().setId(2L).setEmail("lisi@gmail.com").setUsername("lisi").setName("李四"));
+        userList.add(new User().setId(3L).setEmail("wangwu@gmail.com").setUsername("wangwu").setName("王五"));
     }
 
     @Test
-    public void whenGetUser_thenReturnJson() throws Exception {
+    @WithMockUser
+    public void givenUserName_thenFindUser_returnUserJson() throws Exception {
         String username = "zhangsan";
 
-        when(userService.findByUsername(username)).thenReturn(userData.iterator().next());
+        when(userService.findByUsername(username)).thenReturn(userList.get(0));
 
         mvc.perform(get("/user/username").param("username", username))
                 .andDo(print())
@@ -77,7 +87,8 @@ public class UserControllerUnitTest {
     }
 
     @Test
-    public void whenGetUsersByName_thenReturnJsonArray() throws Exception {
+    @WithMockUser
+    public void givenName_thenFindUser_returnUserListJson() throws Exception {
         String name = "张三";
 
         //对数据集进行条件过滤
@@ -102,8 +113,26 @@ public class UserControllerUnitTest {
     }
 
     @Test
-    public void whenGetUsers_thenReturnJsonArray() throws Exception {
-        when(userService.findAll()).thenReturn(userData);
+    @WithMockUser
+    public void givenId_thenFindUser_ReturnUserJson() throws Exception {
+        Long id = 1L;
+
+        when(userService.getById(id)).thenReturn(userList.get(0));
+
+        mvc.perform(get("/user/{id}", id))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data.email").value("zhangsan@gmail.com"));
+
+        verify(userService).getById(any());
+    }
+
+    @Test
+    @WithMockUser
+    public void givenNothing_thenFindAllUser_returnUserListJson() throws Exception {
+        when(userService.list()).thenReturn(userList);
 
         mvc.perform(get("/user"))
                 .andDo(print())
@@ -114,74 +143,51 @@ public class UserControllerUnitTest {
                 .andExpect(jsonPath("$.data", hasSize(3)))
                 .andExpect(jsonPath("$.data[0].username", equalTo("zhangsan")));
 
-        verify(userService).findAll();
-    }
-
-    /**
-     * 测试返回 NullPointerException 的情况
-     * 通常情况下不用测试这种类型，这里只是需要模拟 NullPointerException，查看返回数据
-     * Unchecked exception 使用 Mockito 即可
-     * @throws Exception
-     */
-    @Test
-    public void testGetUser_thenReturnNullPointerException() throws Exception {
-        doThrow(NullPointerException.class)
-                .when(userService)
-                .findAll();
-
-        mvc.perform(get("/user"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(ResultEnum.UNKNOWN_ERROR.getCode()));
+        verify(userService).list();
     }
 
     @Test
-    public void whenSaveUser_thenReturnJson() throws Exception {
+    @WithMockUser
+    public void givenJson_thenSaveUser_returnSucceed() throws Exception {
         String email = "zhaoliu@gmail.com";
         String username = "zhaoliu";
-        User user_test_data = User.builder().id(1L).email(email).username(username).build();
 
-        when(userService.save(any()))
-                .thenReturn(user_test_data);
+        when(userService.saveOrUpdate(any()))
+                .thenReturn(true);
 
-        User requestBody = User.builder().email(email).username(username)
-                .password("xxx").name("xxx").build();
-        mvc.perform(post("/user")
+        User requestBody = new User().setEmail(email).setUsername(username).setPassword("xxx").setName("xxx");
+        mvc.perform(post("/user").with(csrf())
                 .content(new ObjectMapper().writeValueAsString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
-                .andExpect(content().string(containsString(username)))
-                .andExpect(jsonPath("$.data.email").value(email));
+                .andExpect(jsonPath("$.data").value(true));
 
-        verify(userService).save(any());
+        verify(userService).saveOrUpdate(any());
     }
 
     @Test
-    public void whenUpdateUser_thenReturnJson() throws Exception {
+    @WithMockUser
+    public void givenJson_thenUpdateUser_returnSucceed() throws Exception {
         String email = "zhaoliu@gmail.com";
         String username = "zhaoliu";
-        User user_test_data = User.builder().id(1L).email(email).username(username).build();
 
-        when(userService.update(any()))
-                .thenReturn(user_test_data);
+        when(userService.saveOrUpdate(any()))
+                .thenReturn(true);
 
-        User requestBody = User.builder().id(1L).email(email).username(username)
-                .password("xxx").name("xxx").build();
-        mvc.perform(post("/user")
+        User requestBody = new User().setId(1L).setEmail(email).setUsername(username).setPassword("xxx").setName("xxx");
+        mvc.perform(post("/user").with(csrf())
                 .content(new ObjectMapper().writeValueAsString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
-                .andExpect(content().string(containsString(username)))
-                .andExpect(jsonPath("$.data.username").value(username));
+                .andExpect(jsonPath("$.data").value(true));
 
-        verify(userService).update(any());
+        verify(userService).saveOrUpdate(any());
     }
 
 
@@ -191,32 +197,18 @@ public class UserControllerUnitTest {
      * @throws Exception
      */
     @Test
-    public void whenDeleteUser_thenReturnTrue() throws Exception {
-        doNothing().when(userService).delete(anyLong());
+    @WithMockUser
+    public void givenId_thenDeleteUser_returnSucceed() throws Exception {
+        when(userService.removeById(anyLong())).thenReturn(true);
 
-        mvc.perform(delete("/user/{id}", 1L))
+        mvc.perform(delete("/user/{id}", 1L).with(csrf()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()));
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data").value(true));
 
-        verify(userService).delete(1L);
+        verify(userService).removeById(1L);
     }
 
-    /**
-     * TODO 增加权限，重新测试这个异常
-     * @throws Exception
-     */
-    @Test
-    public void testGetUser_thenReturnAccessControlException() throws Exception {
-        doThrow(AccessControlException.class)
-                .when(userService)
-                .findAll();
-
-        mvc.perform(get("/user"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(ResultEnum.PERMISSION_ERROR.getCode()));
-    }
 }

@@ -1,42 +1,40 @@
 package io.github.batizhao.service;
 
+import io.github.batizhao.domain.Role;
 import io.github.batizhao.domain.User;
-import io.github.batizhao.repository.UserRepository;
+import io.github.batizhao.mapper.RoleMapper;
+import io.github.batizhao.mapper.UserMapper;
 import io.github.batizhao.service.iml.UserServiceIml;
-import org.hamcrest.collection.IsIterableWithSize;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.*;
 
 /**
  * @author batizhao
  * @since 2020-02-08
  */
-@RunWith(SpringRunner.class)
-public class UserServiceUnitTest {
+@Slf4j
+public class UserServiceUnitTest extends BaseServiceUnitTest {
 
     /**
-     * Spring Boot provides @TestConfiguration annotation that can be used on classes in src/test/java
-     * to indicate that they should not be picked up by scanning.
+     * Spring Boot 提供了 @TestConfiguration 注释，可用于 src/test/java 中的类，以指示不应通过扫描获取它们。
      */
     @TestConfiguration
-    static class userServiceTestContextConfiguration {
-
+    static class TestContextConfiguration {
         @Bean
         public UserService userService() {
             return new UserServiceIml();
@@ -44,14 +42,18 @@ public class UserServiceUnitTest {
     }
 
     @MockBean
-    private UserRepository userRepository;
+    private UserMapper userMapper;
+    @MockBean
+    private RoleMapper roleMapper;
 
     @Autowired
     private UserService userService;
-
-    private Iterable<User> userData;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     private List<User> userList;
+
+    private List<Role> roleList;
 
     /**
      * Prepare test data.
@@ -59,19 +61,21 @@ public class UserServiceUnitTest {
     @Before
     public void setUp() {
         userList = new ArrayList<>();
-        userList.add(User.builder().id(1L).email("zhangsan@gmail.com").username("zhangsan").name("张三").build());
-        userList.add(User.builder().id(2L).email("lisi@gmail.com").username("lisi").name("李四").build());
-        userList.add(User.builder().id(3L).email("wangwu@gmail.com").username("wangwu").name("王五").build());
+        userList.add(new User().setId(1L).setEmail("zhangsan@gmail.com").setUsername("zhangsan").setName("张三"));
+        userList.add(new User().setId(2L).setEmail("lisi@gmail.com").setUsername("lisi").setName("李四"));
+        userList.add(new User().setId(3L).setEmail("wangwu@gmail.com").setUsername("wangwu").setName("王五"));
 
-        userData = userList;
+        roleList = new ArrayList<>();
+        roleList.add(new Role().setId(1L).setName("admin"));
+        roleList.add(new Role().setId(2L).setName("common"));
     }
 
     @Test
-    public void whenUserName_thenAccountShouldBeFound() {
+    public void givenUserName_thenFindUser_returnUser() {
         String username = "zhangsan";
 
-        Mockito.when(userRepository.findByUsername(username))
-                .thenReturn(userData.iterator().next());
+        when(userMapper.selectOne(any()))
+                .thenReturn(userList.get(0));
 
         User user = userService.findByUsername(username);
 
@@ -80,108 +84,143 @@ public class UserServiceUnitTest {
     }
 
     @Test
-    public void testFindAll() {
-        Mockito.when(userRepository.findAll())
-                .thenReturn(userData);
-
-        Iterable<User> users = userService.findAll();
-
-        assertThat(users, IsIterableWithSize.iterableWithSize(3));
-        assertThat(users, hasItems(hasProperty("username", is("zhangsan")),
-                                      hasProperty("email", is("lisi@gmail.com")),
-                                      hasProperty("email", is("wangwu@gmail.com"))));
-
-        assertThat(users, containsInAnyOrder(allOf(hasProperty("email", is("zhangsan@gmail.com")),
-                                                      hasProperty("username", is("zhangsan"))),
-                                                allOf(hasProperty("email", is("lisi@gmail.com")),
-                                                      hasProperty("username", is("lisi"))),
-                                                allOf(hasProperty("email", is("wangwu@gmail.com")),
-                                                      hasProperty("username", is("wangwu")))));
-
-    }
-
-    @Test
-    public void testFindOne() {
-        Mockito.when(userRepository.findById(1L))
-                .thenReturn(Optional.ofNullable(userData.iterator().next()));
-
-        Optional<User> user = userService.findOne(1L);
-
-        assertThat(user.get().getUsername(), equalTo("zhangsan"));
-        assertThat(user.get().getEmail(), equalTo("zhangsan@gmail.com"));
-    }
-
-    @Test
-    public void testSave() {
-        User user_test_data = User.builder().email("zhaoliu@gmail.com").username("zhaoliu").build();
-
-        Mockito.when(userRepository.save(Mockito.any()))
-                .thenReturn(user_test_data);
-
-        User user_return_data = userService.save(user_test_data);
-
-        // 验证 userRepository.save() 方法被调用过一次
-        Mockito.verify(userRepository).save(Mockito.any());
-
-        assertThat(user_return_data, notNullValue());
-        assertThat(user_return_data.getEmail(), equalTo("zhaoliu@gmail.com"));
-    }
-
-    @Test
-    public void testUpdate() {
-        User user_test_data = User.builder().email("zhaoliu@gmail.com").username("zhaoliu").build();
-
-        Mockito.when(userRepository.save(Mockito.any()))
-                .thenReturn(user_test_data);
-
-        User user_return_data = userService.update(user_test_data);
-
-        // 验证 userRepository.save() 方法被调用过一次
-        Mockito.verify(userRepository).save(Mockito.any());
-
-        assertThat(user_return_data, notNullValue());
-        assertThat(user_return_data.getEmail(), equalTo("zhaoliu@gmail.com"));
-    }
-
-    @Test
-    public void testDelete() {
-        Long id = 1L;
-
-        //对数据集进行条件过滤
-        doAnswer(invocation -> {
-            Object arg0 = invocation.getArgument(0);
-
-            userList = userList.stream()
-                    .filter(p -> p.getId() != arg0).collect(Collectors.toList());
-
-            return userList;
-        }).when(userRepository).deleteById(id);
-
-        userService.delete(1L);
-
-        Mockito.verify(userRepository).deleteById(Mockito.any());
-
-        assertThat(userList, IsIterableWithSize.iterableWithSize(2));
-        assertThat(userList, not(hasItem(hasProperty("id", is(id)))));
-    }
-
-    @Test
-    public void testFindByName() {
+    public void givenName_thenFindUser_returnUserList() {
         String name = "张三";
 
-        //对数据集进行条件过滤
-        doAnswer(invocation -> {
-            Object arg0 = invocation.getArgument(0);
+        when(userMapper.selectList(any())).thenReturn(userList.subList(0,1));
 
-            userList = userList.stream()
-                    .filter(p -> p.getName().equals(arg0)).collect(Collectors.toList());
+        List<User> users = userService.findByName(name);
 
-            return userList;
-        }).when(userRepository).findByName(name);
+        verify(userMapper).selectList(any());
 
-        Iterable<User> users = userService.findByName(name);
+        log.info("users: {}", users);
 
-        assertThat(users, IsIterableWithSize.iterableWithSize(1));
+        assertThat(users, hasSize(1));
         assertThat(users, hasItems(hasProperty("username", is("zhangsan"))));
     }
+
+    @Test
+    public void givenUserName_thenDeleteUser_returnSucceed() {
+        String username = "zhangsan";
+
+        when(userMapper.delete(any()))
+                .thenReturn(1);
+
+        int result = userService.deleteByUsername(username);
+
+        assertThat(result, equalTo(1));
+    }
+
+    @Test
+    public void givenUserName_thenFindUser_returnUserDetails() {
+        String username = "zhangsan";
+        User user_test_data = userList.get(0);
+
+        when(userMapper.selectOne(any()))
+                .thenReturn(user_test_data);
+
+        when(roleMapper.findRolesByUserId(user_test_data.id))
+                .thenReturn(roleList);
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+        log.debug("userDetails: {}", userDetails);
+        assertThat(userDetails.getUsername(), equalTo(username));
+
+        List<Role> authorities = (List<Role>) userDetails.getAuthorities();
+        log.debug("authorities: {}", authorities);
+
+        assertThat(authorities, hasSize(2));
+
+        assertThat(authorities, hasItem(allOf(hasProperty("id", is(1L)),
+                hasProperty("name", is("admin")))));
+
+        assertThat(authorities, hasItem(allOf(hasProperty("id", is(2L)),
+                hasProperty("name", is("common")))));
+    }
+
+//    @Test
+//    public void testFindAll() {
+//        when(userMapper.selectList(null))
+//                .thenReturn(userList);
+//
+//        Iterable<User> users = userService.findAll();
+//
+//        assertThat(users, IsIterableWithSize.iterableWithSize(3));
+//        assertThat(users, hasItems(hasProperty("username", is("zhangsan")),
+//                                      hasProperty("email", is("lisi@gmail.com")),
+//                                      hasProperty("email", is("wangwu@gmail.com"))));
+//
+//        assertThat(users, containsInAnyOrder(allOf(hasProperty("email", is("zhangsan@gmail.com")),
+//                                                      hasProperty("username", is("zhangsan"))),
+//                                                allOf(hasProperty("email", is("lisi@gmail.com")),
+//                                                      hasProperty("username", is("lisi"))),
+//                                                allOf(hasProperty("email", is("wangwu@gmail.com")),
+//                                                      hasProperty("username", is("wangwu")))));
+//
+//    }
+
+//    @Test
+//    public void testFindOne() {
+//        when(userMapper.selectById(1L))
+//                .thenReturn(userList.get(0));
+//
+//        User user = userService.findOne(1L);
+//
+//        assertThat(user.getUsername(), equalTo("zhangsan"));
+//        assertThat(user.getEmail(), equalTo("zhangsan@gmail.com"));
+//    }
+
+//    @Test
+//    public void testSave() {
+//        User user_test_data = new User().setEmail("zhaoliu@gmail.com").setUsername("zhaoliu");
+//
+//        when(userMapper.insert(any()))
+//                .thenReturn(1);
+//
+//        int result = userService.save(user_test_data);
+//
+//        // 验证 userMapper.save() 方法被调用过一次
+//        verify(userMapper).insert(any());
+//
+//        assertThat(result, equalTo(1));
+//    }
+//
+//    @Test
+//    public void testUpdate() {
+//        User user_test_data = new User().setEmail("zhaoliu@gmail.com").setUsername("zhaoliu");
+//
+//        when(userMapper.updateById(any()))
+//                .thenReturn(1);
+//
+//        int result = userService.update(user_test_data);
+//
+//        // 验证 userMapper.save() 方法被调用过一次
+//        verify(userMapper).updateById(any());
+//
+//        assertThat(result, equalTo(1));
+//    }
+
+//    @Test
+//    public void testDelete() {
+//        Long id = 1L;
+//
+//        //对数据集进行条件过滤
+//        doAnswer(invocation -> {
+//            Object arg0 = invocation.getArgument(0);
+//
+//            userList = userList.stream()
+//                    .filter(p -> p.getId() != arg0).collect(Collectors.toList());
+//
+//            return userList;
+//        }).when(userMapper).deleteById(id);
+//
+//        userService.deleteById(id);
+//
+//        verify(userMapper).deleteById(any());
+//
+//        assertThat(userList, hasSize(2));
+//        assertThat(userList, not(hasItem(hasProperty("id", is(id)))));
+//    }
+
 }
