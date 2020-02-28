@@ -27,7 +27,7 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
 
     @Test
     @WithMockUser(roles={"USER"})
-    public void whenGetUserByUserName_thenReturnJson() throws Exception {
+    public void givenUserName_thenFindUser_returnUserJson() throws Exception {
         mvc.perform(get("/user/username").param("username", "bob"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -42,7 +42,7 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      */
     @Test
     @WithMockUser(roles={"USER"})
-    public void whenGetUser_thenValidateFailed() throws Exception {
+    public void givenUserName_thenFindUser_returnValidateFailed() throws Exception {
         mvc.perform(get("/user/username").param("username", "xx"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -51,7 +51,29 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     }
 
     @Test
-    public void whenGetUsers_thenReturnJsonArray() throws Exception {
+    public void givenName_thenFindUser_returnUserListJson() throws Exception {
+        mvc.perform(get("/user/name").param("name", "孙波波"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data", hasSize(2)))
+                .andExpect(jsonPath("$.data[0].username", equalTo("bob")))
+                .andExpect(jsonPath("$.data[1].email", equalTo("bob2@qq.com")));
+    }
+
+    @Test
+    public void givenId_thenFindUser_ReturnUserJson() throws Exception {
+        mvc.perform(get("/user/{id}", 1L))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data.email").value("admin@qq.com"));
+    }
+
+    @Test
+    public void givenNothing_thenFindAllUser_returnUserListJson() throws Exception {
         mvc.perform(get("/user"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -68,7 +90,7 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     @Test
     @Transactional
     @WithMockUser(roles={"ADMIN"})
-    public void whenSaveUser_thenReturnJson() throws Exception {
+    public void givenJson_thenSaveUser_returnSucceedJson() throws Exception {
         User requestBody = new User()
                 .setName("daxia").setEmail("daxia@gmail.com").setUsername("daxia")
                 .setPassword("123456");
@@ -89,7 +111,7 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      */
     @Test
     @WithMockUser(roles={"ADMIN"})
-    public void whenSaveUser_thenValidateFailed() throws Exception {
+    public void givenJson_thenSaveUser_returnValidateFailed() throws Exception {
         User requestBody = new User().setName("daxia").setEmail("daxia@gmail.com");
 
         mvc.perform(post("/user")
@@ -104,7 +126,7 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     @Test
     @Transactional
     @WithMockUser(roles={"ADMIN"})
-    public void whenUpdateUser_thenReturnJson() throws Exception {
+    public void givenJson_thenUpdateUser_returnSucceedJson() throws Exception {
         User requestBody = new User()
                 .setId(8L).setName("daxia").setEmail("daxia@gmail.com").setUsername("daxia")
                 .setPassword("123456");
@@ -122,7 +144,7 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     @Test
     @Transactional
     @WithMockUser(roles={"ADMIN"})
-    public void whenDeleteUser_thenSuccess() throws Exception {
+    public void givenId_thenDeleteUser_returnSucceed() throws Exception {
         mvc.perform(delete("/user/{id}", 1L))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -136,23 +158,11 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      */
     @Test
     @WithMockUser(roles={"ADMIN"})
-    public void whenDeleteUser_thenReturnFail() throws Exception {
+    public void givenId_thenDeleteUser_returnValidateFail() throws Exception {
         mvc.perform(delete("/user/{id}", -1000L))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ResultEnum.PARAMETER_INVALID.getCode()));
-    }
-
-    @Test
-    public void whenGetUsersByName_thenReturnJsonArray() throws Exception {
-        mvc.perform(get("/user/name").param("name", "孙波波"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
-                .andExpect(jsonPath("$.data", hasSize(2)))
-                .andExpect(jsonPath("$.data[0].username", equalTo("bob")))
-                .andExpect(jsonPath("$.data[1].email", equalTo("bob2@qq.com")));
     }
 }

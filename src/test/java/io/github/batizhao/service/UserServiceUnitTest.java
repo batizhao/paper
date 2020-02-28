@@ -15,8 +15,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -62,9 +64,9 @@ public class UserServiceUnitTest extends BaseServiceUnitTest {
     @Before
     public void setUp() {
         userList = new ArrayList<>();
-        userList.add(new User().setId(1L).setEmail("zhangsan@gmail.com").setUsername("zhangsan").setName("张三"));
-        userList.add(new User().setId(2L).setEmail("lisi@gmail.com").setUsername("lisi").setName("李四"));
-        userList.add(new User().setId(3L).setEmail("wangwu@gmail.com").setUsername("wangwu").setName("王五"));
+        userList.add(new User().setId(1L).setEmail("zhangsan@gmail.com").setUsername("zhangsan").setName("张三").setPassword("123456"));
+        userList.add(new User().setId(2L).setEmail("lisi@gmail.com").setUsername("lisi").setName("李四").setPassword("123456"));
+        userList.add(new User().setId(3L).setEmail("wangwu@gmail.com").setUsername("wangwu").setName("王五").setPassword("123456"));
 
         roleList = new ArrayList<>();
         roleList.add(new Role().setId(1L).setName("admin"));
@@ -113,6 +115,32 @@ public class UserServiceUnitTest extends BaseServiceUnitTest {
     }
 
     @Test
+    public void givenUserJson_thenSaveOrUpdateUser_returnSucceed() {
+        User user_test_data = userList.get(0);
+
+        BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
+        String hashPass = bcryptPasswordEncoder.encode(user_test_data.getPassword());
+        log.info("hashPass: {}", hashPass);
+
+        boolean bool = bcryptPasswordEncoder.matches(user_test_data.getPassword(), hashPass);
+        assertThat(bool, equalTo(true));
+
+        user_test_data.setPassword(hashPass);
+        user_test_data.setTime(new Date());
+        log.info("user_test_data: {}", user_test_data);
+
+        //这里注意 saveOrUpdate 是第三方的方法，所以用了 spy 对 UserService 做了个 mock
+        //并且这里只能使用 doReturn...when 的方式，不能使用 when...thenReturn
+        UserService userService = spy(new UserServiceIml());
+        doReturn(true).when(userService).saveOrUpdate(user_test_data);
+
+        Boolean result = userService.saveOrUpdate4me(user_test_data);
+
+        verify(userService).saveOrUpdate(any());
+        assertThat(result, equalTo(true));
+    }
+
+    @Test
     public void givenUserName_thenFindUser_returnUserDetails() {
         String username = "zhangsan";
         User user_test_data = userList.get(0);
@@ -142,9 +170,11 @@ public class UserServiceUnitTest extends BaseServiceUnitTest {
 
     @Test(expected = UsernameNotFoundException.class)
     public void givenUserName_thenFindUser_returnUsernameNotFoundException() {
-        when(userMapper.selectOne(any())).thenReturn(null);
+        doReturn(null).when(userMapper).selectOne(any());
 
         userDetailsService.loadUserByUsername("xxxx");
+
+        verify(userMapper).selectOne(any());
     }
 
 //    @Test

@@ -4,7 +4,9 @@ import io.github.batizhao.domain.User;
 import io.github.batizhao.exception.ResponseInfo;
 import io.github.batizhao.exception.ResultEnum;
 import io.github.batizhao.service.UserService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,18 +45,17 @@ public class UserController {
 
     @ApiOperation(value = "根据姓名查询用户", notes = "有可能重复，所以返回用户列表")
     @GetMapping("name")
-    public ResponseInfo<Iterable<User>> findByName(@ApiParam(value = "用户姓名", required = true)
+    public ResponseInfo<List<User>> findByName(@ApiParam(value = "用户姓名", required = true)
                                                    @RequestParam("name") @Size(min = 2) String name) {
-        Iterable<User> users = userService.findByName(name);
-        return new ResponseInfo<Iterable<User>>().setCode(ResultEnum.SUCCESS.getCode())
+        List<User> users = userService.findByName(name);
+        return new ResponseInfo<List<User>>().setCode(ResultEnum.SUCCESS.getCode())
                 .setMessage(ResultEnum.SUCCESS.getMessage())
                 .setData(users);
     }
 
     @ApiOperation(value = "根据ID查询用户", notes = "用户名ID不重复，返回用户详情")
     @GetMapping("{id}")
-    public ResponseInfo<User> findById(@ApiParam(value = "用户ID", required = true)
-                                                 @PathVariable("id") @Min(1) Long id) {
+    public ResponseInfo<User> findById(@ApiParam(value = "用户ID", required = true) @PathVariable("id") @Min(1) Long id) {
         User user = userService.getById(id);
         return new ResponseInfo<User>().setCode(ResultEnum.SUCCESS.getCode())
                 .setMessage(ResultEnum.SUCCESS.getMessage())
@@ -75,8 +75,7 @@ public class UserController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseInfo<Boolean> doSaveOrUpdate(@Valid @ApiParam(value = "用户", required = true) @RequestBody User request_user) {
-        request_user.setTime(new Date());
-        Boolean b = userService.saveOrUpdate(request_user);
+        Boolean b = userService.saveOrUpdate4me(request_user);
         return new ResponseInfo<Boolean>().setCode(ResultEnum.SUCCESS.getCode())
                 .setMessage(ResultEnum.SUCCESS.getMessage())
                 .setData(b);

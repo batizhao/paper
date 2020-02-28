@@ -3,6 +3,7 @@ package io.github.batizhao.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -23,6 +24,19 @@ public class WebExceptionHandler {
         log.error("AccessDeniedException", e);
         return new ResponseInfo<String>().setCode(ResultEnum.PERMISSION_ERROR.getCode())
                 .setMessage(ResultEnum.PERMISSION_ERROR.getMessage())
+                .setData(e.getMessage());
+    }
+
+    /**
+     * RequestParam Exception
+     * @param e MissingServletRequestParameterException
+     * @return
+     */
+    @ExceptionHandler
+    public ResponseInfo<String> accessDeniedExceptionHandler(MissingServletRequestParameterException e) {
+        log.error("MissingServletRequestParameterException", e);
+        return new ResponseInfo<String>().setCode(ResultEnum.PARAMETER_INVALID.getCode())
+                .setMessage(ResultEnum.PARAMETER_INVALID.getMessage())
                 .setData(e.getMessage());
     }
 

@@ -148,11 +148,11 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
 
     @Test
     @WithMockUser
-    public void givenJson_thenSaveUser_returnSucceed() throws Exception {
+    public void givenJson_thenSaveUser_returnSucceedJson() throws Exception {
         String email = "zhaoliu@gmail.com";
         String username = "zhaoliu";
 
-        when(userService.saveOrUpdate(any()))
+        when(userService.saveOrUpdate4me(any()))
                 .thenReturn(true);
 
         User requestBody = new User().setEmail(email).setUsername(username).setPassword("xxx").setName("xxx");
@@ -165,16 +165,16 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
                 .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
                 .andExpect(jsonPath("$.data").value(true));
 
-        verify(userService).saveOrUpdate(any());
+        verify(userService).saveOrUpdate4me(any());
     }
 
     @Test
     @WithMockUser
-    public void givenJson_thenUpdateUser_returnSucceed() throws Exception {
+    public void givenJson_thenUpdateUser_returnSucceedJson() throws Exception {
         String email = "zhaoliu@gmail.com";
         String username = "zhaoliu";
 
-        when(userService.saveOrUpdate(any()))
+        when(userService.saveOrUpdate4me(any()))
                 .thenReturn(true);
 
         User requestBody = new User().setId(1L).setEmail(email).setUsername(username).setPassword("xxx").setName("xxx");
@@ -187,7 +187,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
                 .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
                 .andExpect(jsonPath("$.data").value(true));
 
-        verify(userService).saveOrUpdate(any());
+        verify(userService).saveOrUpdate4me(any());
     }
 
 

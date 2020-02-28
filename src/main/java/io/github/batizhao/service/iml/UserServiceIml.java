@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,6 +42,16 @@ public class UserServiceIml extends ServiceImpl<UserMapper, User> implements Use
     @Override
     public int deleteByUsername(String username) {
         return userMapper.delete(Wrappers.<User>lambdaQuery().eq(User::getUsername, username));
+    }
+
+    @Override
+    public Boolean saveOrUpdate4me(User user) {
+        BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
+        String hashPass = bcryptPasswordEncoder.encode(user.getPassword());
+        user.setPassword(hashPass);
+        user.setTime(new Date());
+
+        return saveOrUpdate(user);
     }
 
     @Override
