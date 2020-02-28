@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.*;
  * @since 2020-02-26
  */
 @Slf4j
-public class RoleRepositoryUnitTest extends BaseRepositoryUnitTest {
+public class RoleMapperUnitTest extends BaseMapperUnitTest {
 
     @Autowired
     private RoleMapper roleMapper;

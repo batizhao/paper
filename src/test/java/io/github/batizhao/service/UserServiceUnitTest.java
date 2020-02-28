@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,6 +138,13 @@ public class UserServiceUnitTest extends BaseServiceUnitTest {
 
         assertThat(authorities, hasItem(allOf(hasProperty("id", is(2L)),
                 hasProperty("name", is("common")))));
+    }
+
+    @Test(expected = UsernameNotFoundException.class)
+    public void givenUserName_thenFindUser_returnUsernameNotFoundException() {
+        when(userMapper.selectOne(any())).thenReturn(null);
+
+        userDetailsService.loadUserByUsername("xxxx");
     }
 
 //    @Test
