@@ -147,6 +147,7 @@
 					<excludes>
 						<exclude>io/github/batizhao/*Application.*</exclude>
 						<exclude>io/github/batizhao/domain/*</exclude>
+						<exclude>io/github/batizhao/config/*</exclude>
 					</excludes>
 				</configuration>
 				<executions>
