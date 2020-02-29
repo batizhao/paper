@@ -51,6 +51,7 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     }
 
     @Test
+    @WithMockUser
     public void givenName_thenFindUser_returnUserListJson() throws Exception {
         mvc.perform(get("/user/name").param("name", "孙波波"))
                 .andDo(print())
@@ -63,6 +64,7 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     }
 
     @Test
+    @WithMockUser
     public void givenId_thenFindUser_ReturnUserJson() throws Exception {
         mvc.perform(get("/user/{id}", 1L))
                 .andDo(print())
@@ -73,6 +75,7 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     }
 
     @Test
+    @WithMockUser
     public void givenNothing_thenFindAllUser_returnUserListJson() throws Exception {
         mvc.perform(get("/user"))
                 .andDo(print())

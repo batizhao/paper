@@ -27,11 +27,11 @@
     <changeSet author="batizhao" id="InsertTableRole-20200225-002">
         <insert tableName="role">
             <column name="id" valueNumeric="1"/>
-            <column name="name" value="USER"/>
+            <column name="name" value="ROLE_USER"/>
         </insert>
         <insert tableName="role">
             <column name="id" valueNumeric="2"/>
-            <column name="name" value="ADMIN"/>
+            <column name="name" value="ROLE_ADMIN"/>
         </insert>
         <rollback>
             delete from role where id = 1;
@@ -61,7 +61,7 @@
         <insert tableName="user">
             <column name="id" valueNumeric="1"/>
             <column name="username" value="admin"/>
-            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
+            <column name="password" value="$2a$10$rFoOrbWD2p.1CjBoBqTeaOUgpxFmtZknsDEvF78AsMXvsxU1AyAZu"/>
             <column name="email" value="admin@qq.com"/>
             <column name="name" value="系统管理员"/>
             <column name="time" value="2016-09-29 10:00:00"/>
@@ -69,7 +69,7 @@
         <insert tableName="user">
             <column name="id" valueNumeric="2"/>
             <column name="username" value="tom"/>
-            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
+            <column name="password" value="$2a$10$rFoOrbWD2p.1CjBoBqTeaOUgpxFmtZknsDEvF78AsMXvsxU1AyAZu"/>
             <column name="email" value="tom@qq.com"/>
             <column name="name" value="张老师"/>
             <column name="time" value="2016-09-29 10:00:00"/>
@@ -77,7 +77,7 @@
         <insert tableName="user">
             <column name="id" valueNumeric="3"/>
             <column name="username" value="jerry"/>
-            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
+            <column name="password" value="$2a$10$rFoOrbWD2p.1CjBoBqTeaOUgpxFmtZknsDEvF78AsMXvsxU1AyAZu"/>
             <column name="email" value="jerry@qq.com"/>
             <column name="name" value="李老师"/>
             <column name="time" value="2016-09-29 10:00:00"/>
@@ -85,7 +85,7 @@
         <insert tableName="user">
             <column name="id" valueNumeric="4"/>
             <column name="username" value="john"/>
-            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
+            <column name="password" value="$2a$10$rFoOrbWD2p.1CjBoBqTeaOUgpxFmtZknsDEvF78AsMXvsxU1AyAZu"/>
             <column name="email" value="john@qq.com"/>
             <column name="name" value="王约翰"/>
             <column name="time" value="2016-09-29 10:00:00"/>
@@ -93,7 +93,7 @@
         <insert tableName="user">
             <column name="id" valueNumeric="5"/>
             <column name="username" value="bob"/>
-            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
+            <column name="password" value="$2a$10$rFoOrbWD2p.1CjBoBqTeaOUgpxFmtZknsDEvF78AsMXvsxU1AyAZu"/>
             <column name="email" value="bob@qq.com"/>
             <column name="name" value="孙波波"/>
             <column name="time" value="2016-09-29 10:00:00"/>
@@ -101,7 +101,7 @@
         <insert tableName="user">
             <column name="id" valueNumeric="6"/>
             <column name="username" value="bob2"/>
-            <column name="password" value="7c4a8d09ca3762af61e59520943dc26494f8941b"/>
+            <column name="password" value="$2a$10$rFoOrbWD2p.1CjBoBqTeaOUgpxFmtZknsDEvF78AsMXvsxU1AyAZu"/>
             <column name="email" value="bob2@qq.com"/>
             <column name="name" value="孙波波"/>
             <column name="time" value="2016-09-29 10:00:00"/>

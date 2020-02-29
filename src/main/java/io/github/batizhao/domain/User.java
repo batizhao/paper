@@ -1,7 +1,6 @@
 package io.github.batizhao.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,14 +8,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author batizhao
@@ -27,7 +24,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(description = "用户类")
-public class User implements UserDetails, Serializable {
+public class User implements Serializable {
 
     @ApiModelProperty(value = "用户ID", example = "100")
     @TableId(type = IdType.AUTO)
@@ -54,27 +51,7 @@ public class User implements UserDetails, Serializable {
     @ApiModelProperty(value = "创建时间")
     private Date time;
 
-    @TableField(exist = false)
-    @ApiModelProperty(value = "权限")
-    private List<Role> authorities;
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+//    @TableField(exist = false)
+//    @ApiModelProperty(value = "权限")
+//    private List<Role> authorities;
 }

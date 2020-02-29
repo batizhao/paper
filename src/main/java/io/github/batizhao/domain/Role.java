@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.springframework.security.core.GrantedAuthority;
 
 import javax.validation.constraints.NotBlank;
 
@@ -21,7 +20,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(description = "角色类")
-public class Role implements GrantedAuthority {
+public class Role {
 
     @ApiModelProperty(value = "角色ID", example = "100")
     @TableId(type = IdType.AUTO)
@@ -30,10 +29,5 @@ public class Role implements GrantedAuthority {
     @ApiModelProperty(value = "角色名", example = "管理员")
     @NotBlank(message = "name is not blank")
     private String name;
-
-    @Override
-    public String getAuthority() {
-        return name;
-    }
 
 }

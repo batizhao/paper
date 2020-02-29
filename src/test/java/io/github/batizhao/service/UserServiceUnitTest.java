@@ -46,17 +46,11 @@ public class UserServiceUnitTest extends BaseServiceUnitTest {
 
     @MockBean
     private UserMapper userMapper;
-    @MockBean
-    private RoleMapper roleMapper;
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private UserDetailsService userDetailsService;
 
     private List<User> userList;
-
-    private List<Role> roleList;
 
     /**
      * Prepare test data.
@@ -67,10 +61,6 @@ public class UserServiceUnitTest extends BaseServiceUnitTest {
         userList.add(new User().setId(1L).setEmail("zhangsan@gmail.com").setUsername("zhangsan").setName("张三").setPassword("123456"));
         userList.add(new User().setId(2L).setEmail("lisi@gmail.com").setUsername("lisi").setName("李四").setPassword("123456"));
         userList.add(new User().setId(3L).setEmail("wangwu@gmail.com").setUsername("wangwu").setName("王五").setPassword("123456"));
-
-        roleList = new ArrayList<>();
-        roleList.add(new Role().setId(1L).setName("admin"));
-        roleList.add(new Role().setId(2L).setName("common"));
     }
 
     @Test
@@ -138,43 +128,6 @@ public class UserServiceUnitTest extends BaseServiceUnitTest {
 
         verify(userService).saveOrUpdate(any());
         assertThat(result, equalTo(true));
-    }
-
-    @Test
-    public void givenUserName_thenFindUser_returnUserDetails() {
-        String username = "zhangsan";
-        User user_test_data = userList.get(0);
-
-        when(userMapper.selectOne(any()))
-                .thenReturn(user_test_data);
-
-        when(roleMapper.findRolesByUserId(user_test_data.id))
-                .thenReturn(roleList);
-
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-        log.debug("userDetails: {}", userDetails);
-        assertThat(userDetails.getUsername(), equalTo(username));
-
-        List<Role> authorities = (List<Role>) userDetails.getAuthorities();
-        log.debug("authorities: {}", authorities);
-
-        assertThat(authorities, hasSize(2));
-
-        assertThat(authorities, hasItem(allOf(hasProperty("id", is(1L)),
-                hasProperty("name", is("admin")))));
-
-        assertThat(authorities, hasItem(allOf(hasProperty("id", is(2L)),
-                hasProperty("name", is("common")))));
-    }
-
-    @Test(expected = UsernameNotFoundException.class)
-    public void givenUserName_thenFindUser_returnUsernameNotFoundException() {
-        doReturn(null).when(userMapper).selectOne(any());
-
-        userDetailsService.loadUserByUsername("xxxx");
-
-        verify(userMapper).selectOne(any());
     }
 
 //    @Test
