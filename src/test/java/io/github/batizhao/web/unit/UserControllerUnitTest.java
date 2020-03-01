@@ -149,13 +149,11 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
     @Test
     @WithMockUser
     public void givenJson_thenSaveUser_returnSucceedJson() throws Exception {
-        String email = "zhaoliu@gmail.com";
-        String username = "zhaoliu";
+        User requestBody = new User().setEmail("zhaoliu@gmail.com").setUsername("zhaoliu").setPassword("xxx").setName("xxx");
 
         when(userService.saveOrUpdate4me(any()))
-                .thenReturn(true);
+                .thenReturn(userList.get(0));
 
-        User requestBody = new User().setEmail(email).setUsername(username).setPassword("xxx").setName("xxx");
         mvc.perform(post("/user").with(csrf())
                 .content(new ObjectMapper().writeValueAsString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -163,7 +161,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
-                .andExpect(jsonPath("$.data").value(true));
+                .andExpect(jsonPath("$.data.id", equalTo(1)));
 
         verify(userService).saveOrUpdate4me(any());
     }
@@ -171,13 +169,11 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
     @Test
     @WithMockUser
     public void givenJson_thenUpdateUser_returnSucceedJson() throws Exception {
-        String email = "zhaoliu@gmail.com";
-        String username = "zhaoliu";
+        User requestBody = new User().setId(2L).setEmail("zhaoliu@gmail.com").setUsername("zhaoliu").setPassword("xxx").setName("xxx");
 
         when(userService.saveOrUpdate4me(any()))
-                .thenReturn(true);
+                .thenReturn(userList.get(1));
 
-        User requestBody = new User().setId(1L).setEmail(email).setUsername(username).setPassword("xxx").setName("xxx");
         mvc.perform(post("/user").with(csrf())
                 .content(new ObjectMapper().writeValueAsString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -185,7 +181,8 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
-                .andExpect(jsonPath("$.data").value(true));
+                .andExpect(jsonPath("$.data.id", equalTo(2)))
+                .andExpect(jsonPath("$.data.username", equalTo("lisi")));
 
         verify(userService).saveOrUpdate4me(any());
     }

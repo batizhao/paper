@@ -25,9 +25,11 @@ spring:
     show-sql: true
   liquibase:
     change-log: classpath:db/changelog-master.xml
-  security:
-    basic:
-      enabled: false
+#  security:
+#    oauth2:
+#      resource:
+#        jwt:
+#          key-value: 123
 
 management:
   endpoint:
@@ -37,6 +39,7 @@ management:
 logging:
   level:
     org.springframework:
+        web: debug
         security: debug
 
 #security:
@@ -44,9 +47,3 @@ logging:
 #    client:
 #      client-id: first-client
 #      client-secret: noonewilleverguess
-
-#security:
-#  oauth2:
-#    resource:
-#      jwt:
-#        key-value: test-secret

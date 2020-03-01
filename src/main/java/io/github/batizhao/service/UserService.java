@@ -17,5 +17,5 @@ public interface UserService extends IService<User> {
 
 	int deleteByUsername(String username);
 
-    Boolean saveOrUpdate4me(User user);
+    User saveOrUpdate4me(User user);
 }

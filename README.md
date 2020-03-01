@@ -184,5 +184,34 @@ Rule violated for package ***: lines covered ratio is 0.8, but expected minimum 
   given(xxx.method()).willAnswer( invocation -> { throw new CheckedException("msg"); });
   ```
 
+## 获取 access_token
+
+```shell
+# curl -X POST --user 'client_app:123456' -d 'grant_type=password&username=admin&password=123456' http://localhost:8080/oauth/token
+{
+  "access_token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJhZG1pbiIsInNjb3BlIjpbImFsbCJdLCJleHAiOjE1ODMwNDk0NTksImF1dGhvcml0aWVzIjpbIlJPTEVfQURNSU4iLCJST0xFX1VTRVIiXSwianRpIjoiMDkyZjQ3OGMtNjM5MC00NTdhLWExOTItMGRlZmZiYmUzYTk2IiwiY2xpZW50X2lkIjoiY2xpZW50X2FwcCIsInVzZXJuYW1lIjoiYWRtaW4ifQ.JVFPmDJ6NP6zuErN9gN9MhgxlLsCFUn-JPc_9u-ZOj0",
+  "token_type" : "bearer",
+  "refresh_token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJhZG1pbiIsInNjb3BlIjpbImFsbCJdLCJhdGkiOiIwOTJmNDc4Yy02MzkwLTQ1N2EtYTE5Mi0wZGVmZmJiZTNhOTYiLCJleHAiOjE1ODM5MDk4NTksImF1dGhvcml0aWVzIjpbIlJPTEVfQURNSU4iLCJST0xFX1VTRVIiXSwianRpIjoiMzZlNDgzNmEtMzM4OC00YWJhLWFiMmEtMTRkODMwZTJjZDJlIiwiY2xpZW50X2lkIjoiY2xpZW50X2FwcCIsInVzZXJuYW1lIjoiYWRtaW4ifQ.ByoaXSa6HIJc0OfmVx47SMPt_OmyrD7T9E_kxhtrd20",
+  "expires_in" : 3599,
+  "scope" : "all",
+  "username" : "admin",
+  "jti" : "092f478c-6390-457a-a192-0deffbbe3a96"
+}
+
+# curl -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJhZG1pbiIsInNjb3BlIjpbImFsbCJdLCJleHAiOjE1ODMwNDk0NTksImF1dGhvcml0aWVzIjpbIlJPTEVfQURNSU4iLCJST0xFX1VTRVIiXSwianRpIjoiMDkyZjQ3OGMtNjM5MC00NTdhLWExOTItMGRlZmZiYmUzYTk2IiwiY2xpZW50X2lkIjoiY2xpZW50X2FwcCIsInVzZXJuYW1lIjoiYWRtaW4ifQ.JVFPmDJ6NP6zuErN9gN9MhgxlLsCFUn-JPc_9u-ZOj0"  localhost:8080/user/1
+{
+  "code" : 0,
+  "message" : "ok",
+  "data" : {
+    "id" : 1,
+    "username" : "admin",
+    "password" : "$2a$10$rFoOrbWD2p.1CjBoBqTeaOUgpxFmtZknsDEvF78AsMXvsxU1AyAZu",
+    "email" : "admin@qq.com",
+    "name" : "系统管理员",
+    "time" : "2016-09-29 10:00:00"
+  }
+}
+```
+
 
 

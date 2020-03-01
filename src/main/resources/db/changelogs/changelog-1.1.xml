@@ -121,6 +121,10 @@
             <column name="role_id" valueNumeric="1"/>
         </insert>
         <insert tableName="user_role">
+            <column name="user_id" valueNumeric="1"/>
+            <column name="role_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="user_role">
             <column name="user_id" valueNumeric="2"/>
             <column name="role_id" valueNumeric="1"/>
         </insert>
@@ -130,6 +134,7 @@
         </insert>
         <rollback>
             delete from user_role where role_id = 1 and user_id = 1;
+            delete from user_role where role_id = 2 and user_id = 1;
             delete from user_role where role_id = 1 and user_id = 2;
             delete from user_role where role_id = 2 and user_id = 2;
         </rollback>

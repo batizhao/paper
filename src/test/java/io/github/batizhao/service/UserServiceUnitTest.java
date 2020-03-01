@@ -106,7 +106,7 @@ public class UserServiceUnitTest extends BaseServiceUnitTest {
 
     @Test
     public void givenUserJson_thenSaveOrUpdateUser_returnSucceed() {
-        User user_test_data = userList.get(0);
+        User user_test_data = new User().setEmail("zhaoliu@gmail.com").setUsername("zhaoliu").setPassword("xxx").setName("xxx");;
 
         BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
         String hashPass = bcryptPasswordEncoder.encode(user_test_data.getPassword());
@@ -121,13 +121,24 @@ public class UserServiceUnitTest extends BaseServiceUnitTest {
 
         //这里注意 saveOrUpdate 是第三方的方法，所以用了 spy 对 UserService 做了个 mock
         //并且这里只能使用 doReturn...when 的方式，不能使用 when...thenReturn
-        UserService userService = spy(new UserServiceIml());
-        doReturn(true).when(userService).saveOrUpdate(user_test_data);
+//        UserService userService = spy(new UserServiceIml());
+//        doReturn(true).when(userService).saveOrUpdate(user_test_data);
 
-        Boolean result = userService.saveOrUpdate4me(user_test_data);
+        // insert 不带 id
+        doReturn(1).when(userMapper).insert(any());
 
-        verify(userService).saveOrUpdate(any());
-        assertThat(result, equalTo(true));
+        User user = userService.saveOrUpdate4me(user_test_data);
+        log.info("user: {}", user);
+
+        verify(userMapper).insert(any());
+
+        // update 需要带 id
+        doReturn(1).when(userMapper).updateById(any());
+
+        user = userService.saveOrUpdate4me(userList.get(0));
+        log.info("user: {}", user);
+
+        verify(userMapper).updateById(any());
     }
 
 //    @Test

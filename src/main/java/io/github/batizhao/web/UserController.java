@@ -74,11 +74,11 @@ public class UserController {
     @ApiOperation(value = "添加或修改用户", notes = "根据是否有ID判断是添加还是修改")
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseInfo<Boolean> doSaveOrUpdate(@Valid @ApiParam(value = "用户", required = true) @RequestBody User request_user) {
-        Boolean b = userService.saveOrUpdate4me(request_user);
-        return new ResponseInfo<Boolean>().setCode(ResultEnum.SUCCESS.getCode())
+    public ResponseInfo<User> doSaveOrUpdate(@Valid @ApiParam(value = "用户", required = true) @RequestBody User request_user) {
+        User u = userService.saveOrUpdate4me(request_user);
+        return new ResponseInfo<User>().setCode(ResultEnum.SUCCESS.getCode())
                 .setMessage(ResultEnum.SUCCESS.getMessage())
-                .setData(b);
+                .setData(u);
     }
 
     @ApiOperation(value = "删除用户", notes = "根据用户ID删除用户")

@@ -38,27 +38,18 @@ public class UserServiceIml extends ServiceImpl<UserMapper, User> implements Use
     }
 
     @Override
-    public Boolean saveOrUpdate4me(User user) {
+    public User saveOrUpdate4me(User user) {
         BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
         String hashPass = bcryptPasswordEncoder.encode(user.getPassword());
         user.setPassword(hashPass);
         user.setTime(new Date());
 
-        return saveOrUpdate(user);
+        if (user.getId() == null) {
+            userMapper.insert(user);
+        } else {
+            userMapper.updateById(user);
+        }
+
+        return user;
     }
-
-//    @Override
-//    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-//        User user = this.findByUsername(userName);
-//
-//        if (user == null) {
-//            throw new UsernameNotFoundException(userName);
-//        }
-//
-//        List<Role> roles = roleMapper.findRolesByUserId(user.getId());
-//        user.setAuthorities(roles);
-//
-//        return user;
-//    }
-
 }
