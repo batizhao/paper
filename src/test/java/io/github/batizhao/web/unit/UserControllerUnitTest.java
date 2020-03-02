@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * 注意，在 Spring Security 启用的情况下：
- * 1. post、put、delete 方法要加上 with(csrf())，否则会返回 403
+ * 1. post、put、delete 方法要加上 with(csrf())，否则会返回 403，因为这里控制了 config 扫描范围 csrf.disable 并没有生效
  * 2. 单元测试要控制扫描范围，防止 Spring Security Config 自动初始化，尤其是 UserDetailsService 自定义的情况（会加载 Mapper）
  * 3. 测试方法要加上 @WithMockUser，否则会返回 401
  *
@@ -76,7 +76,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
 
         when(userService.findByUsername(username)).thenReturn(userList.get(0));
 
-        mvc.perform(get("/user/username").param("username", username))
+        mvc.perform(get("/api/user/username").param("username", username))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -101,7 +101,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
             return userList;
         }).when(userService).findByName(name);
 
-        mvc.perform(get("/user/name").param("name", name))
+        mvc.perform(get("/api/user/name").param("name", name))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -119,7 +119,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
 
         when(userService.getById(id)).thenReturn(userList.get(0));
 
-        mvc.perform(get("/user/{id}", id))
+        mvc.perform(get("/api/user/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -134,7 +134,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
     public void givenNothing_thenFindAllUser_returnUserListJson() throws Exception {
         when(userService.list()).thenReturn(userList);
 
-        mvc.perform(get("/user"))
+        mvc.perform(get("/api/user"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -154,7 +154,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
         when(userService.saveOrUpdate4me(any()))
                 .thenReturn(userList.get(0));
 
-        mvc.perform(post("/user").with(csrf())
+        mvc.perform(post("/api/user").with(csrf())
                 .content(new ObjectMapper().writeValueAsString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -174,7 +174,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
         when(userService.saveOrUpdate4me(any()))
                 .thenReturn(userList.get(1));
 
-        mvc.perform(post("/user").with(csrf())
+        mvc.perform(post("/api/user").with(csrf())
                 .content(new ObjectMapper().writeValueAsString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -198,7 +198,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
     public void givenId_thenDeleteUser_returnSucceed() throws Exception {
         when(userService.removeById(anyLong())).thenReturn(true);
 
-        mvc.perform(delete("/user/{id}", 1L).with(csrf()))
+        mvc.perform(delete("/api/user/{id}", 1L).with(csrf()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

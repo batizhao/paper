@@ -1,7 +1,9 @@
 package io.github.batizhao.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,22 +21,50 @@ import java.util.stream.Collectors;
 @Slf4j
 public class WebExceptionHandler {
 
+    /**
+     * 在没有开启 OAuth 的情况下，访问一个需要授权的接口，这个 ExceptionHandler 会起作用
+     *
+     * @param e
+     * @return
+     */
     @ExceptionHandler
-    public ResponseInfo<String> accessDeniedExceptionHandler(AccessDeniedException e) {
-        log.error("AccessDeniedException", e);
-        return new ResponseInfo<String>().setCode(ResultEnum.PERMISSION_ERROR.getCode())
-                .setMessage(ResultEnum.PERMISSION_ERROR.getMessage())
+    public ResponseInfo<String> handleAccessDeniedException(AccessDeniedException e) {
+        log.error("Access Denied Exception!", e);
+        return new ResponseInfo<String>().setCode(ResultEnum.PERMISSION_FORBIDDEN_ERROR.getCode())
+                .setMessage(ResultEnum.PERMISSION_FORBIDDEN_ERROR.getMessage())
+                .setData(e.getMessage());
+    }
+
+    /**
+     * Request Body
+     * @param e
+     * @return
+     */
+    @ExceptionHandler
+    public ResponseInfo<String> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        log.error("Http Message Not Readable Exception!", e);
+        return new ResponseInfo<String>().setCode(ResultEnum.PARAMETER_INVALID.getCode())
+                .setMessage(ResultEnum.PARAMETER_INVALID.getMessage())
+                .setData(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseInfo<String> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        log.error("Http Request Method Not Supported Exception!", e);
+        return new ResponseInfo<String>().setCode(ResultEnum.PARAMETER_INVALID.getCode())
+                .setMessage(ResultEnum.PARAMETER_INVALID.getMessage())
                 .setData(e.getMessage());
     }
 
     /**
      * RequestParam Exception
+     *
      * @param e MissingServletRequestParameterException
      * @return
      */
     @ExceptionHandler
-    public ResponseInfo<String> accessDeniedExceptionHandler(MissingServletRequestParameterException e) {
-        log.error("MissingServletRequestParameterException", e);
+    public ResponseInfo<String> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+        log.error("Missing Servlet Request Parameter Exception!", e);
         return new ResponseInfo<String>().setCode(ResultEnum.PARAMETER_INVALID.getCode())
                 .setMessage(ResultEnum.PARAMETER_INVALID.getMessage())
                 .setData(e.getMessage());
@@ -42,6 +72,7 @@ public class WebExceptionHandler {
 
     /**
      * RequestBody Validation
+     *
      * @param e MethodArgumentNotValidException
      * @return
      */
@@ -54,7 +85,7 @@ public class WebExceptionHandler {
                 .map(x -> x.getDefaultMessage())
                 .collect(Collectors.toList());
 
-        log.error("MethodArgumentNotValidException, errors is {}", errors, e);
+        log.error("Method Argument Not Valid Exception, errors is {}", errors, e);
         return new ResponseInfo<List<String>>().setCode(ResultEnum.PARAMETER_INVALID.getCode())
                 .setMessage(ResultEnum.PARAMETER_INVALID.getMessage())
                 .setData(errors);
@@ -62,6 +93,7 @@ public class WebExceptionHandler {
 
     /**
      * Path Variables Validation
+     *
      * @param e ConstraintViolationException
      * @return
      */
@@ -80,8 +112,8 @@ public class WebExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseInfo<String> defaultErrorHandler(Exception e) {
-        log.error("Default Exception", e);
+    public ResponseInfo<String> handleDefaultError(Exception e) {
+        log.error("Default Exception!", e);
         return new ResponseInfo<String>().setCode(ResultEnum.UNKNOWN_ERROR.getCode())
                 .setMessage(ResultEnum.UNKNOWN_ERROR.getMessage())
                 .setData(e.getMessage());

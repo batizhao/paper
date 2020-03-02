@@ -22,21 +22,11 @@ public class ErrorHandlerIntegrationTest extends BaseControllerIntegrationTest {
     private MockMvc mvc;
 
     @Test
-    public void whenErrorPath_thenUnauthorized() throws Exception {
-        mvc.perform(get("/error"))
-                .andDo(print())
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
     public void whenErrorPath_thenSuccess() throws Exception {
-        String accessToken = obtainAccessToken(USERNAME, PASSWORD);
-        mvc.perform(get("/error")
-                .header("Authorization", "Bearer " + accessToken))
+        mvc.perform(get("/error"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ResultEnum.RESOURCE_NOT_FOUND.getCode()));
     }
-
 }

@@ -28,7 +28,7 @@
   在 Spring Security 启用的情况下，如果 Controller 单元测试（使用 @WebMvcTest），隔离 DAO、Service，要注意以下几点：
   1. post、put、delete 方法要加上 with(csrf())，否则会返回 403
   2. 单元测试要控制扫描范围，防止 Spring Security Config 自动初始化，尤其是 UserDetailsService 自定义的情况（会加载 Mapper）
-  3. 测试方法要加上 @WithMockUser，否则会返回 401
+  3. 测试方法要加上 @WithMockUser，否则会返回 401（OAuth 开启后不需要）
   ```
 
 * 在 ut 分支使用了 h2 内存数据库，直接运行 *mvn test* 即可，可以最快捷的体验完整测试用例。

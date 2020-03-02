@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Api(tags = "用户管理")
 @RestController
-@RequestMapping("user")
+@RequestMapping("api/user")
 @Slf4j
 @Validated
 public class UserController {
@@ -64,6 +64,7 @@ public class UserController {
 
     @ApiOperation(value = "列表查询", notes = "返回所有的用户")
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseInfo<List<User>> findAll() {
         List<User> users = userService.list();
         return new ResponseInfo<List<User>>().setCode(ResultEnum.SUCCESS.getCode())

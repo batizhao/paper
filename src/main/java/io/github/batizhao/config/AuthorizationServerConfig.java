@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -29,13 +30,13 @@ import java.util.Arrays;
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
+    private UserDetailsService userDetailsService;
+    @Autowired
     private PasswordEncoder passwordEncoder;
-
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
-    private UserDetailsService userDetailsService;
+    private WebResponseExceptionTranslator webResponseExceptionTranslator;
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
@@ -46,9 +47,15 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         endpoints.tokenEnhancer(tokenEnhancerChain)
                 .authenticationManager(authenticationManager)
                 .tokenStore(jwtTokenStore())
-                .userDetailsService(userDetailsService);
+                .userDetailsService(userDetailsService)
+                .exceptionTranslator(webResponseExceptionTranslator);
     }
 
+    /**
+     * 如果配置了 passwordEncoder，这里一定要对 secret 进行编码，否则会 return 401
+     * @param clients
+     * @throws Exception
+     */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()

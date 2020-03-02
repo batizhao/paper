@@ -5,7 +5,6 @@ import io.github.batizhao.domain.User;
 import io.github.batizhao.exception.ResultEnum;
 import org.junit.Test;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.*;
@@ -14,17 +13,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
+ * 在 OAuth 开启的情况下，不再需要 @WithMockUser 来模拟用户
  * @author batizhao
  * @since 2020-02-11
  */
 public class UserControllerIntegrationTest extends BaseControllerIntegrationTest {
 
     @Test
-    @WithMockUser(roles = {"USER"})
+//    @WithMockUser(roles = {"USER"})
     public void givenUserName_thenFindUser_returnUserJson() throws Exception {
         String accessToken = obtainAccessToken(USERNAME, PASSWORD);
 
-        mvc.perform(get("/user/username").param("username", "bob")
+        mvc.perform(get("/api/user/username").param("username", "bob")
                 .header("Authorization", "Bearer " + accessToken))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -39,10 +39,10 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      * @throws Exception
      */
     @Test
-    @WithMockUser(roles = {"USER"})
+//    @WithMockUser(roles = {"USER"})
     public void givenUserName_thenFindUser_returnValidateFailed() throws Exception {
         String accessToken = obtainAccessToken(USERNAME, PASSWORD);
-        mvc.perform(get("/user/username").param("username", "xx")
+        mvc.perform(get("/api/user/username").param("username", "xx")
                 .header("Authorization", "Bearer " + accessToken))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -51,11 +51,11 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser
+//    @WithMockUser
     public void givenName_thenFindUser_returnUserListJson() throws Exception {
         String accessToken = obtainAccessToken(USERNAME, PASSWORD);
 
-        mvc.perform(get("/user/name").param("name", "孙波波")
+        mvc.perform(get("/api/user/name").param("name", "孙波波")
                 .header("Authorization", "Bearer " + accessToken))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -67,10 +67,10 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser
+//    @WithMockUser
     public void givenId_thenFindUser_ReturnUserJson() throws Exception {
         String accessToken = obtainAccessToken(USERNAME, PASSWORD);
-        mvc.perform(get("/user/{id}", 1L)
+        mvc.perform(get("/api/user/{id}", 1L)
                 .header("Authorization", "Bearer " + accessToken))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -80,10 +80,10 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     }
 
     @Test
-    @WithMockUser
+//    @WithMockUser
     public void givenNothing_thenFindAllUser_returnUserListJson() throws Exception {
         String accessToken = obtainAccessToken(USERNAME, PASSWORD);
-        mvc.perform(get("/user")
+        mvc.perform(get("/api/user")
                 .header("Authorization", "Bearer " + accessToken))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -100,14 +100,14 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      */
     @Test
     @Transactional
-    @WithMockUser(roles = {"ADMIN"})
+//    @WithMockUser(roles = {"ADMIN"})
     public void givenJson_thenSaveUser_returnSucceedJson() throws Exception {
         String accessToken = obtainAccessToken(USERNAME, PASSWORD);
         User requestBody = new User()
                 .setName("daxia").setEmail("daxia@gmail.com").setUsername("daxia")
                 .setPassword("123456");
 
-        mvc.perform(post("/user")
+        mvc.perform(post("/api/user")
                 .content(new ObjectMapper().writeValueAsString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken))
@@ -125,12 +125,12 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      * @throws Exception
      */
     @Test
-    @WithMockUser(roles = {"ADMIN"})
+//    @WithMockUser(roles = {"ADMIN"})
     public void givenJson_thenSaveUser_returnValidateFailed() throws Exception {
         String accessToken = obtainAccessToken(USERNAME, PASSWORD);
         User requestBody = new User().setName("daxia").setEmail("daxia@gmail.com");
 
-        mvc.perform(post("/user")
+        mvc.perform(post("/api/user")
                 .content(new ObjectMapper().writeValueAsString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken))
@@ -142,14 +142,14 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
 
     @Test
     @Transactional
-    @WithMockUser(roles = {"ADMIN"})
+//    @WithMockUser(roles = {"ADMIN"})
     public void givenJson_thenUpdateUser_returnSucceedJson() throws Exception {
         String accessToken = obtainAccessToken(USERNAME, PASSWORD);
         User requestBody = new User()
                 .setId(8L).setName("daxia").setEmail("daxia@gmail.com").setUsername("daxia")
                 .setPassword("123456");
 
-        mvc.perform(post("/user")
+        mvc.perform(post("/api/user")
                 .content(new ObjectMapper().writeValueAsString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken))
@@ -162,10 +162,10 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
 
     @Test
     @Transactional
-    @WithMockUser(roles = {"ADMIN"})
+//    @WithMockUser(roles = {"ADMIN"})
     public void givenId_thenDeleteUser_returnSucceed() throws Exception {
         String accessToken = obtainAccessToken(USERNAME, PASSWORD);
-        mvc.perform(delete("/user/{id}", 1L)
+        mvc.perform(delete("/api/user/{id}", 1L)
                 .header("Authorization", "Bearer " + accessToken))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -179,14 +179,25 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      * @throws Exception
      */
     @Test
-    @WithMockUser(roles = {"ADMIN"})
+//    @WithMockUser(roles = {"ADMIN"})
     public void givenId_thenDeleteUser_returnValidateFail() throws Exception {
         String accessToken = obtainAccessToken(USERNAME, PASSWORD);
-        mvc.perform(delete("/user/{id}", -1000L)
+        mvc.perform(delete("/api/user/{id}", -1000L)
                 .header("Authorization", "Bearer " + accessToken))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ResultEnum.PARAMETER_INVALID.getCode()));
+    }
+
+    @Test
+    public void givenInvalidRole_whenGetSecureRequest_thenForbidden() throws Exception {
+        String accessToken = obtainAccessToken("tom", "123456");
+        mvc.perform(delete("/api/user/{id}", 3L)
+                .header("Authorization", "Bearer " + accessToken))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.PERMISSION_FORBIDDEN_ERROR.getCode()));
     }
 }
