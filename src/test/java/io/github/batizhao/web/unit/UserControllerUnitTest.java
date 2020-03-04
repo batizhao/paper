@@ -71,7 +71,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
 
     @Test
     @WithMockUser
-    public void givenUserName_thenFindUser_returnUserJson() throws Exception {
+    public void givenUserName_whenFindUser_thenUserJson() throws Exception {
         String username = "zhangsan";
 
         when(userService.findByUsername(username)).thenReturn(userList.get(0));
@@ -88,7 +88,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
 
     @Test
     @WithMockUser
-    public void givenName_thenFindUser_returnUserListJson() throws Exception {
+    public void givenName_whenFindUser_thenUserListJson() throws Exception {
         String name = "张三";
 
         //对数据集进行条件过滤
@@ -114,7 +114,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
 
     @Test
     @WithMockUser
-    public void givenId_thenFindUser_ReturnUserJson() throws Exception {
+    public void givenId_whenFindUser_thenUserJson() throws Exception {
         Long id = 1L;
 
         when(userService.getById(id)).thenReturn(userList.get(0));
@@ -131,7 +131,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
 
     @Test
     @WithMockUser
-    public void givenNothing_thenFindAllUser_returnUserListJson() throws Exception {
+    public void givenNothing_whenFindAllUser_thenUserListJson() throws Exception {
         when(userService.list()).thenReturn(userList);
 
         mvc.perform(get("/api/user"))
@@ -148,7 +148,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
 
     @Test
     @WithMockUser
-    public void givenJson_thenSaveUser_returnSucceedJson() throws Exception {
+    public void givenJson_whenSaveUser_thenSucceedJson() throws Exception {
         User requestBody = new User().setEmail("zhaoliu@gmail.com").setUsername("zhaoliu").setPassword("xxx").setName("xxx");
 
         when(userService.saveOrUpdate4me(any()))
@@ -168,7 +168,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
 
     @Test
     @WithMockUser
-    public void givenJson_thenUpdateUser_returnSucceedJson() throws Exception {
+    public void givenJson_whenUpdateUser_thenSucceedJson() throws Exception {
         User requestBody = new User().setId(2L).setEmail("zhaoliu@gmail.com").setUsername("zhaoliu").setPassword("xxx").setName("xxx");
 
         when(userService.saveOrUpdate4me(any()))
@@ -195,7 +195,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
      */
     @Test
     @WithMockUser
-    public void givenId_thenDeleteUser_returnSucceed() throws Exception {
+    public void givenId_whenDeleteUser_thenSucceed() throws Exception {
         when(userService.removeById(anyLong())).thenReturn(true);
 
         mvc.perform(delete("/api/user/{id}", 1L).with(csrf()))

@@ -21,11 +21,9 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
 
     @Test
 //    @WithMockUser(roles = {"USER"})
-    public void givenUserName_thenFindUser_returnUserJson() throws Exception {
-        String accessToken = obtainAccessToken(USERNAME, PASSWORD);
-
+    public void givenUserName_whenFindUser_thenUserJson() throws Exception {
         mvc.perform(get("/api/user/username").param("username", "bob")
-                .header("Authorization", "Bearer " + accessToken))
+                .header("Authorization", "Bearer " + access_token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -40,23 +38,38 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      */
     @Test
 //    @WithMockUser(roles = {"USER"})
-    public void givenUserName_thenFindUser_returnValidateFailed() throws Exception {
-        String accessToken = obtainAccessToken(USERNAME, PASSWORD);
+    public void givenUserName_whenFindUser_thenValidateFailed() throws Exception {
         mvc.perform(get("/api/user/username").param("username", "xx")
-                .header("Authorization", "Bearer " + accessToken))
+                .header("Authorization", "Bearer " + access_token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(ResultEnum.PARAMETER_INVALID.getCode()));
+                .andExpect(jsonPath("$.code").value(ResultEnum.PARAMETER_INVALID.getCode()))
+                .andExpect(jsonPath("$.data[0]", containsString("个数必须在")));
+    }
+
+    /**
+     * Param 丢失的情况
+     *
+     * @throws Exception
+     */
+    @Test
+//    @WithMockUser(roles = {"USER"})
+    public void givenNoUserName_whenFindUser_thenValidateFailed() throws Exception {
+        mvc.perform(get("/api/user/username")
+                .header("Authorization", "Bearer " + access_token))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.PARAMETER_INVALID.getCode()))
+                .andExpect(jsonPath("$.data", containsString("Required String parameter")));
     }
 
     @Test
 //    @WithMockUser
-    public void givenName_thenFindUser_returnUserListJson() throws Exception {
-        String accessToken = obtainAccessToken(USERNAME, PASSWORD);
-
+    public void givenName_whenFindUser_thenUserListJson() throws Exception {
         mvc.perform(get("/api/user/name").param("name", "孙波波")
-                .header("Authorization", "Bearer " + accessToken))
+                .header("Authorization", "Bearer " + access_token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -68,10 +81,9 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
 
     @Test
 //    @WithMockUser
-    public void givenId_thenFindUser_ReturnUserJson() throws Exception {
-        String accessToken = obtainAccessToken(USERNAME, PASSWORD);
+    public void givenId_whenFindUser_thenUserJson() throws Exception {
         mvc.perform(get("/api/user/{id}", 1L)
-                .header("Authorization", "Bearer " + accessToken))
+                .header("Authorization", "Bearer " + access_token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -81,10 +93,9 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
 
     @Test
 //    @WithMockUser
-    public void givenNothing_thenFindAllUser_returnUserListJson() throws Exception {
-        String accessToken = obtainAccessToken(USERNAME, PASSWORD);
+    public void givenNothing_whenFindAllUser_thenUserListJson() throws Exception {
         mvc.perform(get("/api/user")
-                .header("Authorization", "Bearer " + accessToken))
+                .header("Authorization", "Bearer " + access_token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -101,8 +112,7 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     @Test
     @Transactional
 //    @WithMockUser(roles = {"ADMIN"})
-    public void givenJson_thenSaveUser_returnSucceedJson() throws Exception {
-        String accessToken = obtainAccessToken(USERNAME, PASSWORD);
+    public void givenJson_whenSaveUser_thenSucceedJson() throws Exception {
         User requestBody = new User()
                 .setName("daxia").setEmail("daxia@gmail.com").setUsername("daxia")
                 .setPassword("123456");
@@ -110,7 +120,7 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
         mvc.perform(post("/api/user")
                 .content(new ObjectMapper().writeValueAsString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + accessToken))
+                .header("Authorization", "Bearer " + access_token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -120,31 +130,48 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     }
 
     /**
-     * RequestBody 校验失败的情况
+     * RequestBody 校验失败的情况1
      *
      * @throws Exception
      */
     @Test
 //    @WithMockUser(roles = {"ADMIN"})
-    public void givenJson_thenSaveUser_returnValidateFailed() throws Exception {
-        String accessToken = obtainAccessToken(USERNAME, PASSWORD);
+    public void givenJson_whenSaveUser_thenValidateFailed() throws Exception {
         User requestBody = new User().setName("daxia").setEmail("daxia@gmail.com");
 
         mvc.perform(post("/api/user")
                 .content(new ObjectMapper().writeValueAsString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + accessToken))
+                .header("Authorization", "Bearer " + access_token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(ResultEnum.PARAMETER_INVALID.getCode()));
+                .andExpect(jsonPath("$.code").value(ResultEnum.PARAMETER_INVALID.getCode()))
+                .andExpect(jsonPath("$.data[0]", containsString("is not blank")));
+    }
+
+    /**
+     * RequestBody 校验失败的情况2
+     *
+     * @throws Exception
+     */
+    @Test
+//    @WithMockUser(roles = {"ADMIN"})
+    public void givenNoJson_whenSaveUser_thenValidateFailed() throws Exception {
+        mvc.perform(post("/api/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + access_token))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.PARAMETER_INVALID.getCode()))
+                .andExpect(jsonPath("$.data", containsString("Required request body is missing")));
     }
 
     @Test
     @Transactional
 //    @WithMockUser(roles = {"ADMIN"})
-    public void givenJson_thenUpdateUser_returnSucceedJson() throws Exception {
-        String accessToken = obtainAccessToken(USERNAME, PASSWORD);
+    public void givenJson_whenUpdateUser_thenSucceedJson() throws Exception {
         User requestBody = new User()
                 .setId(8L).setName("daxia").setEmail("daxia@gmail.com").setUsername("daxia")
                 .setPassword("123456");
@@ -152,7 +179,7 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
         mvc.perform(post("/api/user")
                 .content(new ObjectMapper().writeValueAsString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + accessToken))
+                .header("Authorization", "Bearer " + access_token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -163,14 +190,14 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     @Test
     @Transactional
 //    @WithMockUser(roles = {"ADMIN"})
-    public void givenId_thenDeleteUser_returnSucceed() throws Exception {
-        String accessToken = obtainAccessToken(USERNAME, PASSWORD);
+    public void givenId_whenDeleteUser_thenSucceed() throws Exception {
         mvc.perform(delete("/api/user/{id}", 1L)
-                .header("Authorization", "Bearer " + accessToken))
+                .header("Authorization", "Bearer " + access_token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()));
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data").value(true));
     }
 
     /**
@@ -180,24 +207,25 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      */
     @Test
 //    @WithMockUser(roles = {"ADMIN"})
-    public void givenId_thenDeleteUser_returnValidateFail() throws Exception {
-        String accessToken = obtainAccessToken(USERNAME, PASSWORD);
+    public void givenId_whenDeleteUser_thenValidateFail() throws Exception {
         mvc.perform(delete("/api/user/{id}", -1000L)
-                .header("Authorization", "Bearer " + accessToken))
+                .header("Authorization", "Bearer " + access_token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(ResultEnum.PARAMETER_INVALID.getCode()));
+                .andExpect(jsonPath("$.code").value(ResultEnum.PARAMETER_INVALID.getCode()))
+                .andExpect(jsonPath("$.data[0]", containsString("最小不能小于")));
     }
 
     @Test
     public void givenInvalidRole_whenGetSecureRequest_thenForbidden() throws Exception {
-        String accessToken = obtainAccessToken("tom", "123456");
+        String access_token = obtainAccessToken("tom", "123456");
         mvc.perform(delete("/api/user/{id}", 3L)
-                .header("Authorization", "Bearer " + accessToken))
+                .header("Authorization", "Bearer " + access_token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(ResultEnum.PERMISSION_FORBIDDEN_ERROR.getCode()));
+                .andExpect(jsonPath("$.code").value(ResultEnum.PERMISSION_FORBIDDEN_ERROR.getCode()))
+                .andExpect(jsonPath("$.data", containsString("不允许访问")));
     }
 }

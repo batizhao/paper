@@ -18,9 +18,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 public class ErrorHandlerIntegrationTest extends BaseControllerIntegrationTest {
 
-    @Autowired
-    private MockMvc mvc;
-
     @Test
     public void whenErrorPath_thenSuccess() throws Exception {
         mvc.perform(get("/error"))

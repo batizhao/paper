@@ -5,6 +5,8 @@ info:
     version: '@project.version@'
 
 spring:
+  mvc:
+    locale: zh_CN
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     password: password

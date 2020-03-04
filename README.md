@@ -20,6 +20,8 @@
 
 * 在 DAO、Service、Controller 层都实现了单元测试，类名以 UnitTest 结尾。
 
+* 测试方法名使用 given*Param*\_when*Dothing*\_then*Result* 的方式全名。
+
 * 在每层都会使用 Mockito 隔离所有依赖。
 
 * 需要注意的是尽量控制类和配置加载的范围在当前层。在单元测试中不要使用 *@SpringBootTest*，而是分别使用 *@MybatisTest*、*@WebMvcTest*。

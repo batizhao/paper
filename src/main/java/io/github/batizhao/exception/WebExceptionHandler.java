@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class WebExceptionHandler {
 
     /**
-     * 在没有开启 OAuth 的情况下，访问一个需要授权的接口，这个 ExceptionHandler 会起作用
+     * 访问一个需要授权的接口，这个 ExceptionHandler 会起作用
      *
      * @param e
      * @return

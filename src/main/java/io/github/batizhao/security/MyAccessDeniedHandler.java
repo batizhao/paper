@@ -18,6 +18,8 @@ import java.io.IOException;
  * 指的是登录了但是由于权限不足(比如普通用户访问管理员界面）
  * 如果异常是 AccessDeniedException 且用户不是匿名用户，使用 AccessDeniedHandler 处理
  *
+ * 如果定义了全局异常处理器 @ExceptionHandler ，这个异常会提前被拦截
+ *
  * @author batizhao
  * @since 2020-03-02
  **/
