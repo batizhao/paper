@@ -1,8 +1,6 @@
 package io.github.batizhao.service;
 
-import io.github.batizhao.domain.Role;
 import io.github.batizhao.domain.User;
-import io.github.batizhao.mapper.RoleMapper;
 import io.github.batizhao.mapper.UserMapper;
 import io.github.batizhao.service.iml.UserServiceIml;
 import lombok.extern.slf4j.Slf4j;
@@ -12,9 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;

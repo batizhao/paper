@@ -2,6 +2,7 @@ package io.github.batizhao.web.integration;
 
 import io.github.batizhao.PaperApplication;
 import io.github.batizhao.exception.ResultEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author batizhao
  * @since 2020-03-02
  **/
+@Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
@@ -133,8 +136,21 @@ public class OAuthIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(ResultEnum.PERMISSION_UNAUTHORIZED_ERROR.getCode()))
+                .andExpect(jsonPath("$.code").value(ResultEnum.OAUTH2_TOKEN_EXPIRED.getCode()))
                 .andExpect(jsonPath("$.data", containsString("Access token expired")));
+    }
+
+    @Test
+    public void givenRefreshToken_whenGetAccessToken_thenSuccess() throws Exception {
+        String refreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJ0b20iLCJzY29wZSI6WyJhbGwiXSwiYXRpIjoiYmY1Zjc0NTQtOWJmNi00MjkyLWFiYmYtODUyNWM4ZDFmZjQwIiwiZXhwIjoxNTg0MTcwNTIyLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiMjVkM2RiOTUtYmI4Yy00OWEzLTk2YzgtYjU1NjcwMGU4NjJhIiwiY2xpZW50X2lkIjoiY2xpZW50X2FwcCIsInVzZXJuYW1lIjoidG9tIn0.tidD9hr0E6vx9WFXvAlnHMbjmnD0sXnC-c7TH_tdZt0";
+
+        mvc.perform(post("/oauth/token")
+                .param("grant_type", "refresh_token").param("refresh_token", refreshToken)
+                .with(httpBasic(CLIENT_ID, CLIENT_SECRET)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.token_type", equalTo("bearer")));
     }
 
     @Test

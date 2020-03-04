@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.batizhao.exception.ResponseInfo;
 import io.github.batizhao.exception.ResultEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -36,6 +37,13 @@ public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint {
         ResponseInfo<String> message = new ResponseInfo<String>().setCode(ResultEnum.PERMISSION_UNAUTHORIZED_ERROR.getCode())
                 .setMessage(ResultEnum.PERMISSION_UNAUTHORIZED_ERROR.getMessage())
                 .setData(authException.getMessage());
+
+        //access token expired
+        if(authException instanceof InsufficientAuthenticationException) {
+            message = new ResponseInfo<String>().setCode(ResultEnum.OAUTH2_TOKEN_EXPIRED.getCode())
+                    .setMessage(ResultEnum.OAUTH2_TOKEN_EXPIRED.getMessage())
+                    .setData(authException.getMessage());
+        }
 
         log.error("Authentication Exception Handler for 401.", authException);
         response.getWriter().write(new ObjectMapper().writeValueAsString(message));
