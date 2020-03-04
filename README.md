@@ -42,6 +42,7 @@
 * 在 Controller 层实现了集成测试，类名以 IntegrationTest 结尾。
 * 在启动测试时，会实例化所有上下文，使用 *@SpringBootTest*。
 * 还可以在 YApi 中跑集成测试（通过 Swagger 同步接口），并且在其中查看测试报告。
+* MockMvc 并不是真正的 Server，所以有些情况并不能完全模拟（比如 ErrorController 4xx Status）。具体可以看这个 [Issues](https://github.com/spring-projects/spring-boot/issues/5574)。
 
 ## 测试报告
 

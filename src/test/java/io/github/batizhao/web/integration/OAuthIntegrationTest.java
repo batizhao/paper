@@ -59,11 +59,19 @@ public class OAuthIntegrationTest {
 //    }
 
     /**
-     * TODO: 和 curl、postman 返回信息不匹配
-     * curl -X POST --user 'client_app:xxxx' localhost:8080/oauth/token\?grant_type=password\&username=admin\&password=123456
-     * 会重定向到 ErrorController ，然后被 WebExceptionHandler#handleHttpRequestMethodNotSupportedException 捕获返回 401 错误
+     * MockMvc 不是一个真正的 servlet server，所以，并不支持 ErrorController
+     * 可以看这个 issues：https://github.com/spring-projects/spring-boot/issues/5574
      *
-     * 在 MockMvc 这里，不会被重定向到 /error
+     * curl -X POST --user 'client_app:xxxx' localhost:8080/oauth/token\?grant_type=password\&username=admin\&password=123456
+     * 这个方法失败后会重定向到 ErrorController ，然后被 WebExceptionHandler#handleHttpRequestMethodNotSupportedException 捕获返回 401 错误
+     *
+     * {
+     *   "code": 100001,
+     *   "message": "参数不合法！",
+     *   "data": "Request method 'POST' not supported"
+     * }
+     *
+     * 在 MockMvc 这里，不会被重定向到 /error，直接就返回 401。所以，并不能给到期望的自定义消息。
      *
      * @throws Exception
      */

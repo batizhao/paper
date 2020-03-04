@@ -228,4 +228,15 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
                 .andExpect(jsonPath("$.code").value(ResultEnum.PERMISSION_FORBIDDEN_ERROR.getCode()))
                 .andExpect(jsonPath("$.data", containsString("不允许访问")));
     }
+
+    @Test
+    public void givenId_whenPutUser_thenMethodNotSupported() throws Exception {
+        mvc.perform(put("/api/user/{id}", 3L)
+                .header("Authorization", "Bearer " + access_token))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.PARAMETER_INVALID.getCode()))
+                .andExpect(jsonPath("$.data", containsString("Request method 'PUT' not supported")));
+    }
 }

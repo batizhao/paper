@@ -22,14 +22,14 @@ public class MyOAuth2Exception extends OAuth2Exception {
         super(msg);
     }
 
-    /**
-     * Create a new MyOAuth2Exception with the specified message
-     * and root cause.
-     *
-     * @param msg   the detail message
-     * @param cause the root cause
-     */
-    public MyOAuth2Exception(@Nullable String msg, @Nullable Throwable cause) {
-        super(msg, cause);
-    }
+//    /**
+//     * Create a new MyOAuth2Exception with the specified message
+//     * and root cause.
+//     *
+//     * @param msg   the detail message
+//     * @param cause the root cause
+//     */
+//    public MyOAuth2Exception(@Nullable String msg, @Nullable Throwable cause) {
+//        super(msg, cause);
+//    }
 }
