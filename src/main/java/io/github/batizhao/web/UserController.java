@@ -9,7 +9,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -90,5 +92,15 @@ public class UserController {
         return new ResponseInfo<Boolean>().setCode(ResultEnum.SUCCESS.getCode())
                 .setMessage(ResultEnum.SUCCESS.getMessage())
                 .setData(b);
+    }
+
+    @GetMapping("/whoiam")
+    public ResponseInfo<String> getCurrentUser(Authentication authentication,
+                                               @RequestHeader(value = HttpHeaders.AUTHORIZATION) String authHeader) {
+        log.info("authHeader: {}", authHeader);
+        String username = authentication.getName();
+        return new ResponseInfo<String>().setCode(ResultEnum.SUCCESS.getCode())
+                .setMessage(ResultEnum.SUCCESS.getMessage())
+                .setData(username);
     }
 }
