@@ -98,6 +98,9 @@ public class UserController {
     public ResponseInfo<String> getCurrentUser(Authentication authentication,
                                                @RequestHeader(value = HttpHeaders.AUTHORIZATION) String authHeader) {
         log.info("authHeader: {}", authHeader);
+        String access_token = authHeader.substring("Bearer ".length());
+        log.info("access token: {}", access_token);
+
         String username = authentication.getName();
         return new ResponseInfo<String>().setCode(ResultEnum.SUCCESS.getCode())
                 .setMessage(ResultEnum.SUCCESS.getMessage())
