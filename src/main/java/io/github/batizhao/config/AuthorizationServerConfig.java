@@ -46,7 +46,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
         endpoints.tokenEnhancer(tokenEnhancerChain)
                 .authenticationManager(authenticationManager)
-                .tokenStore(jwtTokenStore())
+                .tokenStore(tokenStore())
                 .userDetailsService(userDetailsService)
                 .exceptionTranslator(webResponseExceptionTranslator);
     }
@@ -73,7 +73,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     }
 
     @Bean
-    public TokenStore jwtTokenStore() {
+    public TokenStore tokenStore() {
+//        return new ManageableJwtTokenStore(jwtAccessTokenConverter());
         return new JwtTokenStore(jwtAccessTokenConverter());
     }
 

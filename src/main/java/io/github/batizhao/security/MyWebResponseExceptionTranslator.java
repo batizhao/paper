@@ -1,6 +1,5 @@
 package io.github.batizhao.security;
 
-import io.github.batizhao.exception.ResultEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,6 +12,11 @@ import org.springframework.stereotype.Component;
  * 因为 ExceptionHandler 不能捕获到 OAuth 中的异常，所以如果要统一返回消息，
  * 需要重写 DefaultWebResponseExceptionTranslator
  * 这里主要是和访问 /oauth/token 相关的异常
+ *
+ * 1. InvalidGrantException: Invalid refresh token givenInvalidRefreshToken_whenGetAccessToken_thenOAuthException
+ * 2. InvalidTokenException: Invalid refresh token (expired) givenInvalidRefreshToken_whenGetAccessToken_thenOAuthException
+ * 3. InvalidGrantException: 用户名或密码错误 givenNoPassword_whenGetAccessToken_thenOAuthException
+ * 4. InvalidRequestException: Missing grant type givenNoGrantType_whenGetAccessToken_thenOAuthException
  *
  * @author batizhao
  * @since 2020-03-02

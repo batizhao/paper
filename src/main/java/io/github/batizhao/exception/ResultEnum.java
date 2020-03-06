@@ -23,7 +23,7 @@ public enum ResultEnum {
     UNKNOWN_ERROR(100000, "未知的错误！"),
     PARAMETER_INVALID(100001, "参数不合法！"),
     OAUTH2_TOKEN_ERROR(100002, "获取访问令牌失败！"),
-    OAUTH2_TOKEN_EXPIRED(100003, "访问令牌过期！"),
+    OAUTH2_TOKEN_INVALID(100003, "访问令牌不合法！"),
     PERMISSION_UNAUTHORIZED_ERROR(100004, "认证失败！"),
     PERMISSION_FORBIDDEN_ERROR(100005, "权限不足！"),
     RESOURCE_NOT_FOUND(100010, "没有找到相关资源！"),

@@ -187,7 +187,7 @@ Rule violated for package ***: lines covered ratio is 0.8, but expected minimum 
   given(xxx.method()).willAnswer( invocation -> { throw new CheckedException("msg"); });
   ```
 
-## 认证
+## 认证和授权
 
 ### 获取 access_token
 ```shell
@@ -205,9 +205,9 @@ Rule violated for package ***: lines covered ratio is 0.8, but expected minimum 
 
 ### 使用 refresh_token 更新 access_token
 
-* 当 access_token 过期时，服务端会返回 100003
-* 前端捕获这个 code，用 refresh_token 去换取新的 access_token
-* 如果 refresh_token 也过期，要重新输入账号密码进行登录
+* 当使用一个过期的 *access_token* 访问 API 时，服务端会返回 100003（**Access token expired**）。测试用例 *givenExpiredToken_whenGetSecureRequest_thenUnauthorized*。
+* 前端捕获这个 code，用本地存储的 *refresh_token* 去换取新的 *access_token*。
+* 如果 *refresh_token* 也过期，服务端会返回 100002（**Invalid refresh token**），重新输入账号密码请求 *access_token*。测试用例 *givenInvalidRefreshToken_whenGetAccessToken_thenOAuthException*
 
 ```shell
 # curl -X POST --user 'client_app:123456' 'localhost:8080/oauth/token?grant_type=refresh_token&refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJhZG1pbiIsInNjb3BlIjpbImFsbCJdLCJhdGkiOiIwOTJmNDc4Yy02MzkwLTQ1N2EtYTE5Mi0wZGVmZmJiZTNhOTYiLCJleHAiOjE1ODM5MDk4NTksImF1dGhvcml0aWVzIjpbIlJPTEVfQURNSU4iLCJST0xFX1VTRVIiXSwianRpIjoiMzZlNDgzNmEtMzM4OC00YWJhLWFiMmEtMTRkODMwZTJjZDJlIiwiY2xpZW50X2lkIjoiY2xpZW50X2FwcCIsInVzZXJuYW1lIjoiYWRtaW4ifQ.ByoaXSa6HIJc0OfmVx47SMPt_OmyrD7T9E_kxhtrd20'

@@ -22,6 +22,10 @@ import java.io.IOException;
  *
  * 在 OAuth 开启后，如果用户携带一个过期 Token，使用 AuthenticationEntryPoint 处理
  *
+ * 1. InvalidTokenException: Access token expired 测试用例：givenExpiredToken_whenGetSecureRequest_thenUnauthorized
+ * 2. givenNoToken_whenGetSecureRequest_thenUnauthorized
+ * 3. givenInvalidToken_whenGetSecureRequest_thenUnauthorized
+ *
  * @author batizhao
  * @since 2020-03-02
  **/
@@ -38,10 +42,9 @@ public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint {
                 .setMessage(ResultEnum.PERMISSION_UNAUTHORIZED_ERROR.getMessage())
                 .setData(authException.getMessage());
 
-        //access token expired
         if(authException instanceof InsufficientAuthenticationException) {
-            message = new ResponseInfo<String>().setCode(ResultEnum.OAUTH2_TOKEN_EXPIRED.getCode())
-                    .setMessage(ResultEnum.OAUTH2_TOKEN_EXPIRED.getMessage())
+            message = new ResponseInfo<String>().setCode(ResultEnum.OAUTH2_TOKEN_INVALID.getCode())
+                    .setMessage(ResultEnum.OAUTH2_TOKEN_INVALID.getMessage())
                     .setData(authException.getMessage());
         }
 
