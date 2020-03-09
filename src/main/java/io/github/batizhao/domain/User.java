@@ -2,6 +2,7 @@ package io.github.batizhao.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,9 @@ public class User implements Serializable {
     @TableId(type = IdType.AUTO)
     public Long id;
 
+    /**
+     * @mock @word(3,30)
+     */
     @ApiModelProperty(value = "用户名", example = "zhangsan")
     @NotBlank(message = "username is not blank")
     @Size(min = 3, max = 30)
@@ -37,17 +41,27 @@ public class User implements Serializable {
 
     @ApiModelProperty(value = "密码")
     @NotBlank(message = "password is not blank")
-    private String password;
+    @JsonIgnore
+    private String password = "123456";
 
+    /**
+     * @mock @email
+     */
     @ApiModelProperty(value = "邮箱", example = "zhangsan@qq.com")
     @NotBlank(message = "email is not blank")
     @Email
     private String email;
 
+    /**
+     * @mock @cname
+     */
     @ApiModelProperty(value = "姓名", example = "张三")
     @NotBlank(message = "name is not blank")
     private String name;
 
+    /**
+     * @mock @datetime
+     */
     @ApiModelProperty(value = "创建时间")
     private Date time;
 

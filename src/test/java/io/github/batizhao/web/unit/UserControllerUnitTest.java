@@ -76,7 +76,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
 
         when(userService.findByUsername(username)).thenReturn(userList.get(0));
 
-        mvc.perform(get("/api/user/username").param("username", username))
+        mvc.perform(get("/user/username").param("username", username))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -101,7 +101,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
             return userList;
         }).when(userService).findByName(name);
 
-        mvc.perform(get("/api/user/name").param("name", name))
+        mvc.perform(get("/user/name").param("name", name))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -119,7 +119,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
 
         when(userService.getById(id)).thenReturn(userList.get(0));
 
-        mvc.perform(get("/api/user/{id}", id))
+        mvc.perform(get("/user/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -134,7 +134,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
     public void givenNothing_whenFindAllUser_thenUserListJson() throws Exception {
         when(userService.list()).thenReturn(userList);
 
-        mvc.perform(get("/api/user"))
+        mvc.perform(get("/user"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -154,7 +154,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
         when(userService.saveOrUpdate4me(any()))
                 .thenReturn(userList.get(0));
 
-        mvc.perform(post("/api/user").with(csrf())
+        mvc.perform(post("/user").with(csrf())
                 .content(new ObjectMapper().writeValueAsString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -174,7 +174,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
         when(userService.saveOrUpdate4me(any()))
                 .thenReturn(userList.get(1));
 
-        mvc.perform(post("/api/user").with(csrf())
+        mvc.perform(post("/user").with(csrf())
                 .content(new ObjectMapper().writeValueAsString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -198,7 +198,7 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
     public void givenId_whenDeleteUser_thenSucceed() throws Exception {
         when(userService.removeById(anyLong())).thenReturn(true);
 
-        mvc.perform(delete("/api/user/{id}", 1L).with(csrf()))
+        mvc.perform(delete("/user/{id}", 1L).with(csrf()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

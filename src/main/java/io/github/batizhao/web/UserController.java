@@ -21,12 +21,17 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
+ * 用户管理
+ * 这里是用户管理接口的描述
+ *
+ * @module Paper
+ *
  * @author batizhao
  * @since 2016/9/28
  */
-@Api(tags = "用户管理")
+@Api(value = "用户管理")
 @RestController
-@RequestMapping("api/user")
+@RequestMapping("user")
 @Slf4j
 @Validated
 public class UserController {
@@ -94,6 +99,7 @@ public class UserController {
                 .setData(b);
     }
 
+    @ApiOperation(value = "我是谁", notes = "从认证信息中提取当前用户")
     @GetMapping("/whoiam")
     public ResponseInfo<String> getCurrentUser(Authentication authentication,
                                                @RequestHeader(value = HttpHeaders.AUTHORIZATION) String authHeader) {

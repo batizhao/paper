@@ -1,6 +1,7 @@
 package io.github.batizhao.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -112,6 +113,14 @@ public class WebExceptionHandler {
         return new ResponseInfo<List<String>>().setCode(ResultEnum.PARAMETER_INVALID.getCode())
                 .setMessage(ResultEnum.PARAMETER_INVALID.getMessage())
                 .setData(errors);
+    }
+
+    @ExceptionHandler
+    public ResponseInfo<String> handleTypeMismatchException(TypeMismatchException e) {
+        log.error("TypeMismatchException!", e);
+        return new ResponseInfo<String>().setCode(ResultEnum.PARAMETER_INVALID.getCode())
+                .setMessage(ResultEnum.PARAMETER_INVALID.getMessage())
+                .setData(e.getMessage());
     }
 
     @ExceptionHandler
