@@ -29,7 +29,7 @@ import java.util.List;
  * @author batizhao
  * @since 2016/9/28
  */
-@Api(value = "用户管理")
+@Api(tags = "用户管理")
 @RestController
 @RequestMapping("user")
 @Slf4j

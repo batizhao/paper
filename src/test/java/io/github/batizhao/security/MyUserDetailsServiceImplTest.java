@@ -63,7 +63,7 @@ public class MyUserDetailsServiceImplTest {
         when(userMapper.selectOne(any()))
                 .thenReturn(user_test_data);
 
-        when(roleMapper.findRolesByUserId(user_test_data.id))
+        when(roleMapper.findRolesByUserId(user_test_data.getId()))
                 .thenReturn(roleList);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);

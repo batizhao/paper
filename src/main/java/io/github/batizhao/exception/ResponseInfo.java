@@ -15,10 +15,14 @@ public class ResponseInfo<T> {
 
     /**
      * 错误码
+     *
+     * @mock 0
      */
     private Integer code;
     /**
      * 错误信息
+     *
+     * @mock ok
      */
     private String message = "";
     /**

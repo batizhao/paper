@@ -29,7 +29,7 @@ public class User implements Serializable {
 
     @ApiModelProperty(value = "用户ID", example = "100")
     @TableId(type = IdType.AUTO)
-    public Long id;
+    private Long id;
 
     /**
      * @mock @word(3,30)
