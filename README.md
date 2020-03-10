@@ -8,6 +8,8 @@
 * 数据库版本管理
 * 打包标记
 * 统一异常处理
+* OAuth 认证和授权
+* YApi 整合实践
 
 ## 环境
 
@@ -230,5 +232,78 @@ Rule violated for package ***: lines covered ratio is 0.8, but expected minimum 
 }
 ```
 
+## YApi 整合实践
+使用 IDEA EasyYapi 插件，兼容 Swagger，这样如果没有 YApi 或者 EasyYapi 也可以使用 Swagger UI。
 
+同时，可以从代码单向同步接口配置到 YApi，好处是：
+
+* 不至于每次在两边修改后，不好同步。
+* 可以删除 YApi 的接口，只要从代码重新同步。
+* YApi 的配置算是加入了版本控制，因为所有的配置都在代码里。
+* Mock 接口和真实接口的返回数据是一致的。
+
+### POJO 定义
+
+使用 *@ApiModelProperty* 对属性进行说明
+
+如果对属性有细粒度控制，使用 *@mock* 进行定义（[Mock.js](http://mockjs.com/examples.html) 语法）
+
+某些属性会自动生成 mock，如 *@Email、@Min、@Max、@DecimalMax、@DecimalMin* 等，具体看 *.easy.api.config*
+
+
+```Java
+/**
+ * @mock @cname
+ */
+@ApiModelProperty(value = "姓名", example = "张三")
+@NotBlank
+private String name;
+
+/**
+ * @mock @word(3,30)
+ */
+@ApiModelProperty(value = "用户名", example = "zhangsan")
+@NotBlank
+@Size(min = 3, max = 30)
+private String username;
+
+@ApiModelProperty(value = "邮箱", example = "zhangsan@qq.com")
+@NotBlank
+@Email
+private String email;
+```
+### 类
+```java
+/**
+ * 接口分类名称
+ * 这里是接口分类描述
+ *
+ * @module 这里是 YApi 项目名称
+ *
+ */
+@Api(tags = "接口分类名称")
+@RestController
+@RequestMapping("user")
+public class UserController
+```
+
+### 方法
+```java
+/**
+ * 接口名称
+ * 接口备注，接口的详细说明
+ *
+ * @param username 用户名
+ * @return 用户详情
+ */
+@ApiOperation(value = "接口名称")
+@GetMapping("username")
+public ResponseInfo<User> findByUsername(@ApiParam(value = "用户名", required = true)
+                                         @RequestParam @Size(min = 3) String username) {
+    User user = userService.findByUsername(username);
+    return new ResponseInfo<User>().setCode(ResultEnum.SUCCESS.getCode())
+                .setMessage(ResultEnum.SUCCESS.getMessage())
+                .setData(user);
+}
+```
 

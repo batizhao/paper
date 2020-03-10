@@ -39,7 +39,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @ApiOperation(value = "根据用户名查询用户", notes = "用户名不重复，返回用户详情")
+    /**
+     * 根据用户名查询用户
+     * 用户名不重复，返回单个用户详情
+     *
+     * @param username 用户名
+     * @return 用户详情
+     */
+    @ApiOperation(value = "根据用户名查询用户")
     @GetMapping("username")
     @PreAuthorize("hasRole('USER')")
     public ResponseInfo<User> findByUsername(@ApiParam(value = "用户名", required = true)
@@ -50,7 +57,14 @@ public class UserController {
                 .setData(user);
     }
 
-    @ApiOperation(value = "根据姓名查询用户", notes = "有可能重复，所以返回用户列表")
+    /**
+     * 根据姓名查询用户
+     * 有可能重复，所以返回用户列表
+     *
+     * @param name 用户姓名
+     * @return 返回用户列表
+     */
+    @ApiOperation(value = "根据姓名查询用户")
     @GetMapping("name")
     public ResponseInfo<List<User>> findByName(@ApiParam(value = "用户姓名", required = true)
                                                    @RequestParam("name") @Size(min = 2) String name) {
@@ -60,7 +74,14 @@ public class UserController {
                 .setData(users);
     }
 
-    @ApiOperation(value = "根据ID查询用户", notes = "用户名ID不重复，返回用户详情")
+    /**
+     * 根据ID查询用户
+     * 返回用户详情
+     *
+     * @param id 用户id
+     * @return 用户详情
+     */
+    @ApiOperation(value = "根据ID查询用户")
     @GetMapping("{id}")
     public ResponseInfo<User> findById(@ApiParam(value = "用户ID", required = true) @PathVariable("id") @Min(1) Long id) {
         User user = userService.getById(id);
@@ -69,7 +90,13 @@ public class UserController {
                 .setData(user);
     }
 
-    @ApiOperation(value = "列表查询", notes = "返回所有的用户")
+    /**
+     * 查询所有用户
+     * 返回所有的用户
+     *
+     * @return 所有用户列表
+     */
+    @ApiOperation(value = "查询所有用户")
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseInfo<List<User>> findAll() {
@@ -79,7 +106,14 @@ public class UserController {
                 .setData(users);
     }
 
-    @ApiOperation(value = "添加或修改用户", notes = "根据是否有ID判断是添加还是修改")
+    /**
+     * 添加或修改用户
+     * 根据是否有ID判断是添加还是修改
+     *
+     * @param request_user 用户属性
+     * @return 用户对象
+     */
+    @ApiOperation(value = "添加或修改用户")
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseInfo<User> doSaveOrUpdate(@Valid @ApiParam(value = "用户", required = true) @RequestBody User request_user) {
@@ -89,7 +123,14 @@ public class UserController {
                 .setData(u);
     }
 
-    @ApiOperation(value = "删除用户", notes = "根据用户ID删除用户")
+    /**
+     * 删除用户
+     * 根据用户ID删除用户
+     *
+     * @param id 用户id
+     * @return 成功或者失败
+     */
+    @ApiOperation(value = "删除用户")
     @DeleteMapping("{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseInfo<Boolean> doDelete(@ApiParam(value = "用户ID", required = true) @Min(1) @PathVariable Long id) {
@@ -99,7 +140,15 @@ public class UserController {
                 .setData(b);
     }
 
-    @ApiOperation(value = "我是谁", notes = "从认证信息中提取当前用户")
+    /**
+     * 我是谁
+     * 从认证信息中提取当前用户
+     *
+     * @param authentication Spring Security Authentication
+     * @param authHeader Bearer Access Token
+     * @return 用户名
+     */
+    @ApiOperation(value = "我是谁")
     @GetMapping("/whoiam")
     public ResponseInfo<String> getCurrentUser(Authentication authentication,
                                                @RequestHeader(value = HttpHeaders.AUTHORIZATION) String authHeader) {

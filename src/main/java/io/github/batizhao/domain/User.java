@@ -44,9 +44,6 @@ public class User implements Serializable {
     @JsonIgnore
     private String password = "123456";
 
-    /**
-     * @mock @email
-     */
     @ApiModelProperty(value = "邮箱", example = "zhangsan@qq.com")
     @NotBlank(message = "email is not blank")
     @Email
