@@ -20,7 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserControllerIntegrationTest extends BaseControllerIntegrationTest {
 
     @Test
-//    @WithMockUser(roles = {"USER"})
     public void givenUserName_whenFindUser_thenUserJson() throws Exception {
         mvc.perform(get("/user/username").param("username", "bob")
                 .header("Authorization", "Bearer " + access_token))
@@ -37,7 +36,6 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      * @throws Exception
      */
     @Test
-//    @WithMockUser(roles = {"USER"})
     public void givenUserName_whenFindUser_thenValidateFailed() throws Exception {
         mvc.perform(get("/user/username").param("username", "xx")
                 .header("Authorization", "Bearer " + access_token))
@@ -54,7 +52,6 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      * @throws Exception
      */
     @Test
-//    @WithMockUser(roles = {"USER"})
     public void givenNoUserName_whenFindUser_thenValidateFailed() throws Exception {
         mvc.perform(get("/user/username")
                 .header("Authorization", "Bearer " + access_token))
@@ -66,7 +63,6 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     }
 
     @Test
-//    @WithMockUser
     public void givenName_whenFindUser_thenUserListJson() throws Exception {
         mvc.perform(get("/user/name").param("name", "孙波波")
                 .header("Authorization", "Bearer " + access_token))
@@ -80,7 +76,6 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     }
 
     @Test
-//    @WithMockUser
     public void givenId_whenFindUser_thenUserJson() throws Exception {
         mvc.perform(get("/user/{id}", 1L)
                 .header("Authorization", "Bearer " + access_token))
@@ -102,7 +97,6 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     }
 
     @Test
-//    @WithMockUser
     public void givenNothing_whenFindAllUser_thenUserListJson() throws Exception {
         mvc.perform(get("/user")
                 .header("Authorization", "Bearer " + access_token))
@@ -145,7 +139,6 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      */
     @Test
     @Transactional
-//    @WithMockUser(roles = {"ADMIN"})
     public void givenJson_whenSaveUser_thenSucceedJson() throws Exception {
         User requestBody = new User()
                 .setName("daxia").setEmail("daxia@gmail.com").setUsername("daxia")
@@ -169,7 +162,6 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      * @throws Exception
      */
     @Test
-//    @WithMockUser(roles = {"ADMIN"})
     public void givenJson_whenSaveUser_thenValidateFailed() throws Exception {
         User requestBody = new User().setName("daxia").setEmail("daxia@gmail.com");
 
@@ -190,7 +182,6 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      * @throws Exception
      */
     @Test
-//    @WithMockUser(roles = {"ADMIN"})
     public void givenNoJson_whenSaveUser_thenValidateFailed() throws Exception {
         mvc.perform(post("/user")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -204,7 +195,6 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
 
     @Test
     @Transactional
-//    @WithMockUser(roles = {"ADMIN"})
     public void givenJson_whenUpdateUser_thenSucceedJson() throws Exception {
         User requestBody = new User()
                 .setId(8L).setName("daxia").setEmail("daxia@gmail.com").setUsername("daxia")
@@ -223,7 +213,6 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
 
     @Test
     @Transactional
-//    @WithMockUser(roles = {"ADMIN"})
     public void givenId_whenDeleteUser_thenSucceed() throws Exception {
         mvc.perform(delete("/user/{id}", 1L)
                 .header("Authorization", "Bearer " + access_token))
@@ -240,7 +229,6 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      * @throws Exception
      */
     @Test
-//    @WithMockUser(roles = {"ADMIN"})
     public void givenInValidId_whenDeleteUser_thenValidateFail() throws Exception {
         mvc.perform(delete("/user/{id}", -1000L)
                 .header("Authorization", "Bearer " + access_token))
@@ -257,7 +245,6 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      * @throws Exception
      */
     @Test
-//    @WithMockUser(roles = {"ADMIN"})
     public void givenStringId_whenDeleteUser_thenValidateFail() throws Exception {
         mvc.perform(delete("/user/{id}", "xxxx")
                 .header("Authorization", "Bearer " + access_token))
@@ -270,9 +257,9 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
 
     @Test
     public void givenInvalidRole_whenGetSecureRequest_thenForbidden() throws Exception {
-        String access_token = obtainAccessToken("tom", "123456");
+        String tom_access_token = obtainAccessToken("tom", "123456");
         mvc.perform(delete("/user/{id}", 3L)
-                .header("Authorization", "Bearer " + access_token))
+                .header("Authorization", "Bearer " + tom_access_token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
