@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -78,12 +79,12 @@ public class MyUserDetailsServiceImplUnitTest {
         log.debug("userDetails: {}", userDetails);
         assertThat(userDetails.getUsername(), equalTo(username));
 
-        //TODO 不安全的类型转换
-        Collection<SimpleGrantedAuthority> authorities = (Collection<SimpleGrantedAuthority>) userDetails.getAuthorities();
+        @SuppressWarnings("unchecked")
+        Collection<GrantedAuthority> authorities = (Collection<GrantedAuthority>) userDetails.getAuthorities();
         log.debug("authorities: {}", authorities);
         assertThat(authorities, hasSize(2));
 
-        List<String> list = authorities.stream().map(SimpleGrantedAuthority::getAuthority).collect(Collectors.toList());
+        List<String> list = authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
         assertThat(list, hasItems("admin", "common"));
     }
 
