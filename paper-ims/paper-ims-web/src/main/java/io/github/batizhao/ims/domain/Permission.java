@@ -1,4 +1,4 @@
-package io.github.batizhao.ims.entity;
+package io.github.batizhao.ims.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

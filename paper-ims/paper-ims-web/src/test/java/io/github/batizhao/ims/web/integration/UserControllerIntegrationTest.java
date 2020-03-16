@@ -2,7 +2,7 @@ package io.github.batizhao.ims.web.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.batizhao.common.core.util.ResultEnum;
-import io.github.batizhao.ims.entity.User;
+import io.github.batizhao.ims.domain.User;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;

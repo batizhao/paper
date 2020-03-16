@@ -1,7 +1,7 @@
 package io.github.batizhao.ims.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import io.github.batizhao.ims.entity.User;
+import io.github.batizhao.ims.domain.User;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

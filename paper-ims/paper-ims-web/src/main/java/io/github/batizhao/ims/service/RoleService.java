@@ -2,8 +2,7 @@ package io.github.batizhao.ims.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import io.github.batizhao.ims.core.vo.RoleVO;
-import io.github.batizhao.ims.core.vo.UserVO;
-import io.github.batizhao.ims.entity.Role;
+import io.github.batizhao.ims.domain.Role;
 
 import java.util.List;
 

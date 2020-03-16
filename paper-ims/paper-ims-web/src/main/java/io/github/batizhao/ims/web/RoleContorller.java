@@ -38,8 +38,8 @@ public class RoleContorller {
      * 根据用户ID查询角色
      * 返回角色集合
      *
-     * @param userId
-     * @return
+     * @param userId 用户id
+     * @return 角色集合
      */
     @ApiOperation(value = "根据用户ID查询角色")
     @GetMapping(params = "userId")

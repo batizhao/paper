@@ -1,4 +1,4 @@
-package io.github.batizhao.ims.entity;
+package io.github.batizhao.ims.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 /**
  * @author batizhao
@@ -19,15 +21,21 @@ import javax.validation.constraints.NotBlank;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(description = "角色类")
-public class Role {
+@ApiModel(description = "角色")
+public class Role implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "角色ID", example = "100")
     @TableId(type = IdType.AUTO)
     private Long id;
 
+    /**
+     * @mock ROLE_@string("upper", 3, 20)
+     */
     @ApiModelProperty(value = "角色名", example = "管理员")
     @NotBlank(message = "name is not blank")
+    @Size(min = 3, max = 30)
     private String name;
 
 }

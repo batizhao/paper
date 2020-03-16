@@ -1,7 +1,7 @@
 package io.github.batizhao.ims.service;
 
 import io.github.batizhao.ims.core.vo.UserVO;
-import io.github.batizhao.ims.entity.User;
+import io.github.batizhao.ims.domain.User;
 import io.github.batizhao.ims.mapper.UserMapper;
 import io.github.batizhao.ims.service.iml.UserServiceIml;
 import lombok.extern.slf4j.Slf4j;

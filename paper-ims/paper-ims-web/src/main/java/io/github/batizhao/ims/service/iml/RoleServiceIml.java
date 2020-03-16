@@ -2,9 +2,7 @@ package io.github.batizhao.ims.service.iml;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.batizhao.ims.core.vo.RoleVO;
-import io.github.batizhao.ims.core.vo.UserVO;
-import io.github.batizhao.ims.entity.Role;
-import io.github.batizhao.ims.entity.User;
+import io.github.batizhao.ims.domain.Role;
 import io.github.batizhao.ims.mapper.RoleMapper;
 import io.github.batizhao.ims.service.RoleService;
 import org.springframework.beans.BeanUtils;

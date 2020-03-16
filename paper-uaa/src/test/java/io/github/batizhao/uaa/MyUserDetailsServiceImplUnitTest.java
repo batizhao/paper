@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Role;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -54,7 +52,7 @@ public class MyUserDetailsServiceImplUnitTest {
     private UserDetailsService userDetailsService;
 
     @Test
-    public void givenUserName_thenFindUser_returnUserDetails() {
+    public void givenUserName_whenFindUser_thenSuccess() {
         String username = "zhangsan";
         UserVO user_test_data = new UserVO().setId(1L).setUsername(username).setPassword("123456");
         ResponseInfo<UserVO> userResponseInfo = new ResponseInfo<UserVO>().setCode(ResultEnum.SUCCESS.getCode())
@@ -80,6 +78,7 @@ public class MyUserDetailsServiceImplUnitTest {
         log.debug("userDetails: {}", userDetails);
         assertThat(userDetails.getUsername(), equalTo(username));
 
+        //TODO 不安全的类型转换
         Collection<SimpleGrantedAuthority> authorities = (Collection<SimpleGrantedAuthority>) userDetails.getAuthorities();
         log.debug("authorities: {}", authorities);
         assertThat(authorities, hasSize(2));
@@ -89,7 +88,7 @@ public class MyUserDetailsServiceImplUnitTest {
     }
 
     @Test(expected = UsernameNotFoundException.class)
-    public void givenUserName_thenFindUser_returnUsernameNotFoundException() {
+    public void givenUserName_whenFindUser_thenUsernameNotFoundException() {
         ResponseInfo<UserVO> userResponseInfo = new ResponseInfo<UserVO>().setCode(ResultEnum.SUCCESS.getCode())
                 .setMessage(ResultEnum.SUCCESS.getMessage())
                 .setData(null);

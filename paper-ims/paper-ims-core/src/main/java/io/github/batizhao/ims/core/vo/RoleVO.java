@@ -1,7 +1,13 @@
 package io.github.batizhao.ims.core.vo;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 /**
  * @author batizhao
@@ -9,10 +15,20 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class RoleVO {
+@ApiModel(description = "角色")
+public class RoleVO implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
+    @ApiModelProperty(value = "角色ID", example = "100")
     private Long id;
 
+    /**
+     * @mock ROLE_@string("upper", 3, 20)
+     */
+    @ApiModelProperty(value = "角色名", example = "管理员")
+    @NotBlank(message = "name is not blank")
+    @Size(min = 3, max = 30)
     private String name;
 
 }

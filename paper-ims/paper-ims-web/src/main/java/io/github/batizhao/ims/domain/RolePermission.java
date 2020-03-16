@@ -1,4 +1,4 @@
-package io.github.batizhao.ims.entity;
+package io.github.batizhao.ims.domain;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

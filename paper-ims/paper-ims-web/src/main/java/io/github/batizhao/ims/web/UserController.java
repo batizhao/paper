@@ -3,7 +3,7 @@ package io.github.batizhao.ims.web;
 import io.github.batizhao.common.core.util.ResponseInfo;
 import io.github.batizhao.common.core.util.ResultEnum;
 import io.github.batizhao.ims.core.vo.UserVO;
-import io.github.batizhao.ims.entity.User;
+import io.github.batizhao.ims.domain.User;
 import io.github.batizhao.ims.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

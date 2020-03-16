@@ -1,8 +1,8 @@
 package io.github.batizhao.ims.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import io.github.batizhao.ims.entity.Role;
-import io.github.batizhao.ims.entity.RolePermission;
+import io.github.batizhao.ims.domain.Role;
+import io.github.batizhao.ims.domain.RolePermission;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

@@ -1,7 +1,7 @@
 package io.github.batizhao.ims.mapper;
 
-import io.github.batizhao.ims.entity.Role;
-import io.github.batizhao.ims.entity.RolePermission;
+import io.github.batizhao.ims.domain.Role;
+import io.github.batizhao.ims.domain.RolePermission;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

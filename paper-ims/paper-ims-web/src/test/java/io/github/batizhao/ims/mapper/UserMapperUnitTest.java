@@ -1,7 +1,7 @@
 package io.github.batizhao.ims.mapper;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import io.github.batizhao.ims.entity.User;
+import io.github.batizhao.ims.domain.User;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
