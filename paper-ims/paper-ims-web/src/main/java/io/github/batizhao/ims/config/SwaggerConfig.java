@@ -32,6 +32,7 @@ public class SwaggerConfig {
                 .apis(RequestHandlerSelectors.basePackage("io.github.batizhao.ims.web"))
                 .paths(PathSelectors.any())
                 .build()
+                .enableUrlTemplating(true)
                 .securitySchemes(Arrays.asList(securityScheme()))
                 .securityContexts(Arrays.asList(securityContext()));
     }

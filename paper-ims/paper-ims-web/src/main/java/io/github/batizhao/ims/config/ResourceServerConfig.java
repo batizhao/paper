@@ -39,8 +39,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 //            .antMatchers("/api/**").authenticated()
             .antMatchers("/login", "/role/**", "/user/username/**").permitAll()
             .anyRequest().authenticated();
-//            .and()
-//            .exceptionHandling().accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(authenticationEntryPoint);
     }
 
     /**

@@ -42,7 +42,7 @@ public class RoleContorller {
      * @return
      */
     @ApiOperation(value = "根据用户ID查询角色")
-    @GetMapping
+    @GetMapping(params = "userId")
     public ResponseInfo<List<RoleVO>> findRolesByUserId(@ApiParam(value = "用户ID", required = true) @RequestParam("userId") @Min(1) Long userId) {
         List<RoleVO> roles = roleService.findRolesByUserId(userId);
         return new ResponseInfo<List<RoleVO>>().setCode(ResultEnum.SUCCESS.getCode())
