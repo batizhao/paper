@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  io.github.batizhao.common.core.exception.WebExceptionHandler
+  io.github.batizhao.common.core.exception.WebExceptionHandler, \
+  io.github.batizhao.common.core.exception.ErrorHandler
