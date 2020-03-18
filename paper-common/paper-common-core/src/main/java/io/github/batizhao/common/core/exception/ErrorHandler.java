@@ -37,10 +37,10 @@ public class ErrorHandler implements ErrorController {
     public ResponseInfo<String> handleError(HttpServletRequest request) {
         Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
         String requestUri = (String) request.getAttribute("javax.servlet.error.request_uri");
-        String exception_type = (String) request.getAttribute("javax.servlet.error.exception_type");
+        String exceptionType = (String) request.getAttribute("javax.servlet.error.exception_type");
 
-        log.error("ErrorHandler statusCode: {}, requestUri: {}, exception_type: {}",
-                statusCode, requestUri, exception_type);
+        log.error("ErrorHandler statusCode: {}, requestUri: {}, exceptionType: {}",
+                statusCode, requestUri, exceptionType);
 
         return new ResponseInfo<String>().setMessage(ResultEnum.RESOURCE_NOT_FOUND.getMessage())
                 .setCode(ResultEnum.RESOURCE_NOT_FOUND.getCode())

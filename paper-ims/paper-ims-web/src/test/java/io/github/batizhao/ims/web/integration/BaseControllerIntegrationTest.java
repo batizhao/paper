@@ -54,7 +54,7 @@ public abstract class BaseControllerIntegrationTest {
     }
 
     static String obtainAccessToken(String username, String password) throws Exception {
-        String url = "http://localhost:3000/oauth/token";
+        String url = "http://localhost:4000/oauth/token";
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth(CLIENT_ID, CLIENT_SECRET);
 

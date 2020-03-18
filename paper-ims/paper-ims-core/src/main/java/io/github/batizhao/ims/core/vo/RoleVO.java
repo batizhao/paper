@@ -27,8 +27,7 @@ public class RoleVO implements Serializable {
      * @mock ROLE_@string("upper", 3, 20)
      */
     @ApiModelProperty(value = "角色名", example = "管理员")
-    @NotBlank(message = "name is not blank")
-    @Size(min = 3, max = 30)
+    @NotBlank
     private String name;
 
 }
