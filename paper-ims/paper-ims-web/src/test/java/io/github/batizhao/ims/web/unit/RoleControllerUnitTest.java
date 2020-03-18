@@ -75,4 +75,20 @@ public class RoleControllerUnitTest extends BaseControllerUnitTest {
 
         verify(roleService).findRolesByUserId(any());
     }
+
+    @Test
+    @WithMockUser
+    public void givenUserId_whenFindRole_thenFail() throws Exception {
+        roleList.clear();
+        when(roleService.findRolesByUserId(any())).thenReturn(roleList);
+
+        mvc.perform(get("/role").param("userId", "1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data", hasSize(0)));
+
+        verify(roleService).findRolesByUserId(any());
+    }
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import org.junit.runner.RunWith;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -21,4 +22,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ImportAutoConfiguration(MybatisPlusAutoConfiguration.class)
 public abstract class BaseMapperUnitTest {
+
+    /**
+     * 控制扫描范围，否则会加载额外的包
+     */
+    @SpringBootApplication(scanBasePackages = {"io.github.batizhao.ims.mapper"})
+    static class InnerConfig {}
 }

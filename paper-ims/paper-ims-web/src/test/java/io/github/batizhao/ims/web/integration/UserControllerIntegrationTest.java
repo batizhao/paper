@@ -1,6 +1,7 @@
 package io.github.batizhao.ims.web.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.batizhao.common.core.constant.SecurityConstants;
 import io.github.batizhao.common.core.util.ResultEnum;
 import io.github.batizhao.ims.domain.User;
 import org.junit.Test;
@@ -22,7 +23,7 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     @Test
     public void givenUserName_whenFindUser_thenUserJson() throws Exception {
         mvc.perform(get("/user/username").param("username", "bob")
-                .header("Authorization", "Bearer " + access_token))
+                .header(SecurityConstants.FROM, SecurityConstants.FROM_IN))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -38,12 +39,43 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     @Test
     public void givenUserName_whenFindUser_thenValidateFailed() throws Exception {
         mvc.perform(get("/user/username").param("username", "xx")
-                .header("Authorization", "Bearer " + access_token))
+                .header(SecurityConstants.FROM, SecurityConstants.FROM_IN))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ResultEnum.PARAMETER_INVALID.getCode()))
                 .andExpect(jsonPath("$.data[0]", containsString("个数必须在")));
+    }
+
+    /**
+     * 传递错误的 @Inner header
+     *
+     * @throws Exception
+     */
+    @Test
+    public void givenUserNameButInvalidInnerHeader_whenFindUser_then401() throws Exception {
+        mvc.perform(get("/user/username").param("username", "xx")
+                .header(SecurityConstants.FROM, "No"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.OAUTH2_TOKEN_INVALID.getCode()))
+                .andExpect(jsonPath("$.data", containsString("Full authentication is required")));
+    }
+
+    /**
+     * 没有传递 @Inner header
+     *
+     * @throws Exception
+     */
+    @Test
+    public void givenUserNameButNoInnerHeader_whenFindUser_thenNull() throws Exception {
+        mvc.perform(get("/user/username").param("username", "bob"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.UNKNOWN_ERROR.getCode()))
+                .andExpect(jsonPath("$.data", containsString("from header")));
     }
 
     /**
@@ -53,8 +85,7 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      */
     @Test
     public void givenNoUserName_whenFindUser_thenValidateFailed() throws Exception {
-        mvc.perform(get("/user/username")
-                .header("Authorization", "Bearer " + access_token))
+        mvc.perform(get("/user/username"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

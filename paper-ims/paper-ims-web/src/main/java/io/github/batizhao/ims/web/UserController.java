@@ -2,6 +2,7 @@ package io.github.batizhao.ims.web;
 
 import io.github.batizhao.common.core.util.ResponseInfo;
 import io.github.batizhao.common.core.util.ResultEnum;
+import io.github.batizhao.common.security.annotation.Inner;
 import io.github.batizhao.ims.core.vo.UserVO;
 import io.github.batizhao.ims.domain.User;
 import io.github.batizhao.ims.service.UserService;
@@ -49,6 +50,7 @@ public class UserController {
      */
     @ApiOperation(value = "根据用户名查询用户")
     @GetMapping("username")
+    @Inner
     public ResponseInfo<UserVO> findByUsername(@ApiParam(value = "用户名", required = true) @RequestParam @Size(min = 3) String username) {
         UserVO user = userService.findByUsername(username);
         return new ResponseInfo<UserVO>().setCode(ResultEnum.SUCCESS.getCode())

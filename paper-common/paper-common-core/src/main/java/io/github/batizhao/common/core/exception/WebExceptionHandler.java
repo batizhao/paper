@@ -112,16 +112,17 @@ public class WebExceptionHandler {
 
     /**
      * 默认异常处理
-     * 这里注意 AccessDeniedException，这里会优先捕获，使自定义的 accessDeniedHandler 无效，造成返回错误消息
+     * 这里注意没有捕获全部异常
+     * 因为 AccessDeniedException，这里会优先捕获，使自定义的 accessDeniedHandler 无效，造成返回错误消息
      *
      * @param e Exception
      * @return ResponseInfo<String>
      */
-//    @ExceptionHandler
-//    public ResponseInfo<String> handleDefault(Exception e) {
-//        log.error("Default Exception!", e);
-//        return new ResponseInfo<String>().setCode(ResultEnum.UNKNOWN_ERROR.getCode())
-//                .setMessage(ResultEnum.UNKNOWN_ERROR.getMessage())
-//                .setData(e.getMessage());
-//    }
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseInfo<String> handleDefault(Exception e) {
+        log.error("Default Exception!", e);
+        return new ResponseInfo<String>().setCode(ResultEnum.UNKNOWN_ERROR.getCode())
+                .setMessage(ResultEnum.UNKNOWN_ERROR.getMessage())
+                .setData(e.getMessage());
+    }
 }

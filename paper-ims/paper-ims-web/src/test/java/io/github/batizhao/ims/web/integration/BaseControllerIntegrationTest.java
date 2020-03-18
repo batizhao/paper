@@ -2,7 +2,6 @@ package io.github.batizhao.ims.web.integration;
 
 import io.github.batizhao.common.core.exception.WebExceptionHandler;
 import io.github.batizhao.ims.PaperImsApplication;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

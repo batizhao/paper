@@ -2,6 +2,7 @@ package io.github.batizhao.ims.web;
 
 import io.github.batizhao.common.core.util.ResponseInfo;
 import io.github.batizhao.common.core.util.ResultEnum;
+import io.github.batizhao.common.security.annotation.Inner;
 import io.github.batizhao.ims.core.vo.RoleVO;
 import io.github.batizhao.ims.service.RoleService;
 import io.swagger.annotations.Api;
@@ -43,6 +44,7 @@ public class RoleContorller {
      */
     @ApiOperation(value = "根据用户ID查询角色")
     @GetMapping(params = "userId")
+    @Inner
     public ResponseInfo<List<RoleVO>> findRolesByUserId(@ApiParam(value = "用户ID", required = true) @RequestParam("userId") @Min(1) Long userId) {
         List<RoleVO> roles = roleService.findRolesByUserId(userId);
         return new ResponseInfo<List<RoleVO>>().setCode(ResultEnum.SUCCESS.getCode())

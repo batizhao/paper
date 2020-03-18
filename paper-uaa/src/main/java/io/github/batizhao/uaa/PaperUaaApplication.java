@@ -1,11 +1,11 @@
 package io.github.batizhao.uaa;
 
+import io.github.batizhao.common.security.annotation.EnablePaperFeignClients;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
-@EnableFeignClients
+@EnablePaperFeignClients
 public class PaperUaaApplication {
 
     public static void main(String[] args) {

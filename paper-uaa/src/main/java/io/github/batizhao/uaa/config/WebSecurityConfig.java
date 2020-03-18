@@ -2,12 +2,11 @@ package io.github.batizhao.uaa.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,14 +18,15 @@ import org.springframework.security.web.access.AccessDeniedHandler;
  * @author batizhao
  * @since 2020-02-26
  */
+@Primary
+@Order(90)
 @Configuration
-@ComponentScan("io.github.batizhao.common.security")
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private AccessDeniedHandler accessDeniedHandler;
-    @Autowired
-    private AuthenticationEntryPoint authenticationEntryPoint;
+//    @Autowired
+//    private AccessDeniedHandler accessDeniedHandler;
+//    @Autowired
+//    private AuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -45,11 +45,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/oauth/**", "/login", "/user/**", "/error").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/oauth/**", "/login", "/error", "/actuator/**").permitAll()
+                .anyRequest().authenticated();
 //                .and().formLogin();
-                .and()
-                .exceptionHandling().accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(authenticationEntryPoint);
+//                .and()
+//                .exceptionHandling().accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(authenticationEntryPoint);
     }
 
 //    @Override

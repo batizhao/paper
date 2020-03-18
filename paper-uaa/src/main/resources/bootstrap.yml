@@ -1,6 +1,12 @@
 server:
   port: 4000
 
+info:
+  app:
+    build_time: '@git.build.time@'
+    name: '@project.artifactId@'
+    version: '@project.version@'
+
 spring:
   application:
     name: uaa

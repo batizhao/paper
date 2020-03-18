@@ -1,5 +1,6 @@
 package io.github.batizhao.uaa;
 
+import io.github.batizhao.common.core.constant.SecurityConstants;
 import io.github.batizhao.common.core.util.ResponseInfo;
 import io.github.batizhao.common.core.util.ResultEnum;
 import io.github.batizhao.ims.core.vo.RoleVO;
@@ -7,6 +8,7 @@ import io.github.batizhao.ims.core.vo.UserVO;
 import io.github.batizhao.uaa.feign.UserFeignService;
 import io.github.batizhao.uaa.security.MyUserDetailsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +54,18 @@ public class MyUserDetailsServiceImplUnitTest {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    private List<RoleVO> roleList;
+
+    /**
+     * Prepare test data.
+     */
+    @Before
+    public void setUp() {
+        roleList = new ArrayList<>();
+        roleList.add(new RoleVO().setId(1L).setName("admin"));
+        roleList.add(new RoleVO().setId(2L).setName("common"));
+    }
+
     @Test
     public void givenUserName_whenFindUser_thenSuccess() {
         String username = "zhangsan";
@@ -60,18 +74,14 @@ public class MyUserDetailsServiceImplUnitTest {
                 .setMessage(ResultEnum.SUCCESS.getMessage())
                 .setData(user_test_data);
 
-        ArrayList<RoleVO> roleList = new ArrayList<>();
-        roleList.add(new RoleVO().setId(1L).setName("admin"));
-        roleList.add(new RoleVO().setId(2L).setName("common"));
-
         ResponseInfo<List<RoleVO>> roleListResponseInfo = new ResponseInfo<List<RoleVO>>().setCode(ResultEnum.SUCCESS.getCode())
                 .setMessage(ResultEnum.SUCCESS.getMessage())
                 .setData(roleList);
 
-        when(userFeignService.getByUsername(any()))
+        when(userFeignService.getByUsername(username, SecurityConstants.FROM_IN))
                 .thenReturn(userResponseInfo);
 
-        when(userFeignService.getRolesByUserId(user_test_data.getId()))
+        when(userFeignService.getRolesByUserId(user_test_data.getId(), SecurityConstants.FROM_IN))
                 .thenReturn(roleListResponseInfo);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -79,8 +89,7 @@ public class MyUserDetailsServiceImplUnitTest {
         log.debug("userDetails: {}", userDetails);
         assertThat(userDetails.getUsername(), equalTo(username));
 
-        @SuppressWarnings("unchecked")
-        Collection<GrantedAuthority> authorities = (Collection<GrantedAuthority>) userDetails.getAuthorities();
+        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
         log.debug("authorities: {}", authorities);
         assertThat(authorities, hasSize(2));
 
@@ -94,11 +103,33 @@ public class MyUserDetailsServiceImplUnitTest {
                 .setMessage(ResultEnum.SUCCESS.getMessage())
                 .setData(null);
 
-        doReturn(userResponseInfo).when(userFeignService).getByUsername(any());
+        doReturn(userResponseInfo).when(userFeignService).getByUsername(any(), any());
 
         userDetailsService.loadUserByUsername("xxxx");
 
-        verify(userFeignService).getByUsername(any());
+        verify(userFeignService).getByUsername(any(), any());
     }
 
+    @Test(expected = NullPointerException.class)
+    public void givenUserName_whenFindUserRoles_thenFail() {
+        String username = "zhangsan";
+        UserVO user_test_data = new UserVO().setId(1L).setUsername(username).setPassword("123456");
+        ResponseInfo<UserVO> userResponseInfo = new ResponseInfo<UserVO>().setCode(ResultEnum.SUCCESS.getCode())
+                .setMessage(ResultEnum.SUCCESS.getMessage())
+                .setData(user_test_data);
+
+        ResponseInfo<List<RoleVO>> roleListResponseInfo = new ResponseInfo<List<RoleVO>>().setCode(ResultEnum.SUCCESS.getCode())
+                .setMessage(ResultEnum.SUCCESS.getMessage())
+                .setData(null);
+
+        when(userFeignService.getByUsername(username, SecurityConstants.FROM_IN))
+                .thenReturn(userResponseInfo);
+
+        when(userFeignService.getRolesByUserId(user_test_data.getId(), SecurityConstants.FROM_IN))
+                .thenReturn(roleListResponseInfo);
+
+        userDetailsService.loadUserByUsername(username);
+
+        verify(userFeignService).getRolesByUserId(any(), any());
+    }
 }
