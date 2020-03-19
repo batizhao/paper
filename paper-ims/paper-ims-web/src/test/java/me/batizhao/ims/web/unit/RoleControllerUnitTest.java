@@ -1,7 +1,7 @@
 package me.batizhao.ims.web.unit;
 
 import me.batizhao.common.core.util.ResultEnum;
-import me.batizhao.ims.core.vo.RoleVO;
+import me.batizhao.ims.api.vo.RoleVO;
 import me.batizhao.ims.service.RoleService;
 import me.batizhao.ims.web.RoleContorller;
 import org.junit.Before;

@@ -1,7 +1,7 @@
 package me.batizhao.ims.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import me.batizhao.ims.core.vo.RoleVO;
+import me.batizhao.ims.api.vo.RoleVO;
 import me.batizhao.ims.domain.Role;
 
 import java.util.List;

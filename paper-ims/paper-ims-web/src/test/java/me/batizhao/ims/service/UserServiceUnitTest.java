@@ -1,6 +1,6 @@
 package me.batizhao.ims.service;
 
-import me.batizhao.ims.core.vo.UserVO;
+import me.batizhao.ims.api.vo.UserVO;
 import me.batizhao.ims.domain.User;
 import me.batizhao.ims.mapper.UserMapper;
 import me.batizhao.ims.service.iml.UserServiceIml;
@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
@@ -72,6 +73,18 @@ public class UserServiceUnitTest extends BaseServiceUnitTest {
         assertThat(user.getEmail(), equalTo("zhangsan@gmail.com"));
     }
 
+    @Test(expected = UsernameNotFoundException.class)
+    public void givenUserName_whenFindUser_thenNull() {
+        String username = "zhangsan";
+
+        when(userMapper.selectOne(any()))
+                .thenReturn(null);
+
+        userService.findByUsername(username);
+
+        verify(userMapper).selectOne(any());
+    }
+
     @Test
     public void givenName_whenFindUser_thenUserList() {
         String name = "张三";
@@ -118,6 +131,16 @@ public class UserServiceUnitTest extends BaseServiceUnitTest {
 
         assertThat(user.getUsername(), equalTo("zhangsan"));
         assertThat(user.getEmail(), equalTo("zhangsan@gmail.com"));
+    }
+
+    @Test(expected = UsernameNotFoundException.class)
+    public void givenUserId_whenFindUser_thenNull() {
+        when(userMapper.selectById(anyLong()))
+                .thenReturn(null);
+
+        userService.findById(1L);
+
+        verify(userService).findById(anyLong());
     }
 
     @Test

@@ -2,8 +2,10 @@ package me.batizhao.ims.web.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.batizhao.common.core.util.ResultEnum;
-import me.batizhao.ims.core.vo.UserVO;
+import me.batizhao.ims.api.vo.RoleVO;
+import me.batizhao.ims.api.vo.UserVO;
 import me.batizhao.ims.domain.User;
+import me.batizhao.ims.service.RoleService;
 import me.batizhao.ims.service.UserService;
 import me.batizhao.ims.web.UserController;
 import org.junit.Before;
@@ -56,6 +58,8 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
      */
     @MockBean
     private UserService userService;
+    @MockBean
+    private RoleService roleService;
 
     private List<UserVO> userList;
 
@@ -83,6 +87,33 @@ public class UserControllerUnitTest extends BaseControllerUnitTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
                 .andExpect(jsonPath("$.data.email").value("zhangsan@gmail.com"));
+
+        verify(userService).findByUsername(any());
+    }
+
+    @Test
+    @WithMockUser
+    public void givenUserName_whenFindUser_thenUserDetailJson() throws Exception {
+        String username = "zhangsan";
+
+        List<RoleVO> roleList = new ArrayList<>();
+        roleList.add(new RoleVO().setId(1L).setName("admin"));
+        roleList.add(new RoleVO().setId(2L).setName("common"));
+
+        UserVO userVO = userList.get(0);
+        when(userService.findByUsername(username)).thenReturn(userVO);
+
+        userVO.setRoleList(roleList);
+        when(roleService.findRolesByUserId(userVO.getId())).thenReturn(roleList);
+
+        mvc.perform(get("/user/userdetail").param("username", username))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data.email").value("zhangsan@gmail.com"))
+                .andExpect(jsonPath("$.data.roleList", hasSize(2)))
+                .andExpect(jsonPath("$.data.roleList[1].id").value("2"));
 
         verify(userService).findByUsername(any());
     }

@@ -13,11 +13,17 @@
     <description>身份管理系统</description>
 
     <modules>
-        <module>paper-ims-core</module>
+        <module>paper-ims-api</module>
         <module>paper-ims-web</module>
     </modules>
 
     <dependencies>
+        <dependency>
+            <groupId>me.batizhao</groupId>
+            <artifactId>paper-common-core</artifactId>
+            <version>1.3-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>

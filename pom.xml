@@ -144,9 +144,9 @@
 					<version>${jacoco-maven-plugin.verison}</version>
 					<configuration>
 						<excludes>
-							<exclude>io/github/batizhao/**/*Application.*</exclude>
-							<exclude>io/github/batizhao/**/domain/*</exclude>
-							<exclude>io/github/batizhao/**/config/*</exclude>
+							<exclude>me/batizhao/**/*Application.*</exclude>
+							<exclude>me/batizhao/**/domain/*</exclude>
+							<exclude>me/batizhao/**/config/*</exclude>
 						</excludes>
 					</configuration>
 					<executions>

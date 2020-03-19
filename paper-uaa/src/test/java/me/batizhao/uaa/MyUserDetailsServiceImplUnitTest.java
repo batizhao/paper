@@ -2,10 +2,9 @@ package me.batizhao.uaa;
 
 import me.batizhao.common.core.constant.SecurityConstants;
 import me.batizhao.common.core.util.ResponseInfo;
-import me.batizhao.common.core.util.ResultEnum;
-import me.batizhao.ims.core.vo.RoleVO;
-import me.batizhao.ims.core.vo.UserVO;
-import me.batizhao.uaa.feign.UserFeignService;
+import me.batizhao.ims.api.vo.RoleVO;
+import me.batizhao.ims.api.vo.UserVO;
+import me.batizhao.ims.api.feign.UserFeignService;
 import me.batizhao.uaa.security.MyUserDetailsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
@@ -69,15 +68,12 @@ public class MyUserDetailsServiceImplUnitTest {
     public void givenUserName_whenFindUser_thenSuccess() {
         String username = "zhangsan";
         UserVO user_test_data = new UserVO().setId(1L).setUsername(username).setPassword("123456");
+        user_test_data.setRoleList(roleList);
 
         ResponseInfo<UserVO> userResponseInfo = ResponseInfo.ok(user_test_data);
-        ResponseInfo<List<RoleVO>> roleListResponseInfo = ResponseInfo.ok(roleList);
 
-        when(userFeignService.getByUsername(username, SecurityConstants.FROM_IN))
+        when(userFeignService.loadUserByUsername(username, SecurityConstants.FROM_IN))
                 .thenReturn(userResponseInfo);
-
-        when(userFeignService.getRolesByUserId(user_test_data.getId(), SecurityConstants.FROM_IN))
-                .thenReturn(roleListResponseInfo);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
@@ -96,29 +92,28 @@ public class MyUserDetailsServiceImplUnitTest {
     public void givenUserName_whenFindUser_thenUsernameNotFoundException() {
         ResponseInfo<UserVO> userResponseInfo = ResponseInfo.ok();
 
-        doReturn(userResponseInfo).when(userFeignService).getByUsername(any(), any());
+        doReturn(userResponseInfo).when(userFeignService).loadUserByUsername(any(), any());
 
         userDetailsService.loadUserByUsername("xxxx");
 
-        verify(userFeignService).getByUsername(any(), any());
+        verify(userFeignService).loadUserByUsername(any(), any());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void givenUserName_whenFindUserRoles_thenFail() {
         String username = "zhangsan";
         UserVO user_test_data = new UserVO().setId(1L).setUsername(username).setPassword("123456");
 
+        roleList.clear();
+        user_test_data.setRoleList(roleList);
+
         ResponseInfo<UserVO> userResponseInfo = ResponseInfo.ok(user_test_data);
-        ResponseInfo<List<RoleVO>> roleListResponseInfo = ResponseInfo.ok();
 
-        when(userFeignService.getByUsername(username, SecurityConstants.FROM_IN))
+        when(userFeignService.loadUserByUsername(username, SecurityConstants.FROM_IN))
                 .thenReturn(userResponseInfo);
-
-        when(userFeignService.getRolesByUserId(user_test_data.getId(), SecurityConstants.FROM_IN))
-                .thenReturn(roleListResponseInfo);
 
         userDetailsService.loadUserByUsername(username);
 
-        verify(userFeignService).getRolesByUserId(any(), any());
+        verify(userFeignService).loadUserByUsername(any(), any());
     }
 }

@@ -1,4 +1,4 @@
-package me.batizhao.ims.core.vo;
+package me.batizhao.ims.api.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,6 +9,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author batizhao
@@ -52,4 +53,10 @@ public class UserVO implements Serializable {
      */
     @ApiModelProperty(value = "创建时间")
     private Date time;
+
+    /**
+     * 角色列表
+     */
+    @ApiModelProperty(value = "角色列表")
+    private List<RoleVO> roleList;
 }

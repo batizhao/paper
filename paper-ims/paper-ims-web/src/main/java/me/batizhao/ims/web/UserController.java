@@ -5,10 +5,11 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import me.batizhao.common.core.util.ResponseInfo;
-import me.batizhao.common.core.util.ResultEnum;
 import me.batizhao.common.security.annotation.Inner;
-import me.batizhao.ims.core.vo.UserVO;
+import me.batizhao.ims.api.vo.RoleVO;
+import me.batizhao.ims.api.vo.UserVO;
 import me.batizhao.ims.domain.User;
+import me.batizhao.ims.service.RoleService;
 import me.batizhao.ims.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -40,6 +41,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private RoleService roleService;
 
     /**
      * 根据用户名查询用户
@@ -50,9 +53,27 @@ public class UserController {
      */
     @ApiOperation(value = "根据用户名查询用户")
     @GetMapping("username")
-    @Inner
     public ResponseInfo<UserVO> findByUsername(@ApiParam(value = "用户名", required = true) @RequestParam @Size(min = 3) String username) {
         UserVO user = userService.findByUsername(username);
+        return ResponseInfo.ok(user);
+    }
+
+    /**
+     * 根据用户名查询用户及其角色
+     * 用户名不重复，返回单个用户详情
+     *
+     * @param username 用户名
+     * @return 用户详情
+     */
+    @ApiOperation(value = "根据用户名查询用户及其角色")
+    @GetMapping("/userdetail")
+    @Inner
+    public ResponseInfo<UserVO> loadUserByUsername(@ApiParam(value = "用户名", required = true) @RequestParam @Size(min = 3) String username) {
+        UserVO user = userService.findByUsername(username);
+
+        List<RoleVO> roles = roleService.findRolesByUserId(user.getId());
+        user.setRoleList(roles);
+
         return ResponseInfo.ok(user);
     }
 

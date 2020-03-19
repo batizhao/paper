@@ -23,7 +23,7 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     @Test
     public void givenUserName_whenFindUser_thenUserJson() throws Exception {
         mvc.perform(get("/user/username").param("username", "bob")
-                .header(SecurityConstants.FROM, SecurityConstants.FROM_IN))
+                .header("Authorization", "Bearer " + access_token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -39,12 +39,24 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     @Test
     public void givenUserName_whenFindUser_thenValidateFailed() throws Exception {
         mvc.perform(get("/user/username").param("username", "xx")
-                .header(SecurityConstants.FROM, SecurityConstants.FROM_IN))
+                .header("Authorization", "Bearer " + access_token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(ResultEnum.PARAMETER_INVALID.getCode()))
                 .andExpect(jsonPath("$.data[0]", containsString("个数必须在")));
+    }
+
+    @Test
+    public void givenUserNameButInvalidInnerHeader_whenFindUser_thenSuccess() throws Exception {
+        mvc.perform(get("/user/userdetail").param("username", "admin")
+                .header(SecurityConstants.FROM, SecurityConstants.FROM_IN))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data.email").value("admin@qq.com"))
+                .andExpect(jsonPath("$.data.roleList", hasSize(2)));
     }
 
     /**
@@ -54,7 +66,7 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      */
     @Test
     public void givenUserNameButInvalidInnerHeader_whenFindUser_then401() throws Exception {
-        mvc.perform(get("/user/username").param("username", "xx")
+        mvc.perform(get("/user/userdetail").param("username", "xx")
                 .header(SecurityConstants.FROM, "No"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -70,7 +82,7 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      */
     @Test
     public void givenUserNameButNoInnerHeader_whenFindUser_thenNull() throws Exception {
-        mvc.perform(get("/user/username").param("username", "bob"))
+        mvc.perform(get("/user/userdetail").param("username", "bob"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -85,7 +97,8 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      */
     @Test
     public void givenNoUserName_whenFindUser_thenValidateFailed() throws Exception {
-        mvc.perform(get("/user/username"))
+        mvc.perform(get("/user/username")
+                .header("Authorization", "Bearer " + access_token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
