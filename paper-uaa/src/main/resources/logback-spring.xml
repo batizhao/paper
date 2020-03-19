@@ -37,7 +37,7 @@
         <appender-ref ref="Console" />
     </root>
 
-    <logger name="io.github.batizhao" level="trace" additivity="false">
+    <logger name="me.batizhao" level="trace" additivity="false">
 <!--        <appender-ref ref="RollingFile" />-->
         <appender-ref ref="Console" />
     </logger>

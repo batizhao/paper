@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>paper-common</artifactId>
-        <groupId>io.github.batizhao</groupId>
+        <groupId>me.batizhao</groupId>
         <version>1.3-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
