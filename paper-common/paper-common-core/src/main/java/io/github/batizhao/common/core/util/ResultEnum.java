@@ -20,7 +20,7 @@ public enum ResultEnum {
     /**
      * 系统错误
      */
-    UNKNOWN_ERROR(100000, "未知的错误！"),
+    UNKNOWN_ERROR(100000, "出错了！"),
     PARAMETER_INVALID(100001, "参数不合法！"),
     OAUTH2_TOKEN_ERROR(100002, "获取访问令牌失败！"),
     OAUTH2_TOKEN_INVALID(100003, "访问令牌不合法！"),

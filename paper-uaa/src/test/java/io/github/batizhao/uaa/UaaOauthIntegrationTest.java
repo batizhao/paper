@@ -5,22 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -68,19 +59,12 @@ public class UaaOauthIntegrationTest {
 //    }
 
     /**
-     * MockMvc 不是一个真正的 servlet server，所以，并不支持 ErrorController
+     * MockMvc 不是一个真正的 servlet server，所以，有时会出现和实际运行不一致的情况。
      * 可以看这个 issues：https://github.com/spring-projects/spring-boot/issues/5574
      *
-     * curl -X POST --user 'client_app:xxxx' localhost:8080/oauth/token\?grant_type=password\&username=admin\&password=123456
-     * 这个方法失败后会重定向到 ErrorController ，然后被 WebExceptionHandler#handleHttpRequestMethodNotSupportedException 捕获返回 401 错误
+     * curl -i -X POST --user 'client_app:xxxx' localhost:4000/oauth/token\?grant_type=password\&username=admin\&password=123456
      *
-     * {
-     *   "code": 100001,
-     *   "message": "参数不合法！",
-     *   "data": "Request method 'POST' not supported"
-     * }
-     *
-     * 在 MockMvc 这里，不会被重定向到 /error，直接就返回 401。所以，并不能给到期望的自定义消息。
+     * {"code":100004,"message":"认证失败！","data":"Full authentication is required to access this resource"}
      *
      * @throws Exception
      */

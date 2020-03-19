@@ -22,6 +22,10 @@ package io.github.batizhao.common.core.constant;
  */
 public interface SecurityConstants {
 	/**
+	 * Basic RealmName
+	 */
+	String REALM_NAME = "paper";
+	/**
 	 * 角色前缀
 	 */
 	String ROLE = "ROLE_";

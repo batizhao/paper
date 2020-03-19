@@ -24,11 +24,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
-import org.springframework.security.oauth2.provider.token.UserAuthenticationConverter;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * @author lengleng
@@ -41,7 +37,7 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class PaperResourceServerConfigurerAdapter extends ResourceServerConfigurerAdapter {
 	@Autowired
-	protected MyAuthenticationEntryPoint myAuthenticationEntryPoint;
+	protected MyAuthenticationEntryPoint authenticationEntryPoint;
 //	@Autowired
 //	protected RemoteTokenServices remoteTokenServices;
 	@Autowired
@@ -78,7 +74,7 @@ public class PaperResourceServerConfigurerAdapter extends ResourceServerConfigur
 
 //		remoteTokenServices.setRestTemplate(lbRestTemplate);
 //		remoteTokenServices.setAccessTokenConverter(accessTokenConverter);
-		resources.authenticationEntryPoint(myAuthenticationEntryPoint)
+		resources.authenticationEntryPoint(authenticationEntryPoint)
 			.accessDeniedHandler(accessDeniedHandler);
 //			.tokenServices(remoteTokenServices);
 	}

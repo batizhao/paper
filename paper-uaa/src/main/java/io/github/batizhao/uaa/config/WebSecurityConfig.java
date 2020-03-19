@@ -11,8 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 
 /**
  * @author batizhao
@@ -23,10 +22,8 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-//    @Autowired
-//    private AccessDeniedHandler accessDeniedHandler;
-//    @Autowired
-//    private AuthenticationEntryPoint authenticationEntryPoint;
+    @Autowired
+    private BasicAuthenticationEntryPoint basicAuthenticationEntryPoint;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -42,18 +39,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/oauth/**", "/login", "/error", "/actuator/**").permitAll()
-                .anyRequest().authenticated();
-//                .and().formLogin();
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 //                .and()
-//                .exceptionHandling().accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(authenticationEntryPoint);
+                .authorizeRequests()
+                .antMatchers("/oauth/**", "/actuator/**").permitAll()
+                .anyRequest().authenticated()
+                .and().httpBasic().authenticationEntryPoint(basicAuthenticationEntryPoint);
     }
 
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-//    }
 }
