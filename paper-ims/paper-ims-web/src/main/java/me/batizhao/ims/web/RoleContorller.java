@@ -50,8 +50,6 @@ public class RoleContorller {
     @Inner
     public ResponseInfo<List<RoleVO>> findRolesByUserId(@ApiParam(value = "用户ID", required = true) @RequestParam("userId") @Min(1) Long userId) {
         List<RoleVO> roles = roleService.findRolesByUserId(userId);
-        return new ResponseInfo<List<RoleVO>>().setCode(ResultEnum.SUCCESS.getCode())
-                .setMessage(ResultEnum.SUCCESS.getMessage())
-                .setData(roles);
+        return ResponseInfo.ok(roles);
     }
 }

@@ -69,13 +69,9 @@ public class MyUserDetailsServiceImplUnitTest {
     public void givenUserName_whenFindUser_thenSuccess() {
         String username = "zhangsan";
         UserVO user_test_data = new UserVO().setId(1L).setUsername(username).setPassword("123456");
-        ResponseInfo<UserVO> userResponseInfo = new ResponseInfo<UserVO>().setCode(ResultEnum.SUCCESS.getCode())
-                .setMessage(ResultEnum.SUCCESS.getMessage())
-                .setData(user_test_data);
 
-        ResponseInfo<List<RoleVO>> roleListResponseInfo = new ResponseInfo<List<RoleVO>>().setCode(ResultEnum.SUCCESS.getCode())
-                .setMessage(ResultEnum.SUCCESS.getMessage())
-                .setData(roleList);
+        ResponseInfo<UserVO> userResponseInfo = ResponseInfo.ok(user_test_data);
+        ResponseInfo<List<RoleVO>> roleListResponseInfo = ResponseInfo.ok(roleList);
 
         when(userFeignService.getByUsername(username, SecurityConstants.FROM_IN))
                 .thenReturn(userResponseInfo);
@@ -98,9 +94,7 @@ public class MyUserDetailsServiceImplUnitTest {
 
     @Test(expected = UsernameNotFoundException.class)
     public void givenUserName_whenFindUser_thenUsernameNotFoundException() {
-        ResponseInfo<UserVO> userResponseInfo = new ResponseInfo<UserVO>().setCode(ResultEnum.SUCCESS.getCode())
-                .setMessage(ResultEnum.SUCCESS.getMessage())
-                .setData(null);
+        ResponseInfo<UserVO> userResponseInfo = ResponseInfo.ok();
 
         doReturn(userResponseInfo).when(userFeignService).getByUsername(any(), any());
 
@@ -113,13 +107,9 @@ public class MyUserDetailsServiceImplUnitTest {
     public void givenUserName_whenFindUserRoles_thenFail() {
         String username = "zhangsan";
         UserVO user_test_data = new UserVO().setId(1L).setUsername(username).setPassword("123456");
-        ResponseInfo<UserVO> userResponseInfo = new ResponseInfo<UserVO>().setCode(ResultEnum.SUCCESS.getCode())
-                .setMessage(ResultEnum.SUCCESS.getMessage())
-                .setData(user_test_data);
 
-        ResponseInfo<List<RoleVO>> roleListResponseInfo = new ResponseInfo<List<RoleVO>>().setCode(ResultEnum.SUCCESS.getCode())
-                .setMessage(ResultEnum.SUCCESS.getMessage())
-                .setData(null);
+        ResponseInfo<UserVO> userResponseInfo = ResponseInfo.ok(user_test_data);
+        ResponseInfo<List<RoleVO>> roleListResponseInfo = ResponseInfo.ok();
 
         when(userFeignService.getByUsername(username, SecurityConstants.FROM_IN))
                 .thenReturn(userResponseInfo);

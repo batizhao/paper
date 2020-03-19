@@ -121,8 +121,6 @@ public class WebExceptionHandler {
     @ExceptionHandler(NullPointerException.class)
     public ResponseInfo<String> handleDefault(Exception e) {
         log.error("Default Exception!", e);
-        return new ResponseInfo<String>().setCode(ResultEnum.UNKNOWN_ERROR.getCode())
-                .setMessage(ResultEnum.UNKNOWN_ERROR.getMessage())
-                .setData(e.getMessage());
+        return ResponseInfo.failed(e.getMessage());
     }
 }

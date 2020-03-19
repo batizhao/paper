@@ -53,9 +53,7 @@ public class UserController {
     @Inner
     public ResponseInfo<UserVO> findByUsername(@ApiParam(value = "用户名", required = true) @RequestParam @Size(min = 3) String username) {
         UserVO user = userService.findByUsername(username);
-        return new ResponseInfo<UserVO>().setCode(ResultEnum.SUCCESS.getCode())
-                .setMessage(ResultEnum.SUCCESS.getMessage())
-                .setData(user);
+        return ResponseInfo.ok(user);
     }
 
     /**
@@ -69,9 +67,7 @@ public class UserController {
     @GetMapping("name")
     public ResponseInfo<List<UserVO>> findByName(@ApiParam(value = "用户姓名", required = true) @RequestParam("name") @Size(min = 2) String name) {
         List<UserVO> users = userService.findByName(name);
-        return new ResponseInfo<List<UserVO>>().setCode(ResultEnum.SUCCESS.getCode())
-                .setMessage(ResultEnum.SUCCESS.getMessage())
-                .setData(users);
+        return ResponseInfo.ok(users);
     }
 
     /**
@@ -85,9 +81,7 @@ public class UserController {
     @GetMapping("{id}")
     public ResponseInfo<UserVO> findById(@ApiParam(value = "用户ID", required = true) @PathVariable("id") @Min(1) Long id) {
         UserVO user = userService.findById(id);
-        return new ResponseInfo<UserVO>().setCode(ResultEnum.SUCCESS.getCode())
-                .setMessage(ResultEnum.SUCCESS.getMessage())
-                .setData(user);
+        return ResponseInfo.ok(user);
     }
 
     /**
@@ -101,9 +95,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseInfo<List<UserVO>> findAll() {
         List<UserVO> users = userService.findAll();
-        return new ResponseInfo<List<UserVO>>().setCode(ResultEnum.SUCCESS.getCode())
-                .setMessage(ResultEnum.SUCCESS.getMessage())
-                .setData(users);
+        return ResponseInfo.ok(users);
     }
 
     /**
@@ -117,10 +109,8 @@ public class UserController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseInfo<UserVO> doSaveOrUpdate(@Valid @ApiParam(value = "用户", required = true) @RequestBody User request_user) {
-        UserVO u = userService.saveOrUpdate4me(request_user);
-        return new ResponseInfo<UserVO>().setCode(ResultEnum.SUCCESS.getCode())
-                .setMessage(ResultEnum.SUCCESS.getMessage())
-                .setData(u);
+        UserVO user = userService.saveOrUpdate4me(request_user);
+        return ResponseInfo.ok(user);
     }
 
     /**
@@ -135,9 +125,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseInfo<Boolean> doDelete(@ApiParam(value = "用户ID", required = true) @Min(1) @PathVariable Long id) {
         Boolean b = userService.removeById(id);
-        return new ResponseInfo<Boolean>().setCode(ResultEnum.SUCCESS.getCode())
-                .setMessage(ResultEnum.SUCCESS.getMessage())
-                .setData(b);
+        return ResponseInfo.ok(b);
     }
 
     /**
@@ -156,8 +144,6 @@ public class UserController {
         log.info("access token: {}", access_token);
 
         String username = authentication.getName();
-        return new ResponseInfo<String>().setCode(ResultEnum.SUCCESS.getCode())
-                .setMessage(ResultEnum.SUCCESS.getMessage())
-                .setData(username);
+        return ResponseInfo.ok(username);
     }
 }
