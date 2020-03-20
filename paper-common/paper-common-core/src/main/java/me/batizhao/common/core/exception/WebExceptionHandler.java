@@ -110,6 +110,14 @@ public class WebExceptionHandler {
                 .setData(e.getMessage());
     }
 
+    @ExceptionHandler
+    public ResponseInfo<String> handleNotFoundException(NotFoundException e) {
+        log.error("NotFoundException!", e);
+        return new ResponseInfo<String>().setCode(ResultEnum.RESOURCE_NOT_FOUND.getCode())
+                .setMessage(ResultEnum.RESOURCE_NOT_FOUND.getMessage())
+                .setData(e.getMessage());
+    }
+
     /**
      * 默认异常处理
      * 这里注意没有捕获全部异常

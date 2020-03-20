@@ -1,17 +1,17 @@
 package me.batizhao.ims.service;
 
+import lombok.extern.slf4j.Slf4j;
+import me.batizhao.common.core.exception.NotFoundException;
 import me.batizhao.ims.api.vo.UserVO;
 import me.batizhao.ims.domain.User;
 import me.batizhao.ims.mapper.UserMapper;
 import me.batizhao.ims.service.iml.UserServiceIml;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class UserServiceUnitTest extends BaseServiceUnitTest {
         assertThat(user.getEmail(), equalTo("zhangsan@gmail.com"));
     }
 
-    @Test(expected = UsernameNotFoundException.class)
+    @Test(expected = NotFoundException.class)
     public void givenUserName_whenFindUser_thenNull() {
         String username = "zhangsan";
 
@@ -133,7 +133,7 @@ public class UserServiceUnitTest extends BaseServiceUnitTest {
         assertThat(user.getEmail(), equalTo("zhangsan@gmail.com"));
     }
 
-    @Test(expected = UsernameNotFoundException.class)
+    @Test(expected = NotFoundException.class)
     public void givenUserId_whenFindUser_thenNull() {
         when(userMapper.selectById(anyLong()))
                 .thenReturn(null);

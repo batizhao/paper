@@ -2,6 +2,7 @@ package me.batizhao.ims.service.iml;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import me.batizhao.common.core.exception.NotFoundException;
 import me.batizhao.ims.api.vo.UserVO;
 import me.batizhao.ims.domain.User;
 import me.batizhao.ims.mapper.UserMapper;
@@ -32,7 +33,7 @@ public class UserServiceIml extends ServiceImpl<UserMapper, User> implements Use
         User user = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, username));
 
         if(user == null) {
-            throw new UsernameNotFoundException(String.format("没有该用户 '%s'。", username));
+            throw new NotFoundException(String.format("没有该用户 '%s'。", username));
         }
 
         UserVO userVO = new UserVO();
@@ -75,7 +76,7 @@ public class UserServiceIml extends ServiceImpl<UserMapper, User> implements Use
         User user = userMapper.selectById(id);
 
         if(user == null) {
-            throw new UsernameNotFoundException(String.format("没有该用户 '%s'。", id));
+            throw new NotFoundException(String.format("没有该用户 '%s'。", id));
         }
 
         UserVO userVO = new UserVO();

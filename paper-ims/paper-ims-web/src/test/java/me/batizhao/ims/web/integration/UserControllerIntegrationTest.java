@@ -37,7 +37,7 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
      * @throws Exception
      */
     @Test
-    public void givenUserName_whenFindUser_thenValidateFailed() throws Exception {
+    public void givenInvalidUserName_whenFindUser_thenValidateFailed() throws Exception {
         mvc.perform(get("/user/username").param("username", "xx")
                 .header("Authorization", "Bearer " + access_token))
                 .andDo(print())
@@ -48,7 +48,7 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
     }
 
     @Test
-    public void givenUserNameButInvalidInnerHeader_whenFindUser_thenSuccess() throws Exception {
+    public void givenUserName_whenFindUser_thenSuccess() throws Exception {
         mvc.perform(get("/user/userdetail").param("username", "admin")
                 .header(SecurityConstants.FROM, SecurityConstants.FROM_IN))
                 .andDo(print())
@@ -57,6 +57,16 @@ public class UserControllerIntegrationTest extends BaseControllerIntegrationTest
                 .andExpect(jsonPath("$.code").value(ResultEnum.SUCCESS.getCode()))
                 .andExpect(jsonPath("$.data.email").value("admin@qq.com"))
                 .andExpect(jsonPath("$.data.roleList", hasSize(2)));
+    }
+
+    @Test
+    public void givenUserName_whenFindUser_theNotFound() throws Exception {
+        mvc.perform(get("/user/userdetail").param("username", "xxxx")
+                .header(SecurityConstants.FROM, SecurityConstants.FROM_IN))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(ResultEnum.RESOURCE_NOT_FOUND.getCode()));
     }
 
     /**
