@@ -3,18 +3,16 @@ package me.batizhao.ims.service.iml;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import me.batizhao.common.core.exception.NotFoundException;
+import me.batizhao.common.core.util.BeanCopyUtil;
 import me.batizhao.ims.api.vo.UserVO;
 import me.batizhao.ims.domain.User;
 import me.batizhao.ims.mapper.UserMapper;
 import me.batizhao.ims.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -44,31 +42,13 @@ public class UserServiceIml extends ServiceImpl<UserMapper, User> implements Use
     @Override
     public List<UserVO> findByName(String name) {
         List<User> userList = userMapper.selectList(Wrappers.<User>lambdaQuery().eq(User::getName, name));
-        List<UserVO> users = new ArrayList<UserVO>();
-
-        if (!CollectionUtils.isEmpty(userList)) {
-            for (User user : userList) {
-                UserVO userVO = new UserVO();
-                BeanUtils.copyProperties(user, userVO);
-                users.add(userVO);
-            }
-        }
-
-        return users;
+        return BeanCopyUtil.copyListProperties(userList, UserVO::new);
     }
 
     @Override
     public List<UserVO> findAll() {
         List<User> userList = userMapper.selectList(null);
-        List<UserVO> users = new ArrayList<UserVO>();
-        if (!CollectionUtils.isEmpty(userList)) {
-            for (User user : userList) {
-                UserVO userVO = new UserVO();
-                BeanUtils.copyProperties(user, userVO);
-                users.add(userVO);
-            }
-        }
-        return users;
+        return BeanCopyUtil.copyListProperties(userList, UserVO::new);
     }
 
     @Override

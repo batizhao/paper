@@ -102,6 +102,20 @@ public class UserServiceUnitTest extends BaseServiceUnitTest {
     }
 
     @Test
+    public void givenName_whenFindUser_thenEmpty() {
+        userList.clear();
+        when(userMapper.selectList(any())).thenReturn(userList);
+
+        List<UserVO> users = userService.findByName("xxxx");
+
+        verify(userMapper).selectList(any());
+
+        log.info("users: {}", users);
+
+        assertThat(users, hasSize(0));
+    }
+
+    @Test
     public void givenNothing_whenFindAllUser_thenSuccess() {
         when(userMapper.selectList(null))
                 .thenReturn(userList);
