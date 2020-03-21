@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  me.batizhao.common.security.exception.MyAccessDeniedHandler, \
+  me.batizhao.common.security.exception.MyAuthenticationEntryPoint, \
+  me.batizhao.common.security.exception.MyBasicAuthenticationEntryPoint
