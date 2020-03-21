@@ -22,6 +22,7 @@
 		<module>paper-ims</module>
         <module>paper-uaa</module>
 		<module>paper-common</module>
+		<module>paper-gateway</module>
 	</modules>
 
 	<properties>
