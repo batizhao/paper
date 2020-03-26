@@ -1,4 +1,5 @@
-# Paper  ![](https://img.shields.io/badge/build-passing-brightgreen) ![](https://img.shields.io/badge/coverage-100%25-green)
+# Paper  ![](https://img.shields.io/badge/build-passing-brightgreen)![](https://img.shields.io/badge/coverage-100%25-green)
+
 
 这是一个 Spring Boot 项目。主要目标：
 
@@ -14,7 +15,10 @@
 关于分支：
 
 * ut 分支使用了 h2 内存数据库，单元测试最小集合，快速开始。
+
 * cloud 分支基于 master 重构为 Spring Cloud ，完成上述所有目标。
+
+  > cloud 分支已经停止更新，后续迁移到 [Pecado](https://github.com/batizhao/pecado) 项目。
 
 ## 环境
 
