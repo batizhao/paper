@@ -6,6 +6,7 @@
 
 package io.github.batizhao.util;
 
+import io.github.batizhao.domain.TreeNode;
 import lombok.experimental.UtilityClass;
 
 import java.util.ArrayList;

@@ -4,7 +4,7 @@
  * @ Apache-2.0
  */
 
-package io.github.batizhao.util;
+package io.github.batizhao.domain;
 
 import io.swagger.annotations.ApiModelProperty;
 
