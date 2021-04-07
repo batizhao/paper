@@ -1,0 +1,57 @@
+package ${package}.${moduleName}.domain;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+import me.batizhao.common.core.util.TreeNode;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+/**
+ * ${comments} 实体对象
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Data
+@Accessors(chain = true)
+@NoArgsConstructor
+@ApiModel(description = "${comments}")
+@TableName("${tableName}")
+public class ${className}#if($template == "tree") extends TreeNode#end implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+#foreach ($column in $columns)
+    #if($template == "tree")
+        #if($column.javaField == "id" || $column.javaField == "pid")
+        #else
+
+    /**
+     * $column.columnComment
+     */
+    @ApiModelProperty(value="$column.columnComment")
+    private $column.javaType $column.javaField;
+        #end
+    #else
+
+    /**
+     * $column.columnComment
+     */
+    @ApiModelProperty(value="$column.columnComment")
+    private $column.javaType $column.javaField;
+    #end
+#end
+#if($template == "tree")
+
+    public ${className}(Integer id, Integer pid) {
+        this.id = id;
+        this.pid = pid;
+    }
+#end
+
+}

@@ -1,21 +1,20 @@
 package io.github.batizhao.security;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import io.github.batizhao.domain.Role;
+import lombok.extern.slf4j.Slf4j;
 import io.github.batizhao.domain.User;
-import io.github.batizhao.mapper.RoleMapper;
-import io.github.batizhao.mapper.UserMapper;
+import io.github.batizhao.domain.UserInfoVO;
+import io.github.batizhao.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -23,28 +22,36 @@ import java.util.Set;
  * @since 2020-02-29
  */
 @Component
+@Slf4j
 public class MyUserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    RoleMapper roleMapper;
-    @Autowired
-    UserMapper userMapper;
+    UserService userService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, username));
+        User user = userService.findByUsername(username);
 
         if (user == null) {
             throw new UsernameNotFoundException(String.format("没有该用户 '%s'。", username));
         }
 
-        List<Role> roles = roleMapper.findRolesByUserId(user.getId());
+        UserInfoVO userInfoVO = userService.getUserInfo(user.getId());
+        log.info("UserDetails: {}", userInfoVO);
 
-        Set<GrantedAuthority> authorities = new HashSet<>();
-        roles.forEach(r -> authorities.add(new SimpleGrantedAuthority(r.getName())));
+        Set<String> authSet = new HashSet<>();
+        if (!CollectionUtils.isEmpty(userInfoVO.getRoles())) {
+            // 获取角色
+            authSet.addAll(userInfoVO.getRoles());
+            // 获取资源
+            authSet.addAll(userInfoVO.getPermissions());
+        }
 
-        return new org.springframework.security.core.userdetails.User(
-                username, user.getPassword(),
+        Collection<? extends GrantedAuthority> authorities = AuthorityUtils
+                .createAuthorityList(authSet.toArray(new String[0]));
+
+        //TODO: The second param to user.getDeptId
+        return new PecadoUser(user.getId(), user.getId(), user.getUsername(), user.getPassword(),
                 true,
                 true,
                 true,

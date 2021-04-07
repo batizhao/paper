@@ -1,10 +1,10 @@
 package io.github.batizhao.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import io.github.batizhao.util.ResponseInfo;
+import io.github.batizhao.util.ResultEnum;
 import org.springframework.boot.web.servlet.error.ErrorController;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,14 +31,13 @@ public class ErrorHandler implements ErrorController {
     }
 
     @GetMapping(ERROR_PATH)
-    @ResponseStatus(HttpStatus.OK)
     public ResponseInfo<String> handleError(HttpServletRequest request) {
         Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
         String requestUri = (String) request.getAttribute("javax.servlet.error.request_uri");
-        String exception_type = (String) request.getAttribute("javax.servlet.error.exception_type");
+        String exceptionType = (String) request.getAttribute("javax.servlet.error.exception_type");
 
-        log.error("ErrorHandler statusCode: {}, requestUri: {}, exception_type: {}",
-                statusCode, requestUri, exception_type);
+        log.error("ErrorHandler statusCode: {}, requestUri: {}, exceptionType: {}",
+                statusCode, requestUri, exceptionType);
 
         return new ResponseInfo<String>().setMessage(ResultEnum.RESOURCE_NOT_FOUND.getMessage())
                 .setCode(ResultEnum.RESOURCE_NOT_FOUND.getCode())

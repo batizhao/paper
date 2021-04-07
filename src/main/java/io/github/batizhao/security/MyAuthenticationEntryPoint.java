@@ -1,8 +1,8 @@
 package io.github.batizhao.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.batizhao.exception.ResponseInfo;
-import io.github.batizhao.exception.ResultEnum;
+import io.github.batizhao.util.ResponseInfo;
+import io.github.batizhao.util.ResultEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;

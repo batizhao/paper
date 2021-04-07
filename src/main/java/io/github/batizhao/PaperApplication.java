@@ -2,6 +2,8 @@ package io.github.batizhao;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * 尽量不要在这里写 @MapperScan
@@ -13,6 +15,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *  @since 2020-02-07
  */
 @SpringBootApplication
+@EnableAsync
+@ConfigurationPropertiesScan
 public class PaperApplication {
 
 	public static void main(String[] args) {

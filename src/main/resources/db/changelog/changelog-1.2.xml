@@ -1,0 +1,146 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet author="batizhao" id="CreateTableCode-20210128-001">
+        <createTable remarks="生成代码表" tableName="code">
+            <column autoIncrement="true" name="id" type="BIGINT" remarks="自增ID">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="dsName" type="VARCHAR(64)" remarks="数据源">
+                <constraints nullable="false" />
+            </column>
+            <column name="tableName" type="VARCHAR(64)" remarks="表名">
+                <constraints nullable="false" />
+            </column>
+            <column name="tableComment" type="VARCHAR(255)" remarks="表说明">
+                <constraints nullable="false" />
+            </column>
+            <column name="engine" type="VARCHAR(32)" remarks="引擎">
+                <constraints nullable="false" />
+            </column>
+            <column name="className" type="VARCHAR(64)" remarks="类名">
+                <constraints nullable="false" />
+            </column>
+            <column name="classComment" type="VARCHAR(32)" remarks="类注释">
+                <constraints nullable="false" />
+            </column>
+            <column name="classAuthor" type="VARCHAR(32)" remarks="作者">
+                <constraints nullable="false" />
+            </column>
+            <column name="packageName" type="VARCHAR(255)" remarks="包名">
+                <constraints nullable="false" />
+            </column>
+            <column name="moduleName" type="VARCHAR(32)" remarks="所属模块/微服务/系统名，英文">
+                <constraints nullable="false" />
+            </column>
+            <column name="mappingPath" type="VARCHAR(64)" remarks="API后端路由">
+                <constraints nullable="false" />
+            </column>
+            <column name="template" type="VARCHAR(16)" remarks="模板类型">
+                <constraints nullable="false" />
+            </column>
+            <column name="parentMenuId" type="BIGINT" remarks="父菜单ID"/>
+            <column name="type" type="VARCHAR(16)" defaultValue="zip" remarks="生成代码方式（zip压缩包 path自定义路径）"/>
+            <column name="path" type="VARCHAR(128)" defaultValue="/" remarks="生成路径（不填默认项目路径）"/>
+            <column name="subTableId" type="BIGINT" remarks="关联子表的code.id"/>
+            <column name="subTableFkName" type="VARCHAR(32)" defaultValue="" remarks="子表关联的属性名"/>
+            <column name="options" type="CLOB" remarks="表单元数据" />
+            <column name="createTime" type="datetime" remarks="创建时间" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updateTime" type="datetime" remarks="修改时间" defaultValueComputed="NOW() ON UPDATE NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable remarks="生成代码元数据表" tableName="code_meta">
+            <column autoIncrement="true" name="id" type="BIGINT" remarks="自增ID">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="codeId" type="BIGINT" remarks="code表ID">
+                <constraints nullable="false" />
+            </column>
+            <column name="columnName" type="VARCHAR(64)" remarks="列名">
+                <constraints nullable="false" />
+            </column>
+            <column name="columnComment" type="VARCHAR(64)" remarks="列注释">
+                <constraints nullable="false" />
+            </column>
+            <column name="columnType" type="VARCHAR(32)" remarks="列类型">
+                <constraints nullable="false" />
+            </column>
+            <column name="javaType" type="VARCHAR(32)" remarks="Java类型">
+                <constraints nullable="false" />
+            </column>
+            <column name="javaField" type="VARCHAR(64)" remarks="Java属性名">
+                <constraints nullable="false" />
+            </column>
+            <column name="primaryKey" type="TINYINT(1)" remarks="是否主键" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="increment" type="TINYINT(1)" remarks="是否自增" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="required" type="TINYINT(1)" remarks="是否必须" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="save" type="TINYINT(1)" remarks="是否可插入" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="edit" type="TINYINT(1)" remarks="是否可编辑" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="display" type="TINYINT(1)" remarks="是否在列表显示" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="search" type="TINYINT(1)" remarks="是否可查询" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="searchType" type="VARCHAR(16)" remarks="查询方式（等于、不等于、大于、小于、范围）" defaultValue="EQ">
+                <constraints nullable="false" />
+            </column>
+            <column name="htmlType" type="VARCHAR(16)" remarks="显示类型（文本框、文本域、下拉框、复选框、单选框、日期控件）" defaultValue="input">
+                <constraints nullable="false" />
+            </column>
+            <column name="dictType" type="VARCHAR(32)" remarks="字典类型" defaultValue="">
+                <constraints nullable="false" />
+            </column>
+            <column name="sort" type="INT" remarks="排序" defaultValue="1">
+                <constraints nullable="false" />
+            </column>
+            <column name="createTime" type="datetime" remarks="创建时间" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updateTime" type="datetime" remarks="修改时间" defaultValueComputed="NOW() ON UPDATE NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="batizhao" id="CreateTableForm-20200308-001">
+        <createTable tableName="form" remarks="表单">
+            <column autoIncrement="true" name="id" type="BIGINT" remarks="表单ID">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)" remarks="表单名称">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="metadata" type="CLOB" remarks="表单元数据" />
+            <column name="description" type="VARCHAR(255)" remarks="表单描述" defaultValue="" />
+            <column name="status" type="VARCHAR(32)" remarks="状态" defaultValue="open">
+                <constraints nullable="false" />
+            </column>
+            <column name="createTime" type="datetime" remarks="创建时间" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updateTime" type="datetime" remarks="修改时间" defaultValueComputed="NOW() ON UPDATE NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="form"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

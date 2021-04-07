@@ -1,0 +1,13 @@
+package ${package}.${moduleName}.unit.mapper;
+
+import org.junit.jupiter.api.Test;
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+public class ${className}MapperUnitTest extends BaseMapperUnitTest {
+
+}

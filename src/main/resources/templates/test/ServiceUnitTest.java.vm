@@ -1,0 +1,147 @@
+package ${package}.${moduleName}.unit.service;
+
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.extern.slf4j.Slf4j;
+import me.batizhao.common.core.exception.NotFoundException;
+import ${package}.${moduleName}.domain.${className};
+import ${package}.${moduleName}.mapper.${className}Mapper;
+import ${package}.${moduleName}.service.${className}Service;
+import ${package}.${moduleName}.service.impl.${className}ServiceImpl;
+import org.apache.ibatis.builder.MapperBuilderAssistant;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.*;
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+public class ${className}ServiceUnitTest extends BaseServiceUnitTest {
+
+    /**
+     * Spring Boot 提供了 @TestConfiguration 注释，可用于 src/test/java 中的类，以指示不应通过扫描获取它们。
+     */
+    @TestConfiguration
+    static class TestContextConfiguration {
+        @Bean
+        public ${className}Service ${classname}Service() {
+            return new ${className}ServiceImpl();
+        }
+    }
+
+    @MockBean
+    private ${className}Mapper ${classname}Mapper;
+
+    @Autowired
+    private ${className}Service ${classname}Service;
+
+    private List<${className}> ${classname}List;
+    private Page<${className}> ${classname}PageList;
+
+    /**
+     * Prepare test data.
+     */
+    @BeforeEach
+    public void setUp() {
+        ${classname}List = new ArrayList<>();
+        ${classname}List.add(new ${className}().setId(1L).setName("zhangsan"));
+        ${classname}List.add(new ${className}().setId(2L).setName("lisi"));
+        ${classname}List.add(new ${className}().setId(3L).setName("wangwu"));
+
+        ${classname}PageList = new Page<>();
+        ${classname}PageList.setRecords(${classname}List);
+    }
+
+    @Test
+    public void givenNothing_whenFindAll${className}_thenSuccess() {
+        when(${classname}Mapper.selectPage(any(Page.class), any(Wrapper.class)))
+                .thenReturn(${classname}PageList);
+
+        IPage<${className}> ${classname}s = ${classname}Service.find${className}s(new Page<>(), new ${className}());
+
+        assertThat(${classname}s.getRecords(), iterableWithSize(3));
+        assertThat(${classname}s.getRecords(), hasItems(hasProperty("name", equalTo("zhangsan")),
+                hasProperty("name", equalTo("lisi")),
+                hasProperty("name", equalTo("wangwu"))));
+
+        ${classname}PageList.setRecords(${classname}List.subList(1, 2));
+        when(${classname}Mapper.selectPage(any(Page.class), any(Wrapper.class)))
+                .thenReturn(${classname}PageList);
+
+        ${classname}s = ${classname}Service.find${className}s(new Page<>(), new ${className}().setName("lname"));
+        assertThat(${classname}s.getRecords(), iterableWithSize(1));
+        assertThat(${classname}s.getRecords(), hasItems(hasProperty("name", equalTo("lisi"))));
+    }
+
+    @Test
+    public void given${className}Id_whenFind${className}_thenSuccess() {
+        when(${classname}Mapper.selectById(1L))
+                .thenReturn(${classname}List.get(0));
+
+        ${className} ${classname} = ${classname}Service.findById(1L);
+
+        assertThat(${classname}.getName(), equalTo("zhangsan"));
+    }
+
+    @Test
+    public void given${className}Id_whenFind${className}_thenNotFound() {
+        when(${classname}Mapper.selectById(any()))
+                .thenReturn(null);
+
+        assertThrows(NotFoundException.class, () -> ${classname}Service.findById(1L));
+
+        verify(${classname}Mapper).selectById(any());
+    }
+
+    @Test
+    public void given${className}Json_whenSaveOrUpdate${className}_thenSuccess() {
+        ${className} ${classname}_test_data = new ${className}().setName("zhaoliu");
+
+        // insert 不带 id
+        doReturn(1).when(${classname}Mapper).insert(any(${className}.class));
+
+        ${classname}Service.saveOrUpdate${className}(${classname}_test_data);
+
+        verify(${classname}Mapper).insert(any(${className}.class));
+
+        // update 需要带 id
+        doReturn(1).when(${classname}Mapper).updateById(any(${className}.class));
+
+        ${classname}Service.saveOrUpdate${className}(${classname}List.get(0));
+
+        verify(${classname}Mapper).updateById(any(${className}.class));
+    }
+
+    @Test
+    public void given${className}_whenUpdateStatus_thenSuccess() {
+        //Fix can not find lambda cache for this entity
+        TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(), ""), ${className}.class);
+
+        doReturn(1).when(${classname}Mapper).update(any(), any(Wrapper.class));
+        assertThat(${classname}Service.updateStatus(${classname}List.get(0)), equalTo(true));
+
+        doReturn(0).when(${classname}Mapper).update(any(), any(Wrapper.class));
+        assertThat(${classname}Service.updateStatus(${classname}List.get(0)), equalTo(false));
+
+        verify(${classname}Mapper, times(2)).update(any(), any(LambdaUpdateWrapper.class));
+    }
+}

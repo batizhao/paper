@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="me.batizhao.dp.mapper.CodeMapper">
+	<resultMap id="codeMap" type="me.batizhao.dp.domain.Code">
+		<id property="id" column="id"/>
+		<result property="dsName" column="dsName"/>
+		<result property="tableName" column="tableName"/>
+		<result property="tableComment" column="tableComment"/>
+		<result property="engine" column="engine"/>
+		<result property="className" column="className"/>
+		<result property="classComment" column="classComment"/>
+		<result property="classAuthor" column="classAuthor"/>
+		<result property="packageName" column="packageName"/>
+		<result property="moduleName" column="moduleName"/>
+		<result property="mappingPath" column="mappingPath"/>
+		<result property="template" column="template"/>
+		<result property="parentMenuId" column="parentMenuId"/>
+		<result property="type" column="type"/>
+		<result property="path" column="path"/>
+		<result property="subTableId" column="subTableId"/>
+		<result property="subTableFkName" column="subTableFkName"/>
+		<result property="options" column="options"/>
+		<result property="createTime" column="createTime"/>
+		<result property="updateTime" column="updateTime"/>
+	</resultMap>
+
+	<select id="selectTablePageByDs" resultMap="codeMap">
+		select table_name tableName, engine engine, table_comment tableComment, create_time createTime, update_time updateTime from information_schema.tables
+			where table_schema = (select database())
+		    and table_name != 'DATABASECHANGELOG' and table_name != 'DATABASECHANGELOGLOCK' and table_name != 'undo_log'
+		<if test="code.tableName != null and code.tableName.trim() != ''">
+			and table_name like concat('%', #{code.tableName}, '%')
+		</if>
+		<if test="code.tableComment != null and code.tableComment.trim() != ''">
+			and table_comment like concat('%', #{code.tableComment}, '%')
+		</if>
+		order by update_time desc
+	</select>
+</mapper>

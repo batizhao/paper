@@ -1,0 +1,74 @@
+package ${package}.${moduleName}.service;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
+import ${package}.${moduleName}.domain.${className};
+
+import java.util.List;
+
+/**
+ * ${comments}接口类
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+public interface ${className}Service extends IService<${className}> {
+
+#if($template != "tree")
+    /**
+     * 分页查询${comments}
+     * @param page 分页对象
+     * @param ${classname} ${comments}
+     * @return IPage<${className}>
+     */
+    IPage<${className}> find${className}s(Page<${className}> page, ${className} ${classname});
+#else
+    /**
+     * 查询所有${comments}
+     * @return ${comments}树
+     */
+    List<${className}> find${className}Tree(${className} ${classname});
+#end
+
+    /**
+     * 通过id查询${comments}
+     * @param ${pk.javaField} id
+     * @return ${className}
+     */
+    ${className} findById(${pk.javaType} id);
+
+    /**
+     * 添加或编辑${comments}
+     * @param ${classname} ${comments}
+     * @return ${className}
+     */
+    ${className} saveOrUpdate${className}(${className} ${classname});
+#if($template == "tree")
+
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    Boolean deleteById(Integer id);
+#end
+
+    /**
+     * 更新${comments}状态
+     * @param ${classname} ${comments}
+     * @return Boolean
+     */
+    Boolean updateStatus(${className} ${classname});
+#if($template == "tree")
+
+    /**
+     * 检查是否有子${comments}
+     * 有返回 true，无返回 false
+     *
+     * @param id
+     * @return
+     */
+    Boolean checkHasChildren(Integer id);
+#end
+}

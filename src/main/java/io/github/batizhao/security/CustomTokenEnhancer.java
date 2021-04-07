@@ -1,5 +1,7 @@
 package io.github.batizhao.security;
 
+import io.github.batizhao.constant.SecurityConstants;
+import io.github.batizhao.util.ResultEnum;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -18,9 +20,13 @@ public class CustomTokenEnhancer implements TokenEnhancer {
 
     @Override
     public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
-        Map<String, Object> additionalInfo = new HashMap<>();
-        User user = (User) authentication.getUserAuthentication().getPrincipal();
-        additionalInfo.put("username", user.getUsername());
+        final Map<String, Object> additionalInfo = new HashMap<>(5);
+        PecadoUser user = (PecadoUser) authentication.getUserAuthentication().getPrincipal();
+        additionalInfo.put(SecurityConstants.DETAILS_USER_ID, user.getUserId());
+        additionalInfo.put(SecurityConstants.DETAILS_USERNAME, user.getUsername());
+        additionalInfo.put(SecurityConstants.DETAILS_DEPT_ID, user.getDeptId());
+        additionalInfo.put("code", ResultEnum.SUCCESS.getCode());
+        additionalInfo.put("message", ResultEnum.SUCCESS.getMessage());
         ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
         return accessToken;
     }

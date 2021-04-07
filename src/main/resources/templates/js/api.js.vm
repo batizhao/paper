@@ -1,0 +1,63 @@
+import request from '@/utils/request'
+
+#if($template != "tree")
+// 分页查询${comments}
+export function list${className}(query) {
+  return request({
+    url: '/${moduleName}/${mappingPath}s',
+    params: query
+  })
+}
+#end
+
+// 查询所有${comments}
+export function listAll${className}(query) {
+  return request({
+    url: '/${moduleName}/${mappingPath}',
+    params: query
+  })
+}
+
+// 查询${comments}详细
+export function get${className}(${pk.javaField}) {
+  return request(`/${moduleName}/${mappingPath}/${${pk.javaField}}`);
+}
+
+// 添加或者编辑${comments}
+export function addOrUpdate${className}(data) {
+  return request({
+    url: '/${moduleName}/${mappingPath}',
+    method: 'post',
+    data: data
+  })
+}
+
+// 删除${comments}
+export function delete${className}(#if($template != "tree")${pk.javaField}s#else${pk.javaField}#end) {
+#if($template != "tree")
+  return request.delete(`/${moduleName}/${mappingPath}?ids=${${pk.javaField}s}`);
+#else
+  return request.delete(`/${moduleName}/${mappingPath}?id=${${pk.javaField}}`);
+#end
+}
+
+// 角色状态编辑
+export function change${className}Status(id, status) {
+  const data = {
+    id,
+    status
+  }
+  return request({
+    url: '/${moduleName}/${mappingPath}/status',
+    method: 'post',
+    data: data
+  })
+}
+
+// 导出${comments}
+export function export${className}(query) {
+  return request({
+    url: '/${moduleName}/${mappingPath}/export',
+    params: query
+  })
+}

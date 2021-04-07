@@ -1,0 +1,175 @@
+package ${package}.${moduleName}.controller;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
+import me.batizhao.common.core.util.ResponseInfo;
+import ${package}.${moduleName}.domain.${className};
+import ${package}.${moduleName}.service.${className}Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import java.util.List;
+
+/**
+ * ${comments} API
+ *
+ * @module ${moduleName}
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Api(tags = "${comments}管理")
+@RestController
+@Slf4j
+@Validated
+public class ${className}Controller {
+
+    @Autowired
+    private ${className}Service ${classname}Service;
+#if($template != "tree")
+
+    /**
+     * 分页查询${comments}
+     * @param page 分页对象
+     * @param ${classname} ${comments}
+     * @return ResponseInfo
+     */
+    @ApiOperation(value = "分页查询${comments}")
+    @GetMapping("/${mappingPath}s")
+#if(!$relationTable.isEmpty())
+    @PreAuthorize("@pms.hasPermission('${relationTable[0].moduleName}:${relationTable[0].className}:admin')")
+#else
+    @PreAuthorize("@pms.hasPermission('${moduleName}:${className}:admin')")
+#end
+    public ResponseInfo<IPage<${className}>> handle${className}s(Page<${className}> page, ${className} ${classname}) {
+        return ResponseInfo.ok(${classname}Service.find${className}s(page, ${classname}));
+    }
+#end
+
+    /**
+     * 查询所有${comments}
+     * @return ResponseInfo
+     */
+    @ApiOperation(value = "查询所有${comments}")
+    @GetMapping("/${mappingPath}")
+#if(!$relationTable.isEmpty())
+    @PreAuthorize("@pms.hasPermission('${relationTable[0].moduleName}:${relationTable[0].className}:admin')")
+#else
+    @PreAuthorize("@pms.hasPermission('${moduleName}:${className}:admin')")
+#end
+    public ResponseInfo<List<${className}>> handleAll${className}(#if($template == "tree")${className} ${classname}#end) {
+#if($template == "tree")
+        return ResponseInfo.ok(${classname}Service.find${className}Tree(${classname}));
+#else
+        return ResponseInfo.ok(${classname}Service.list());
+#end
+    }
+
+    /**
+     * 通过id查询${comments}
+     * @param ${pk.javaField} id
+     * @return ResponseInfo
+     */
+    @ApiOperation(value = "通过id查询${comments}")
+    @GetMapping("/${mappingPath}/{${pk.javaField}}")
+#if(!$relationTable.isEmpty())
+    @PreAuthorize("@pms.hasPermission('${relationTable[0].moduleName}:${relationTable[0].className}:admin')")
+#else
+    @PreAuthorize("@pms.hasPermission('${moduleName}:${className}:admin')")
+#end
+    public ResponseInfo<${className}> handleId(@ApiParam(value = "ID" , required = true) @PathVariable("${pk.javaField}") @Min(1) ${pk.javaType} ${pk.javaField}) {
+        return ResponseInfo.ok(${classname}Service.findById(${pk.javaField}));
+    }
+#if(!$relationTable.isEmpty())
+#foreach ($table in $relationTable)
+#set($fk=$table.subTableFkName)
+#if($fk.length() > 2 && $fk.substring(1,2).matches("[A-Z]"))
+    #set($AttrName=$fk)
+#else
+    #set($AttrName=$fk.substring(0,1).toUpperCase() + ${fk.substring(1)})
+#end
+
+    /**
+     * 通过${fk}查询${comments}
+     * @param ${fk}
+     * @return ResponseInfo
+     */
+    @ApiOperation(value = "通过${fk}查询${comments}")
+    @GetMapping(value = "/${mappingPath}", params = "${fk}")
+    public ResponseInfo<List<${className}>> handle${AttrName}(@ApiParam(value = "${fk}", required = true) @RequestParam String ${fk}) {
+        return ResponseInfo.ok(${classname}Service.list(Wrappers.<${className}>lambdaQuery().eq(${className}::get${AttrName}, ${fk})));
+    }
+#end
+#end
+
+    /**
+     * 添加或编辑${comments}
+     * @param ${classname} ${comments}
+     * @return ResponseInfo
+     */
+    @ApiOperation(value = "添加或编辑${comments}")
+    @PostMapping("/${mappingPath}")
+#if(!$relationTable.isEmpty())
+    @PreAuthorize("@pms.hasPermission('${relationTable[0].moduleName}:${relationTable[0].className}:add') or @pms.hasPermission('${relationTable[0].moduleName}:${relationTable[0].className}:edit')")
+#else
+    @PreAuthorize("@pms.hasPermission('${moduleName}:${className}:add') or @pms.hasPermission('${moduleName}:${className}:edit')")
+#end
+    public ResponseInfo<${className}> handleSaveOrUpdate(@Valid @ApiParam(value = "${comments}" , required = true) @RequestBody ${className} ${classname}) {
+        return ResponseInfo.ok(${classname}Service.saveOrUpdate${className}(${classname}));
+    }
+
+    /**
+     * 通过id删除${comments}
+#if($template != "tree")
+     * @param ids ID串
+#else
+     * @param id ID
+#end
+     * @return ResponseInfo
+     */
+    @ApiOperation(value = "通过id删除${comments}")
+    @DeleteMapping("/${mappingPath}")
+#if(!$relationTable.isEmpty())
+    @PreAuthorize("@pms.hasPermission('${relationTable[0].moduleName}:${relationTable[0].className}:delete')")
+#else
+    @PreAuthorize("@pms.hasPermission('${moduleName}:${className}:delete')")
+#end
+#if($template != "tree")
+    public ResponseInfo<Boolean> handleDelete(@ApiParam(value = "ID串" , required = true) @RequestParam List<Long> ids) {
+#else
+    public ResponseInfo<String> handleDelete(@ApiParam(value = "ID", required = true) @RequestParam Integer id) {
+#end
+#if($template != "tree")
+        return ResponseInfo.ok(${classname}Service.removeByIds(ids));
+#else
+        return ${classname}Service.deleteById(id) ? ResponseInfo.ok() : ResponseInfo.failed("存在子${comments}不允许删除！");
+#end
+    }
+
+    /**
+     * 更新${comments}状态
+     *
+     * @param ${classname} ${comments}
+     * @return ResponseInfo
+     */
+    @ApiOperation(value = "更新${comments}状态")
+    @PostMapping("/${mappingPath}/status")
+#if(!$relationTable.isEmpty())
+    @PreAuthorize("@pms.hasPermission('${relationTable[0].moduleName}:${relationTable[0].className}:admin')")
+#else
+    @PreAuthorize("@pms.hasPermission('${moduleName}:${className}:admin')")
+#end
+    public ResponseInfo<Boolean> handleUpdateStatus(@ApiParam(value = "${comments}" , required = true) @RequestBody ${className} ${classname}) {
+        return ResponseInfo.ok(${classname}Service.updateStatus(${classname}));
+    }
+
+}

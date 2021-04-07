@@ -1,0 +1,208 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet author="batizhao" id="CreateTableLog-20200401-001">
+        <createTable tableName="log" remarks="日志">
+            <column autoIncrement="true" name="id" type="BIGINT" remarks="主键">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="httpRequestMethod" type="VARCHAR(255)" remarks="HTTP方法">
+                <constraints nullable="false"/>
+            </column>
+            <column name="className" type="VARCHAR(255)" remarks="类名">
+                <constraints nullable="false"/>
+            </column>
+            <column name="classMethod" type="VARCHAR(255)" remarks="类方法">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)" remarks="操作描述" defaultValue="" />
+            <column name="parameter" type="VARCHAR(1000)" remarks="操作参数"/>
+            <column name="type" type="VARCHAR(16)" remarks="日志类型" defaultValue="success" />
+            <column name="result" type="CLOB" remarks="操作结果"/>
+            <column name="spend" type="INT" remarks="操作时长" defaultValueNumeric="0" />
+            <column name="clientId" type="VARCHAR(255)" remarks="OAuth客户端"/>
+            <column name="username" type="VARCHAR(255)" remarks="操作用户">
+                <constraints nullable="false"/>
+            </column>
+            <column name="url" type="VARCHAR(255)" remarks="操作URL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ip" type="VARCHAR(255)" remarks="操作IP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="createTime" type="datetime" remarks="创建时间" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="log"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="batizhao" id="CreateTableFile-20200923-001">
+        <createTable tableName="file" remarks="附件">
+            <column autoIncrement="true" name="id" type="BIGINT" remarks="主键">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)" remarks="显示名">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fileName" type="VARCHAR(255)" remarks="文件名">
+                <constraints nullable="false"/>
+            </column>
+            <column name="size" type="BIGINT" remarks="大小"/>
+            <column name="url" type="VARCHAR(255)" remarks="url"/>
+            <column name="thumbUrl" type="VARCHAR(255)" remarks="缩略图 url"/>
+            <column name="createTime" type="datetime" remarks="操作时间">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="file"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="batizhao" id="CreateTableDict-20210205-001">
+        <createTable tableName="dict_type" remarks="字典类型表">
+            <column autoIncrement="true" name="id" type="BIGINT" remarks="主键">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(32)" remarks="名称">
+                <constraints nullable="false" unique="true" />
+            </column>
+            <column name="code" type="VARCHAR(32)" remarks="代码">
+                <constraints nullable="false" unique="true" />
+            </column>
+            <column name="status" type="VARCHAR(32)" remarks="状态" defaultValue="open">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(255)" remarks="描述" defaultValue="" />
+            <column name="createTime" type="datetime" remarks="创建时间" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updateTime" type="datetime" remarks="修改时间" defaultValueComputed="NOW() ON UPDATE NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="dict_type"/>
+        </rollback>
+        <createTable tableName="dict_data" remarks="字典表">
+            <column autoIncrement="true" name="id" type="BIGINT" remarks="主键">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="code" type="VARCHAR(32)" remarks="代码">
+                <constraints nullable="false" />
+            </column>
+            <column name="label" type="VARCHAR(32)" remarks="标签">
+                <constraints nullable="false" />
+            </column>
+            <column name="value" type="VARCHAR(32)" remarks="值">
+                <constraints nullable="false" />
+            </column>
+            <column name="isDefault" type="VARCHAR(32)" remarks="默认" defaultValue="no">
+                <constraints nullable="false" />
+            </column>
+            <column name="sort" type="INT" defaultValue="1" remarks="排序" />
+            <column name="status" type="VARCHAR(32)" remarks="状态" defaultValue="open">
+                <constraints nullable="false" />
+            </column>
+            <column name="createTime" type="datetime" remarks="创建时间" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updateTime" type="datetime" remarks="修改时间" defaultValueComputed="NOW() ON UPDATE NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="dict_data"/>
+        </rollback>
+
+        <insert tableName="dict_type">
+            <column name="name" value="性别"/>
+            <column name="code" value="sex"/>
+            <column name="description" value="男|女"/>
+        </insert>
+        <insert tableName="dict_type">
+            <column name="name" value="状态"/>
+            <column name="code" value="status"/>
+            <column name="description" value="启用|禁用"/>
+        </insert>
+        <insert tableName="dict_type">
+            <column name="name" value="是否"/>
+            <column name="code" value="yes_or_no"/>
+            <column name="description" value="是|否"/>
+        </insert>
+        <insert tableName="dict_type">
+            <column name="name" value="成败"/>
+            <column name="code" value="success_or_fail"/>
+            <column name="description" value="成功|失败"/>
+        </insert>
+        <insert tableName="dict_data">
+            <column name="code" value="sex"/>
+            <column name="label" value="男"/>
+            <column name="value" value="male"/>
+            <column name="sort" valueNumeric="1"/>
+            <column name="isDefault" value="yes"/>
+        </insert>
+        <insert tableName="dict_data">
+            <column name="code" value="sex"/>
+            <column name="label" value="女"/>
+            <column name="value" value="female"/>
+            <column name="sort" valueNumeric="2"/>
+        </insert>
+        <insert tableName="dict_data">
+            <column name="code" value="status"/>
+            <column name="label" value="启用"/>
+            <column name="value" value="open"/>
+            <column name="sort" valueNumeric="1"/>
+            <column name="isDefault" value="yes"/>
+        </insert>
+        <insert tableName="dict_data">
+            <column name="code" value="status"/>
+            <column name="label" value="禁用"/>
+            <column name="value" value="close"/>
+            <column name="sort" valueNumeric="2"/>
+        </insert>
+        <insert tableName="dict_data">
+            <column name="code" value="yes_or_no"/>
+            <column name="label" value="是"/>
+            <column name="value" value="yes"/>
+            <column name="sort" valueNumeric="1"/>
+            <column name="isDefault" value="yes"/>
+        </insert>
+        <insert tableName="dict_data">
+            <column name="code" value="yes_or_no"/>
+            <column name="label" value="否"/>
+            <column name="value" value="no"/>
+            <column name="sort" valueNumeric="2"/>
+        </insert>
+        <insert tableName="dict_data">
+            <column name="code" value="success_or_fail"/>
+            <column name="label" value="成功"/>
+            <column name="value" value="success"/>
+            <column name="sort" valueNumeric="1"/>
+            <column name="isDefault" value="yes"/>
+        </insert>
+        <insert tableName="dict_data">
+            <column name="code" value="success_or_fail"/>
+            <column name="label" value="失败"/>
+            <column name="value" value="failure"/>
+            <column name="sort" valueNumeric="2"/>
+        </insert>
+
+        <rollback>
+            delete from dict_type where code = 'sex';
+            delete from dict_data where code = 'sex';
+            delete from dict_type where code = 'status';
+            delete from dict_data where code = 'status';
+            delete from dict_type where code = 'yes_or_no';
+            delete from dict_data where code = 'yes_or_no';
+            delete from dict_type where code = 'success_or_fail';
+            delete from dict_data where code = 'success_or_fail';
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

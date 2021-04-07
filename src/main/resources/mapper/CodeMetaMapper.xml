@@ -1,0 +1,42 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="me.batizhao.dp.mapper.CodeMetaMapper">
+
+  <resultMap id="codeMetaMap" type="me.batizhao.dp.domain.CodeMeta">
+    <id property="id" column="id"/>
+    <result property="codeId" column="codeId"/>
+    <result property="columnName" column="columnName"/>
+    <result property="columnComment" column="columnComment"/>
+    <result property="columnType" column="columnType"/>
+    <result property="javaType" column="javaType"/>
+    <result property="javaField" column="javaField"/>
+    <result property="primaryKey" column="primaryKey"/>
+    <result property="increment" column="increment"/>
+    <result property="required" column="required"/>
+    <result property="save" column="save"/>
+    <result property="edit" column="edit"/>
+    <result property="display" column="display"/>
+    <result property="search" column="search"/>
+    <result property="searchType" column="searchType"/>
+    <result property="htmlType" column="htmlType"/>
+    <result property="dictType" column="dictType"/>
+    <result property="sort" column="sort"/>
+    <result property="createTime" column="createTime"/>
+    <result property="updateTime" column="updateTime"/>
+  </resultMap>
+
+  <select id="selectColumnsByTableName" resultMap="codeMetaMap">
+    select column_name as columnName,
+           (case when (is_nullable = 'no' <![CDATA[ && ]]> column_key != 'PRI') then '1' else '0' end) as required,
+           (case when column_key = 'PRI' then '1' else '0' end) as primaryKey,
+           ordinal_position as sort,
+           column_comment as columnComment,
+           (case when extra = 'auto_increment' then '1' else '0' end) as increment,
+           column_type as columnType
+    from information_schema.columns
+    where table_schema = (select database()) and table_name = #{tableName}
+    order by ordinal_position
+  </select>
+</mapper>

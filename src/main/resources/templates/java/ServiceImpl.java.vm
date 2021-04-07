@@ -1,0 +1,115 @@
+package ${package}.${moduleName}.service.impl;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import me.batizhao.common.core.exception.NotFoundException;
+import me.batizhao.common.core.util.TreeUtil;
+import ${package}.${moduleName}.domain.${className};
+import ${package}.${moduleName}.mapper.${className}Mapper;
+import ${package}.${moduleName}.service.${className}Service;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+/**
+ * ${comments}接口实现类
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Service
+public class ${className}ServiceImpl extends ServiceImpl<${className}Mapper, ${className}> implements ${className}Service {
+
+    @Autowired
+    private ${className}Mapper ${classname}Mapper;
+
+#if($template != "tree")
+    @Override
+    public IPage<${className}> find${className}s(Page<${className}> page, ${className} ${classname}) {
+        LambdaQueryWrapper<${className}> wrapper = Wrappers.lambdaQuery();
+#foreach ($column in $columns)
+#if($column.search)
+#if($column.javaField.length() > 2 && $column.javaField.substring(1,2).matches("[A-Z]"))
+    #set($AttrName=$column.javaField)
+#else
+    #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#end
+        if (StringUtils.isNotBlank(${classname}.get${AttrName}())) {
+            wrapper.like(${className}::get${AttrName}, ${classname}.get${AttrName}());
+        }
+#end
+#end
+        return ${classname}Mapper.selectPage(page, wrapper);
+    }
+#else
+    @Override
+    public List<${className}> find${className}Tree(${className} ${classname}) {
+        LambdaQueryWrapper<${className}> wrapper = Wrappers.lambdaQuery();
+        if (null != ${classname} && StringUtils.isNotBlank(${classname}.getName())) {
+            wrapper.like(${className}::getName, ${classname}.getName());
+        }
+        wrapper.orderByAsc(${className}::getSort);
+
+        List<${className}> ${classname}s = ${classname}Mapper.selectList(wrapper);
+        return TreeUtil.build(${classname}s, 0);
+    }
+#end
+
+    @Override
+    public ${className} findById(${pk.javaType} id) {
+        ${className} ${classname} = ${classname}Mapper.selectById(id);
+
+        if(${classname} == null) {
+            throw new NotFoundException(String.format("没有该记录 '%s'。", id));
+        }
+
+        return ${classname};
+    }
+
+    @Override
+    @Transactional
+    public ${className} saveOrUpdate${className}(${className} ${classname}) {
+        if (${classname}.getId() == null) {
+            ${classname}.setCreateTime(LocalDateTime.now());
+            ${classname}.setUpdateTime(LocalDateTime.now());
+            ${classname}Mapper.insert(${classname});
+        } else {
+            ${classname}.setUpdateTime(LocalDateTime.now());
+            ${classname}Mapper.updateById(${classname});
+        }
+
+        return ${classname};
+    }
+#if($template == "tree")
+
+    @Override
+    public Boolean deleteById(Integer id) {
+        if (checkHasChildren(id)) return false;
+        this.removeById(id);
+        return true;
+    }
+#end
+
+    @Override
+    @Transactional
+    public Boolean updateStatus(${className} ${classname}) {
+        LambdaUpdateWrapper<${className}> wrapper = Wrappers.lambdaUpdate();
+        wrapper.eq(${className}::getId, ${classname}.getId()).set(${className}::getStatus, ${classname}.getStatus());
+        return ${classname}Mapper.update(null, wrapper) == 1;
+    }
+#if($template == "tree")
+
+    @Override
+    public Boolean checkHasChildren(Integer id) {
+        return ${classname}Mapper.selectList(Wrappers.<${className}>lambdaQuery().eq(${className}::getPid, id)).size() > 0;
+    }
+#end
+}

@@ -1,11 +1,7 @@
 package io.github.batizhao.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -14,7 +10,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author batizhao
@@ -23,26 +19,21 @@ import java.util.Date;
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
-@AllArgsConstructor
-@ApiModel(description = "用户类")
+@ApiModel(description = "用户")
 public class User implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     @ApiModelProperty(value = "用户ID", example = "100")
-    @TableId(type = IdType.AUTO)
     private Long id;
 
-    /**
-     * @mock @word(3,30)
-     */
     @ApiModelProperty(value = "用户名", example = "zhangsan")
     @NotBlank(message = "username is not blank")
     @Size(min = 3, max = 30)
     private String username;
 
     @ApiModelProperty(value = "密码")
-    @NotBlank(message = "password is not blank")
-    @JsonIgnore
-    private String password = "123456";
+    private String password;
 
     @ApiModelProperty(value = "邮箱", example = "zhangsan@qq.com")
     @NotBlank(message = "email is not blank")
@@ -57,12 +48,47 @@ public class User implements Serializable {
     private String name;
 
     /**
-     * @mock @datetime
+     * 用户性别
      */
-    @ApiModelProperty(value = "创建时间")
-    private Date time;
+    @ApiModelProperty(value="用户性别")
+    private String sex;
 
-//    @TableField(exist = false)
-//    @ApiModelProperty(value = "权限")
-//    private List<Role> authorities;
+    /**
+     * 手机号码
+     */
+    @ApiModelProperty(value="手机号码")
+    private String mobileNumber;
+
+    /**
+     * @mock @url
+     */
+    @ApiModelProperty(value = "用户头像", example = "https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png")
+    private String avatar;
+
+    @ApiModelProperty(value = "未读消息数量", example = "99")
+    private Integer unreadCount;
+
+    /**
+     * 状态
+     */
+    @ApiModelProperty(value="状态")
+    private String status;
+
+    /**
+     * 创建时间
+     */
+    @ApiModelProperty(value="创建时间")
+    private LocalDateTime createTime;
+
+    /**
+     * 修改时间
+     */
+    @ApiModelProperty(value="修改时间")
+    private LocalDateTime updateTime;
+
+//    /**
+//     * 角色列表
+//     */
+//    @ApiModelProperty(value = "角色列表")
+//    private transient List<Role> roleList;
 }

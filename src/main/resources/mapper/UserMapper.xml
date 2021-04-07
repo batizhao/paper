@@ -1,0 +1,44 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="me.batizhao.ims.mapper.UserMapper">
+    <resultMap type="me.batizhao.ims.api.domain.User" id="baseResultMap">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="email" column="email"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex"/>
+        <result property="mobileNumber" column="mobileNumber"/>
+        <result property="avatar" column="avatar"/>
+        <result property="unreadCount" column="unreadCount"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="createTime"/>
+        <result property="updateTime" column="updateTime"/>
+<!--        <collection property="roleList" ofType="me.batizhao.ims.api.vo.RoleVO"-->
+<!--                    select="me.batizhao.ims.mapper.findRolesByUserId" column="id">-->
+<!--        </collection>-->
+    </resultMap>
+
+<!--    <select id="selectUserPage" resultMap="baseResultMap">-->
+<!--        SELECT-->
+<!--            u.id,-->
+<!--            u.username,-->
+<!--            u.email,-->
+<!--            u.name,-->
+<!--            u.avatar,-->
+<!--            u.unreadCount,-->
+<!--            u.status,-->
+<!--            u.createTime-->
+<!--        FROM-->
+<!--        user AS u-->
+<!--        <where>-->
+<!--            <if test="user.username != null and user.username != ''">-->
+<!--                and u.username LIKE CONCAT('%',#{user.username},'%')-->
+<!--            </if>-->
+<!--        </where>-->
+<!--        ORDER BY u.createTime DESC-->
+<!--    </select>-->
+
+</mapper>
