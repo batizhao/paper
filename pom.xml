@@ -25,7 +25,7 @@
 		<dynamic-datasource.version>3.3.1</dynamic-datasource.version>
 		<hutool.version>5.5.9</hutool.version>
 		<jasypt.version>3.0.3</jasypt.version>
-		<liquibase.version>4.3.1</liquibase.version>
+		<liquibase.version>4.8.0</liquibase.version>
 		<mybatis-plus.version>3.4.2</mybatis-plus.version>
 		<mybatis-spring-boot.version>2.1.4</mybatis-spring-boot.version>
 		<mockito.version>3.7.0</mockito.version>
