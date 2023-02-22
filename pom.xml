@@ -21,7 +21,7 @@
 
 		<commons-beanutils.version>1.9.4</commons-beanutils.version>
 		<commons-configuration.version>2.7</commons-configuration.version>
-		<commons-fileupload.version>1.4</commons-fileupload.version>
+		<commons-fileupload.version>1.5</commons-fileupload.version>
 		<dynamic-datasource.version>3.3.1</dynamic-datasource.version>
 		<hutool.version>5.5.9</hutool.version>
 		<jasypt.version>3.0.3</jasypt.version>
